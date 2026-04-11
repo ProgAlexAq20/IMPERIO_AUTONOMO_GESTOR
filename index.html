@@ -8,6 +8,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
 <style>
 /* ============================================================
    RESET & BASE
@@ -434,20 +439,17 @@ input,select,textarea{font-family:inherit}
 </head>
 <body>
 
-<!-- ============================================================
-     LOGIN SCREEN
-     ============================================================ -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
       <div class="login-logo-mark">IA</div>
       <div>
         <div class="login-logo-text">Império Autônomo</div>
-        <div class="login-logo-sub">Gestão Financeira 2025-2026</div>
+        <div class="login-logo-sub">Gestão Financeira (Cloud)</div>
       </div>
     </div>
     <div class="login-title">Acesso ao Painel</div>
-    <div class="login-sub">Insira suas credenciais para continuar</div>
+    <div class="login-sub">Insira seu usuário para conectar à nuvem</div>
     <div class="login-field">
       <label class="login-label" for="login-user">Usuário</label>
       <input class="login-input" id="login-user" type="text" placeholder="seu nome de usuário" autocomplete="username"/>
@@ -456,26 +458,19 @@ input,select,textarea{font-family:inherit}
       <label class="login-label" for="login-pass">Senha</label>
       <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     </div>
-    <button class="login-btn" onclick="doLogin()">Entrar no Painel →</button>
-    <div class="login-err" id="login-err">Usuário ou senha incorretos. Tente novamente.</div>
-    <div class="login-hint">
-      <strong>Credenciais de acesso:</strong><br>
-      Usuário: <strong>imperio</strong> &nbsp;|&nbsp; Senha: <strong>imperio2025</strong>
-    </div>
+    <button class="login-btn" onclick="doLogin()">Conectar ao Banco de Dados →</button>
+    <div class="login-err" id="login-err">Credenciais inválidas. Verifique no Firebase.</div>
   </div>
 </div>
 
-<!-- ============================================================
-     TOPBAR
-     ============================================================ -->
 <header class="topbar">
   <div class="topbar-left">
     <div class="logo-mark">IA</div>
-    <span class="topbar-title">Império Autônomo <span class="accent">//</span> Gestão Financeira 2025-2026</span>
+    <span class="topbar-title">Império Autônomo <span class="accent">//</span> Gestão Financeira Cloud</span>
   </div>
   <div class="topbar-right">
     <div class="status-dot"></div>
-    <span class="status-text">Sistema Ativo</span>
+    <span class="status-text" id="user-display">Nuvem Conectada</span>
     <button class="theme-toggle" id="themeToggle">
       <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
       <span class="theme-toggle-label" id="themeLabel">Light</span>
@@ -484,18 +479,12 @@ input,select,textarea{font-family:inherit}
   </div>
 </header>
 
-<!-- ============================================================
-     HERO
-     ============================================================ -->
 <section class="hero">
-  <div class="hero-eyebrow"><span class="pulse-dot"></span> Painel em Tempo Real</div>
+  <div class="hero-eyebrow"><span class="pulse-dot"></span> Sincronização em Tempo Real</div>
   <h1 class="hero-title">Painel de Controle<br><span class="hero-title-accent">do Império</span></h1>
   <div class="hero-line"></div>
 </section>
 
-<!-- ============================================================
-     FLASH INSIGHTS
-     ============================================================ -->
 <section class="flash-section">
   <div class="flash-grid">
     <div class="flash-card income-flash" id="flash-income">
@@ -519,9 +508,6 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ============================================================
-     KPI CARDS
-     ============================================================ -->
 <section class="kpi-section">
   <div class="kpi-grid">
     <div class="kpi-card">
@@ -555,9 +541,6 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ============================================================
-     FILTER BAR
-     ============================================================ -->
 <div class="filter-bar">
   <span class="filter-label">Filtrar por mês:</span>
   <select class="filter-select" id="filter-month" onchange="applyFilter()">
@@ -569,11 +552,7 @@ input,select,textarea{font-family:inherit}
   <button class="filter-btn-clear" onclick="clearFilter()">✕ Limpar filtro</button>
 </div>
 
-<!-- ============================================================
-     TABLES
-     ============================================================ -->
 <section class="tables-section">
-  <!-- RECEITAS -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-header-left">
@@ -585,7 +564,7 @@ input,select,textarea{font-family:inherit}
       </div>
       <div class="panel-header-actions">
         <button class="edit-cats-btn" onclick="openModal('receita')">✏ Categorias</button>
-        <div class="ai-chip"><span class="ai-chip-dot"></span>IA</div>
+        <div class="ai-chip"><span class="ai-chip-dot"></span>Nuvem</div>
       </div>
     </div>
     <div class="table-wrap">
@@ -600,7 +579,6 @@ input,select,textarea{font-family:inherit}
     <button class="add-row-btn income-add" onclick="addReceita()"><span class="add-icon">+</span> Nova entrada</button>
   </div>
 
-  <!-- DESPESAS -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-header-left">
@@ -612,7 +590,7 @@ input,select,textarea{font-family:inherit}
       </div>
       <div class="panel-header-actions">
         <button class="edit-cats-btn" onclick="openModal('despesa')">✏ Categorias</button>
-        <div class="ai-chip"><span class="ai-chip-dot"></span>IA</div>
+        <div class="ai-chip"><span class="ai-chip-dot"></span>Nuvem</div>
       </div>
     </div>
     <div class="table-wrap">
@@ -628,9 +606,6 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ============================================================
-     CHARTS
-     ============================================================ -->
 <section class="charts-section">
   <div class="section-heading">
     <h2 class="section-title">Resumo Inteligente</h2>
@@ -666,22 +641,16 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
 <footer class="footer">
   <span>© 2025-2026 Império Autônomo</span>
   <span class="footer-sep">·</span>
-  <span>Gestão Financeira Inteligente</span>
+  <span>Gestão Financeira Integrada ao Google Cloud</span>
   <span class="footer-sep">·</span>
   <span id="footer-time"></span>
 </footer>
 
 <div class="toast" id="toast"></div>
 
-<!-- ============================================================
-     MODAL — CATEGORIES EDITOR
-     ============================================================ -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal" id="modal-box">
     <div class="modal-header">
@@ -694,49 +663,37 @@ input,select,textarea{font-family:inherit}
     </div>
     <div class="modal-footer">
       <button class="modal-cancel-btn" onclick="closeModal()">Cancelar</button>
-      <button class="modal-save-btn" onclick="saveModal()">Salvar</button>
+      <button class="modal-save-btn" onclick="saveModal()">Salvar na Nuvem</button>
     </div>
   </div>
 </div>
 
-<!-- ============================================================
-     JAVASCRIPT
-     ============================================================ -->
 <script>
 'use strict';
 
-/* ── Auth ── */
-const USERS = { 'imperio': 'imperio2025', 'admin': 'admin123' };
+/* ── 1. Configuração do Firebase ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyCXx9UCUCZbZkAYTX_yeeFW3sU1DyPgjtk",
+  authDomain: "imperio-autonomo.firebaseapp.com",
+  projectId: "imperio-autonomo",
+  storageBucket: "imperio-autonomo.firebasestorage.app",
+  messagingSenderId: "648590141593",
+  appId: "1:648590141593:web:adaefc36b4f4f5fe337008",
+  measurementId: "G-TY2FFYLJLF"
+};
 
-function doLogin(){
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  const err = document.getElementById('login-err');
-  if(USERS[u] && USERS[u]===p){
-    err.style.display='none';
-    document.getElementById('login-screen').classList.add('hide');
-    setTimeout(()=>document.getElementById('login-screen').style.display='none',450);
-    sessionStorage.setItem('ia_logged','1');
-  } else {
-    err.style.display='block';
-    document.getElementById('login-pass').value='';
-  }
-}
-function doLogout(){
-  sessionStorage.removeItem('ia_logged');
-  location.reload();
-}
-document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
-if(sessionStorage.getItem('ia_logged')==='1'){
-  document.getElementById('login-screen').style.display='none';
-}
+// Inicializando os serviços
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-/* ── Categories ── */
+let currentUser = null;
+
+/* ── Categorias Iniciais (Padrão) ── */
 let receitaOrigens = ['Vendas E-book','Consultoria IA','Afiliados','Curso Online','Mentoria','Freelance','Produto Digital','Assinatura'];
 let despesaCats    = ['Anúncios Meta','Ferramentas SaaS','Hospedagem','Equipe','Tráfego Pago','Software','Educação','Outros'];
 
-/* ── State ── */
+/* ── State (Dados da Tabela) ── */
 let receitas = [];
 let despesas = [];
 let filtroMes = '';
@@ -745,7 +702,87 @@ let modalTipo = '';
 let donutChart = null;
 let barChart   = null;
 
-/* ── Helpers ── */
+/* ── 2. Autenticação (Login e Logout) ── */
+
+// Fica escutando se alguém entrou ou saiu
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('login-screen').classList.add('hide');
+    setTimeout(()=>document.getElementById('login-screen').style.display='none', 450);
+    
+    // Mostra quem logou na Topbar
+    document.getElementById('user-display').textContent = user.email.split('@')[0].toUpperCase();
+    
+    // Puxa os dados desse usuário da Nuvem
+    carregarDaNuvem();
+  } else {
+    currentUser = null;
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('login-screen').classList.remove('hide');
+  }
+});
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  
+  // O Truque: Se a pessoa digitar só o nome, adicionamos o email do imperio automaticamente
+  const email = u.includes('@') ? u : u + "@imperio.com";
+  
+  auth.signInWithEmailAndPassword(email, p).catch(err => {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('login-pass').value = '';
+  });
+}
+
+function doLogout() {
+  auth.signOut();
+}
+
+// Permite login apertando Enter
+document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
+
+/* ── 3. Banco de Dados (Firestore) ── */
+
+function salvarNaNuvem() {
+  if (!currentUser) return;
+  // Salva no Firestore dentro da coleção 'users', criando um documento com o ID único do usuário logado
+  db.collection('users').doc(currentUser.uid).set({
+    receitas: receitas,
+    despesas: despesas,
+    receitaOrigens: receitaOrigens,
+    despesaCats: despesaCats
+  });
+}
+
+function carregarDaNuvem() {
+  if (!currentUser) return;
+  
+  db.collection('users').doc(currentUser.uid).get().then(doc => {
+    if (doc.exists) {
+      const data = doc.data();
+      receitas = data.receitas || [];
+      despesas = data.despesas || [];
+      if (data.receitaOrigens) receitaOrigens = data.receitaOrigens;
+      if (data.despesaCats) despesaCats = data.despesaCats;
+    } else {
+      // Se for a primeira vez que o usuário loga, a conta dele estará zerada
+      receitas = [];
+      despesas = [];
+    }
+    buildFilterOptions();
+    renderReceitas();
+    renderDespesas();
+    updateKPIs();
+  }).catch(error => {
+    showToast("Erro ao carregar dados", "error");
+  });
+}
+
+
+/* ── Helpers Globais ── */
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function fmtBRL(n){ return (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 function today(){ return new Date().toISOString().split('T')[0]; }
@@ -755,7 +792,7 @@ function mesLabel(ym){
   const[a,m]=ym.split('-'); return `${n[parseInt(m)-1]}/${a.slice(2)}`;
 }
 
-/* ── Toast ── */
+/* ── Toast (Avisos) ── */
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
   t.textContent=msg; t.className=`toast ${type} show`;
@@ -779,25 +816,8 @@ function updateClock(){
 }
 setInterval(updateClock,1000); updateClock();
 
-/* ── Persistence ── */
-function salvar(){
-  localStorage.setItem('ia_receitas',JSON.stringify(receitas));
-  localStorage.setItem('ia_despesas',JSON.stringify(despesas));
-  localStorage.setItem('ia_origens',JSON.stringify(receitaOrigens));
-  localStorage.setItem('ia_cats',JSON.stringify(despesaCats));
-}
-function carregar(){
-  const r=localStorage.getItem('ia_receitas');
-  const d=localStorage.getItem('ia_despesas');
-  const o=localStorage.getItem('ia_origens');
-  const c=localStorage.getItem('ia_cats');
-  if(r) receitas=JSON.parse(r);
-  if(d) despesas=JSON.parse(d);
-  if(o) receitaOrigens=JSON.parse(o);
-  if(c) despesaCats=JSON.parse(c);
-}
 
-/* ── Filter ── */
+/* ── Filtro de Mês/Ano ── */
 function buildFilterOptions(){
   const monthSel=document.getElementById('filter-month');
   const yearSel=document.getElementById('filter-year');
@@ -845,7 +865,7 @@ function passesFilter(data){
   return true;
 }
 
-/* ── KPIs & Flash ── */
+/* ── KPIs & Flash Cards ── */
 function updateKPIs(){
   const recFilt=receitas.filter(r=>passesFilter(r.data));
   const despFilt=despesas.filter(d=>passesFilter(d.data));
@@ -888,7 +908,9 @@ function updateKPIs(){
 
   updateCharts();
   buildFilterOptions();
-  salvar();
+  
+  // Agora sempre salva na Nuvem em vez de Local Storage
+  salvarNaNuvem();
 }
 
 /* ── Receitas Table ── */
@@ -935,7 +957,7 @@ function addReceita(){
   renderReceitas(); updateKPIs();
   const rows=document.querySelectorAll('#receita-body tr');
   if(rows.length){const inp=rows[rows.length-1].querySelectorAll('input');if(inp[1])inp[1].focus();}
-  showToast('✓ Nova entrada adicionada');
+  showToast('✓ Nova entrada adicionada na Nuvem');
 }
 function deleteReceita(id){
   receitas=receitas.filter(r=>r.id!==id);
@@ -987,7 +1009,7 @@ function addDespesa(){
   renderDespesas(); updateKPIs();
   const rows=document.querySelectorAll('#despesa-body tr');
   if(rows.length){const inp=rows[rows.length-1].querySelectorAll('input');if(inp[1])inp[1].focus();}
-  showToast('✓ Nova despesa adicionada');
+  showToast('✓ Nova despesa adicionada na Nuvem');
 }
 function deleteDespesa(id){
   despesas=despesas.filter(d=>d.id!==id);
@@ -997,7 +1019,7 @@ function deleteDespesa(id){
 
 function saveRow(btn,type){
   btn.textContent='✅'; btn.classList.add('saved');
-  showToast(type==='income'?'✓ Entrada salva':'✓ Despesa salva');
+  showToast(type==='income'?'✓ Salvo na Nuvem':'✓ Salvo na Nuvem');
   setTimeout(()=>{btn.textContent='💾';btn.classList.remove('saved');},1800);
 }
 
@@ -1035,7 +1057,7 @@ function saveModal(){
   }
   closeModal();
   renderReceitas(); renderDespesas(); updateKPIs();
-  showToast('✓ Categorias atualizadas');
+  showToast('✓ Categorias atualizadas na Nuvem');
 }
 
 /* ── Charts ── */
@@ -1076,7 +1098,6 @@ function buildDonut(){
 }
 
 function buildBar(){
-  // Group all data by YYYY-MM
   const dadosMensais={};
   const reg=(data)=>{
     if(!data) return null;
@@ -1088,7 +1109,6 @@ function buildBar(){
   despesas.forEach(d=>{const m=reg(d.data);if(m)dadosMensais[m].desp+=d.valor;});
   let meses=Object.keys(dadosMensais).sort();
   if(meses.length===0){ meses=[today().substring(0,7)]; dadosMensais[meses[0]]={rec:0,desp:0}; }
-  // Apply filter
   if(filtroAno||filtroMes){
     meses=meses.filter(m=>{
       const[y,mo]=m.split('-');
@@ -1136,17 +1156,6 @@ function rebuildCharts(){
   updateCharts();
 }
 
-/* ── Init ── */
-function init(){
-  carregar();
-  buildFilterOptions();
-  renderReceitas();
-  renderDespesas();
-  updateKPIs();
-}
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',init);
-} else { init(); }
 </script>
 </body>
 </html>
