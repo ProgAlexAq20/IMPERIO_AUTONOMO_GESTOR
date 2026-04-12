@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -69,23 +68,13 @@ input,select,textarea{font-family:inherit}
   transition:opacity .4s,transform .4s;
 }
 #login-screen.hide{opacity:0;transform:scale(1.04);pointer-events:none}
-
 .login-box{
-  background:var(--card);
-  border:1px solid var(--card-border);
-  border-radius:20px;
-  padding:40px 40px 36px;
-  width:100%;max-width:400px;
-  box-shadow:var(--shadow);
-  position:relative;overflow:hidden;
+  background:var(--card);border:1px solid var(--card-border);border-radius:20px;
+  padding:40px 40px 36px;width:100%;max-width:400px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
 }
-.login-box::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--accent),var(--accent-dim));
-}
-.login-logo{
-  display:flex;align-items:center;gap:12px;margin-bottom:28px;
-}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-dim));}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
 .login-logo-mark{
   width:38px;height:38px;border-radius:10px;
   background:var(--accent);color:#060a0d;
@@ -94,10 +83,8 @@ input,select,textarea{font-family:inherit}
 }
 .login-logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);letter-spacing:-.02em;}
 .login-logo-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-top:1px;}
-
 .login-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:6px;}
 .login-sub{font-size:13px;color:var(--text3);margin-bottom:28px;}
-
 .login-field{margin-bottom:16px;}
 .login-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
 .login-input{
@@ -108,11 +95,9 @@ input,select,textarea{font-family:inherit}
 }
 .login-input:focus{border-color:var(--border2);background:var(--input-focus);}
 .login-input::placeholder{color:var(--text3);}
-
 .login-btn{
   width:100%;padding:13px;margin-top:8px;
-  background:var(--accent);color:#060a0d;
-  border:none;border-radius:9px;
+  background:var(--accent);color:#060a0d;border:none;border-radius:9px;
   font-family:'Syne',sans-serif;font-weight:800;font-size:14px;letter-spacing:.02em;
   transition:opacity .2s,transform .1s;
 }
@@ -123,12 +108,6 @@ input,select,textarea{font-family:inherit}
   background:var(--danger-glow);border:1px solid rgba(255,77,109,.3);
   color:var(--danger);font-size:12px;display:none;text-align:center;
 }
-.login-hint{
-  margin-top:20px;padding:12px 14px;border-radius:8px;
-  background:var(--accent-glow);border:1px solid var(--border2);
-  font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);line-height:1.7;
-}
-.login-hint strong{color:var(--accent);}
 
 /* ============================================================
    TOPBAR
@@ -149,7 +128,7 @@ input,select,textarea{font-family:inherit}
 }
 .topbar-title{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:.06em;text-transform:uppercase;}
 .topbar-title .accent{color:var(--accent);}
-.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse-ring 2s ease infinite;}
 .status-text{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
 .logout-btn{
@@ -176,6 +155,18 @@ input,select,textarea{font-family:inherit}
 }
 [data-theme="light"] .theme-toggle-thumb{left:14px;}
 
+/* ── MELHORIA 2: Botão Glasses ── */
+.glasses-btn{
+  display:flex;align-items:center;gap:6px;
+  background:none;border:1px solid var(--border);border-radius:99px;
+  padding:5px 10px;color:var(--text2);font-size:14px;
+  font-family:'DM Mono',monospace;transition:border-color .2s,color .2s,background .2s;
+  white-space:nowrap;
+}
+.glasses-btn:hover{border-color:var(--border2);color:var(--accent);}
+.glasses-btn.active{background:var(--accent-glow);border-color:var(--border2);color:var(--accent);}
+.glasses-label{font-size:10px;letter-spacing:.04em;}
+
 /* ============================================================
    HERO
    ============================================================ */
@@ -186,10 +177,7 @@ input,select,textarea{font-family:inherit}
   letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;
 }
 .pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-ring 1.5s ease infinite;}
-.hero-title{
-  font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,50px);
-  font-weight:800;color:var(--text);line-height:1.05;letter-spacing:-.03em;
-}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,50px);font-weight:800;color:var(--text);line-height:1.05;letter-spacing:-.03em;}
 .hero-title-accent{color:var(--accent);}
 .hero-line{width:80px;height:3px;background:var(--accent);border-radius:99px;margin-top:18px;}
 
@@ -199,7 +187,6 @@ input,select,textarea{font-family:inherit}
 .flash-section{padding:0 28px 20px;max-width:1400px;margin:0 auto;}
 .flash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 @media(max-width:640px){.flash-grid{grid-template-columns:1fr;}}
-
 .flash-card{
   border-radius:14px;padding:16px 18px;
   display:flex;align-items:center;gap:14px;
@@ -231,7 +218,6 @@ input,select,textarea{font-family:inherit}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:540px){.kpi-grid{grid-template-columns:1fr;}}
-
 .kpi-card{
   position:relative;background:var(--card);border:1px solid var(--card-border);
   border-radius:16px;padding:22px 18px 18px;overflow:hidden;
@@ -278,7 +264,6 @@ input,select,textarea{font-family:inherit}
    ============================================================ */
 .tables-section{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:0 28px 24px;max-width:1400px;margin:0 auto;}
 @media(max-width:900px){.tables-section{grid-template-columns:1fr;}}
-
 .panel{background:var(--card);border:1px solid var(--card-border);border-radius:16px;overflow:hidden;transition:box-shadow .2s;}
 .panel:hover{box-shadow:var(--shadow);}
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card2);border-bottom:1px solid var(--border);}
@@ -298,7 +283,6 @@ input,select,textarea{font-family:inherit}
   transition:border-color .2s,color .2s;
 }
 .edit-cats-btn:hover{border-color:var(--border2);color:var(--accent);}
-
 .table-wrap{overflow-x:auto;}
 .data-table{width:100%;border-collapse:collapse;font-size:12.5px;}
 .data-table th{
@@ -320,6 +304,15 @@ input,select,textarea{font-family:inherit}
 .data-table input:focus,.data-table select:focus{border-color:var(--border2);background:var(--input-focus);}
 .val-input{text-align:right!important;color:var(--accent)!important;font-weight:600;font-family:'DM Mono',monospace!important;}
 .val-input-danger{text-align:right!important;color:var(--danger)!important;font-weight:600;font-family:'DM Mono',monospace!important;}
+
+/* ── MELHORIA 1: destaque visual quando input está em modo "calculadora" ── */
+.val-input.calc-mode,.val-input-danger.calc-mode{
+  background:var(--warn-glow)!important;
+  border-color:var(--warn)!important;
+  color:var(--warn)!important;
+  font-style:italic;
+}
+
 .action-wrap{display:flex;align-items:center;justify-content:center;gap:4px;}
 .act-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text2);transition:background .15s,border-color .15s,color .15s;}
 .act-btn:hover{background:var(--accent-glow);border-color:var(--border2);color:var(--accent);}
@@ -421,6 +414,7 @@ input,select,textarea{font-family:inherit}
 }
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.error{border-color:rgba(255,77,109,.35);color:var(--danger);}
+.toast.warn{border-color:rgba(245,166,35,.4);color:var(--warn);}
 
 /* ============================================================
    ANIMATIONS
@@ -432,13 +426,65 @@ input,select,textarea{font-family:inherit}
 .kpi-card:nth-child(3){animation-delay:.19s}.kpi-card:nth-child(4){animation-delay:.26s}
 .panel,.chart-panel{animation:fadeInUp .5s ease .3s both;}
 @media(max-width:600px){
-  .topbar{padding:0 14px}.topbar-title{font-size:9px}.status-text{display:none}
+  .topbar{padding:0 10px}.topbar-title{display:none}.status-text{display:none}
   .hero,.kpi-section,.flash-section,.filter-bar,.tables-section,.charts-section{padding-left:14px;padding-right:14px}
+  .glasses-label{display:none}
+}
+
+/* ============================================================
+   MELHORIA 2: GLASSES MODE — Acessibilidade Mobile
+   ============================================================ */
+.glasses-btn{transition:border-color .2s,color .2s,background .2s,box-shadow .2s;}
+.glasses-btn.active{box-shadow:0 0 0 3px var(--accent-glow);}
+
+@media(max-width:768px){
+  body.glasses-mode{font-size:18px;}
+
+  body.glasses-mode .data-table{font-size:15px;}
+
+  body.glasses-mode .data-table th{
+    padding:13px 14px;font-size:11px;letter-spacing:.08em;
+  }
+  body.glasses-mode .data-table td{
+    padding:13px 14px;
+  }
+  body.glasses-mode .data-table input[type="text"],
+  body.glasses-mode .data-table input[type="date"],
+  body.glasses-mode .data-table select{
+    padding:10px 12px;font-size:15px;min-height:46px;border-radius:8px;
+  }
+  body.glasses-mode .val-input,
+  body.glasses-mode .val-input-danger{
+    font-size:15px!important;
+  }
+  body.glasses-mode .act-btn{
+    width:44px;height:44px;font-size:20px;border-radius:11px;
+  }
+  body.glasses-mode .add-row-btn{
+    padding:18px;font-size:15px;
+  }
+  body.glasses-mode .filter-select,
+  body.glasses-mode .filter-btn-clear{
+    padding:10px 16px;font-size:14px;min-height:42px;
+  }
+  body.glasses-mode .kpi-value{
+    font-size:clamp(22px,4vw,28px)!important;
+  }
+  body.glasses-mode .kpi-tag{font-size:12px;}
+  body.glasses-mode .kpi-sub{font-size:13px;}
+  body.glasses-mode .flash-name{font-size:18px;}
+  body.glasses-mode .flash-val{font-size:13px;}
+  body.glasses-mode .edit-cats-btn{padding:9px 16px;font-size:13px;}
+  body.glasses-mode .panel-title{font-size:15px;}
+  body.glasses-mode .add-icon{font-size:20px;}
 }
 </style>
 </head>
 <body>
 
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
@@ -463,6 +509,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
+<!-- ============================================================
+     TOPBAR
+     ============================================================ -->
 <header class="topbar">
   <div class="topbar-left">
     <div class="logo-mark">IA</div>
@@ -471,6 +520,13 @@ input,select,textarea{font-family:inherit}
   <div class="topbar-right">
     <div class="status-dot"></div>
     <span class="status-text" id="user-display">Nuvem Conectada</span>
+
+    <!-- MELHORIA 2: Botão Glasses -->
+    <button class="glasses-btn" id="glassesToggle" title="Modo Acessibilidade (tela grande)">
+      <span>👓</span>
+      <span class="glasses-label" id="glassesLabel">Glasses</span>
+    </button>
+
     <button class="theme-toggle" id="themeToggle">
       <span class="theme-toggle-track"><span class="theme-toggle-thumb"></span></span>
       <span class="theme-toggle-label" id="themeLabel">Light</span>
@@ -479,12 +535,18 @@ input,select,textarea{font-family:inherit}
   </div>
 </header>
 
+<!-- ============================================================
+     HERO
+     ============================================================ -->
 <section class="hero">
   <div class="hero-eyebrow"><span class="pulse-dot"></span> Sincronização em Tempo Real</div>
   <h1 class="hero-title">Painel de Controle<br><span class="hero-title-accent">do Império</span></h1>
   <div class="hero-line"></div>
 </section>
 
+<!-- ============================================================
+     FLASH INSIGHTS
+     ============================================================ -->
 <section class="flash-section">
   <div class="flash-grid">
     <div class="flash-card income-flash" id="flash-income">
@@ -508,6 +570,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
+<!-- ============================================================
+     KPI CARDS
+     ============================================================ -->
 <section class="kpi-section">
   <div class="kpi-grid">
     <div class="kpi-card">
@@ -541,6 +606,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
+<!-- ============================================================
+     FILTER BAR
+     ============================================================ -->
 <div class="filter-bar">
   <span class="filter-label">Filtrar por mês:</span>
   <select class="filter-select" id="filter-month" onchange="applyFilter()">
@@ -552,7 +620,11 @@ input,select,textarea{font-family:inherit}
   <button class="filter-btn-clear" onclick="clearFilter()">✕ Limpar filtro</button>
 </div>
 
+<!-- ============================================================
+     TABLES
+     ============================================================ -->
 <section class="tables-section">
+  <!-- RECEITAS -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-header-left">
@@ -579,6 +651,7 @@ input,select,textarea{font-family:inherit}
     <button class="add-row-btn income-add" onclick="addReceita()"><span class="add-icon">+</span> Nova entrada</button>
   </div>
 
+  <!-- DESPESAS -->
   <div class="panel">
     <div class="panel-header">
       <div class="panel-header-left">
@@ -606,6 +679,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
+<!-- ============================================================
+     CHARTS
+     ============================================================ -->
 <section class="charts-section">
   <div class="section-heading">
     <h2 class="section-title">Resumo Inteligente</h2>
@@ -641,6 +717,9 @@ input,select,textarea{font-family:inherit}
   </div>
 </section>
 
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
 <footer class="footer">
   <span>© 2025-2026 Império Autônomo</span>
   <span class="footer-sep">·</span>
@@ -651,6 +730,9 @@ input,select,textarea{font-family:inherit}
 
 <div class="toast" id="toast"></div>
 
+<!-- ============================================================
+     MODAL — CATEGORY EDITOR
+     ============================================================ -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal" id="modal-box">
     <div class="modal-header">
@@ -668,10 +750,13 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 <script>
 'use strict';
 
-/* ── 1. Configuração do Firebase ── */
+/* ── 1. Firebase Config ── */
 const firebaseConfig = {
   apiKey: "AIzaSyCXx9UCUCZbZkAYTX_yeeFW3sU1DyPgjtk",
   authDomain: "imperio-autonomo.firebaseapp.com",
@@ -681,44 +766,35 @@ const firebaseConfig = {
   appId: "1:648590141593:web:adaefc36b4f4f5fe337008",
   measurementId: "G-TY2FFYLJLF"
 };
-
-// Inicializando os serviços
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore();
-
+const db   = firebase.firestore();
 let currentUser = null;
 
-/* ── Categorias Iniciais (Padrão) ── */
+/* ── Categorias Padrão ── */
 let receitaOrigens = ['Vendas E-book','Consultoria IA','Afiliados','Curso Online','Mentoria','Freelance','Produto Digital','Assinatura'];
 let despesaCats    = ['Anúncios Meta','Ferramentas SaaS','Hospedagem','Equipe','Tráfego Pago','Software','Educação','Outros'];
 
-/* ── State (Dados da Tabela) ── */
-let receitas = [];
-let despesas = [];
-let filtroMes = '';
-let filtroAno = '';
-let modalTipo = '';
+/* ── State ── */
+let receitas   = [];
+let despesas   = [];
+let filtroMes  = '';
+let filtroAno  = '';
+let modalTipo  = '';
 let donutChart = null;
 let barChart   = null;
 
-/* ── 2. Autenticação (Login e Logout) ── */
-
-// Fica escutando se alguém entrou ou saiu
+/* ── 2. Auth ── */
 auth.onAuthStateChanged(user => {
   if (user) {
     currentUser = user;
     document.getElementById('login-screen').classList.add('hide');
-    setTimeout(()=>document.getElementById('login-screen').style.display='none', 450);
-    
-    // Mostra quem logou na Topbar
+    setTimeout(() => document.getElementById('login-screen').style.display = 'none', 450);
     document.getElementById('user-display').textContent = user.email.split('@')[0].toUpperCase();
-    
-    // Puxa os dados desse usuário da Nuvem
     carregarDaNuvem();
   } else {
     currentUser = null;
-    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('login-screen').classList.remove('hide');
   }
 });
@@ -726,212 +802,303 @@ auth.onAuthStateChanged(user => {
 function doLogin() {
   const u = document.getElementById('login-user').value.trim();
   const p = document.getElementById('login-pass').value;
-  
-  // O Truque: Se a pessoa digitar só o nome, adicionamos o email do imperio automaticamente
-  const email = u.includes('@') ? u : u + "@imperio.com";
-  
-  auth.signInWithEmailAndPassword(email, p).catch(err => {
+  const email = u.includes('@') ? u : u + '@imperio.com';
+  auth.signInWithEmailAndPassword(email, p).catch(() => {
     document.getElementById('login-err').style.display = 'block';
     document.getElementById('login-pass').value = '';
   });
 }
+function doLogout() { auth.signOut(); }
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
 
-function doLogout() {
-  auth.signOut();
-}
-
-// Permite login apertando Enter
-document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pass').focus();});
-
-/* ── 3. Banco de Dados (Firestore) ── */
-
+/* ── 3. Firestore ── */
 function salvarNaNuvem() {
   if (!currentUser) return;
-  // Salva no Firestore dentro da coleção 'users', criando um documento com o ID único do usuário logado
   db.collection('users').doc(currentUser.uid).set({
-    receitas: receitas,
-    despesas: despesas,
-    receitaOrigens: receitaOrigens,
-    despesaCats: despesaCats
+    receitas, despesas, receitaOrigens, despesaCats
   });
 }
-
 function carregarDaNuvem() {
   if (!currentUser) return;
-  
   db.collection('users').doc(currentUser.uid).get().then(doc => {
     if (doc.exists) {
       const data = doc.data();
       receitas = data.receitas || [];
       despesas = data.despesas || [];
       if (data.receitaOrigens) receitaOrigens = data.receitaOrigens;
-      if (data.despesaCats) despesaCats = data.despesaCats;
+      if (data.despesaCats)    despesaCats    = data.despesaCats;
     } else {
-      // Se for a primeira vez que o usuário loga, a conta dele estará zerada
-      receitas = [];
-      despesas = [];
+      receitas = []; despesas = [];
     }
     buildFilterOptions();
     renderReceitas();
     renderDespesas();
     updateKPIs();
-  }).catch(error => {
-    showToast("Erro ao carregar dados", "error");
-  });
+  }).catch(() => showToast('Erro ao carregar dados', 'error'));
 }
 
-
-/* ── Helpers Globais ── */
-function uid(){ return Math.random().toString(36).slice(2,9); }
-function fmtBRL(n){ return (n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function today(){ return new Date().toISOString().split('T')[0]; }
-function isDark(){ return document.documentElement.dataset.theme==='dark'; }
-function mesLabel(ym){
-  const n=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  const[a,m]=ym.split('-'); return `${n[parseInt(m)-1]}/${a.slice(2)}`;
+/* ── Helpers ── */
+function uid()   { return Math.random().toString(36).slice(2, 9); }
+function fmtBRL(n) { return (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function isDark(){ return document.documentElement.dataset.theme === 'dark'; }
+function mesLabel(ym) {
+  const n = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const [a, m] = ym.split('-');
+  return `${n[parseInt(m) - 1]}/${a.slice(2)}`;
 }
 
-/* ── Toast (Avisos) ── */
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className=`toast ${type} show`;
+/* ── Toast ── */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
   clearTimeout(t._timer);
-  t._timer=setTimeout(()=>{t.className='toast';},2600);
+  t._timer = setTimeout(() => { t.className = 'toast'; }, 2800);
 }
 
-/* ── Theme ── */
-document.getElementById('themeToggle').addEventListener('click',()=>{
-  const h=document.documentElement;
-  const label=document.getElementById('themeLabel');
-  if(h.dataset.theme==='dark'){h.dataset.theme='light';label.textContent='Dark';}
-  else{h.dataset.theme='dark';label.textContent='Light';}
-  setTimeout(rebuildCharts,60);
+/* ── Theme Toggle ── */
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const h     = document.documentElement;
+  const label = document.getElementById('themeLabel');
+  if (h.dataset.theme === 'dark') { h.dataset.theme = 'light'; label.textContent = 'Dark'; }
+  else                            { h.dataset.theme = 'dark';  label.textContent = 'Light'; }
+  setTimeout(rebuildCharts, 60);
 });
 
+/* ────────────────────────────────────────────
+   MELHORIA 2: GLASSES MODE
+   ──────────────────────────────────────────── */
+(function () {
+  const btn   = document.getElementById('glassesToggle');
+  const label = document.getElementById('glassesLabel');
+  // Restaura preferência salva
+  if (localStorage.getItem('ia_glasses') === '1') {
+    document.body.classList.add('glasses-mode');
+    btn.classList.add('active');
+    label.textContent = 'Ativo';
+  }
+  btn.addEventListener('click', () => {
+    const on = document.body.classList.toggle('glasses-mode');
+    btn.classList.toggle('active', on);
+    label.textContent = on ? 'Ativo' : 'Glasses';
+    localStorage.setItem('ia_glasses', on ? '1' : '0');
+    showToast(on ? '👓 Modo Glasses ativado' : '👓 Modo Glasses desativado');
+  });
+})();
+
 /* ── Clock ── */
-function updateClock(){
-  const el=document.getElementById('footer-time');
-  if(el) el.textContent=new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function updateClock() {
+  const el = document.getElementById('footer-time');
+  if (el) el.textContent = new Date().toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
 }
-setInterval(updateClock,1000); updateClock();
+setInterval(updateClock, 1000);
+updateClock();
 
-
-/* ── Filtro de Mês/Ano ── */
-function buildFilterOptions(){
-  const monthSel=document.getElementById('filter-month');
-  const yearSel=document.getElementById('filter-year');
-  const months=new Set(); const years=new Set();
-  [...receitas,...despesas].forEach(item=>{
-    if(item.data){
-      const[y,m]=item.data.split('-');
+/* ── Filter ── */
+function buildFilterOptions() {
+  const monthSel = document.getElementById('filter-month');
+  const yearSel  = document.getElementById('filter-year');
+  const months   = new Set();
+  const years    = new Set();
+  [...receitas, ...despesas].forEach(item => {
+    if (item.data) {
+      const [y, m] = item.data.split('-');
       months.add(m); years.add(y);
     }
   });
-  const savedM=monthSel.value, savedY=yearSel.value;
-  monthSel.innerHTML='<option value="">Todos os meses</option>';
-  const mNames=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  [...months].sort().forEach(m=>{
-    const opt=document.createElement('option');
-    opt.value=m; opt.textContent=mNames[parseInt(m)-1];
-    if(m===savedM) opt.selected=true;
+  const savedM = monthSel.value, savedY = yearSel.value;
+  monthSel.innerHTML = '<option value="">Todos os meses</option>';
+  const mNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  [...months].sort().forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = mNames[parseInt(m) - 1];
+    if (m === savedM) opt.selected = true;
     monthSel.appendChild(opt);
   });
-  yearSel.innerHTML='<option value="">Todos os anos</option>';
-  [...years].sort().forEach(y=>{
-    const opt=document.createElement('option');
-    opt.value=y; opt.textContent=y;
-    if(y===savedY) opt.selected=true;
+  yearSel.innerHTML = '<option value="">Todos os anos</option>';
+  [...years].sort().forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y === savedY) opt.selected = true;
     yearSel.appendChild(opt);
   });
 }
-function applyFilter(){
-  filtroMes=document.getElementById('filter-month').value;
-  filtroAno=document.getElementById('filter-year').value;
+function applyFilter() {
+  filtroMes = document.getElementById('filter-month').value;
+  filtroAno = document.getElementById('filter-year').value;
   renderReceitas(); renderDespesas(); updateKPIs();
 }
-function clearFilter(){
-  filtroMes=''; filtroAno='';
-  document.getElementById('filter-month').value='';
-  document.getElementById('filter-year').value='';
+function clearFilter() {
+  filtroMes = ''; filtroAno = '';
+  document.getElementById('filter-month').value = '';
+  document.getElementById('filter-year').value  = '';
   renderReceitas(); renderDespesas(); updateKPIs();
 }
-function passesFilter(data){
-  if(!filtroMes && !filtroAno) return true;
-  if(!data) return false;
-  const[y,m]=data.split('-');
-  if(filtroAno && y!==filtroAno) return false;
-  if(filtroMes && m!==filtroMes) return false;
+function passesFilter(data) {
+  if (!filtroMes && !filtroAno) return true;
+  if (!data) return false;
+  const [y, m] = data.split('-');
+  if (filtroAno && y !== filtroAno) return false;
+  if (filtroMes && m !== filtroMes) return false;
   return true;
 }
 
-/* ── KPIs & Flash Cards ── */
-function updateKPIs(){
-  const recFilt=receitas.filter(r=>passesFilter(r.data));
-  const despFilt=despesas.filter(d=>passesFilter(d.data));
-  const totalRec=recFilt.reduce((a,r)=>a+r.valor,0);
-  const totalDesp=despFilt.reduce((a,d)=>a+d.valor,0);
-  const lucro=totalRec-totalDesp;
+/* ── KPIs & Flash ── */
+function updateKPIs() {
+  const recFilt  = receitas.filter(r => passesFilter(r.data));
+  const despFilt = despesas.filter(d => passesFilter(d.data));
+  const totalRec  = recFilt.reduce((a, r)  => a + r.valor, 0);
+  const totalDesp = despFilt.reduce((a, d) => a + d.valor, 0);
+  const lucro = totalRec - totalDesp;
 
-  document.getElementById('kpi-saldo').textContent='R$ '+fmtBRL(totalRec-totalDesp);
-  document.getElementById('kpi-receitas').textContent='R$ '+fmtBRL(totalRec);
-  document.getElementById('kpi-despesas').textContent='R$ '+fmtBRL(totalDesp);
-  document.getElementById('kpi-lucro').textContent='R$ '+fmtBRL(lucro);
+  document.getElementById('kpi-saldo').textContent    = 'R$ ' + fmtBRL(totalRec - totalDesp);
+  document.getElementById('kpi-receitas').textContent = 'R$ ' + fmtBRL(totalRec);
+  document.getElementById('kpi-despesas').textContent = 'R$ ' + fmtBRL(totalDesp);
+  document.getElementById('kpi-lucro').textContent    = 'R$ ' + fmtBRL(lucro);
 
-  const period=(filtroMes||filtroAno)?'Período filtrado':'Todos os registros';
-  document.getElementById('kpi-rec-sub').textContent=period;
-  document.getElementById('kpi-desp-sub').textContent=period;
+  const period = (filtroMes || filtroAno) ? 'Período filtrado' : 'Todos os registros';
+  document.getElementById('kpi-rec-sub').textContent  = period;
+  document.getElementById('kpi-desp-sub').textContent = period;
 
   // Flash — maior receita por origem
-  const origemTotals={};
-  recFilt.forEach(r=>{ origemTotals[r.origem]=(origemTotals[r.origem]||0)+r.valor; });
-  const topOrigem=Object.entries(origemTotals).sort((a,b)=>b[1]-a[1])[0];
-  if(topOrigem){
-    document.getElementById('flash-income-name').textContent=topOrigem[0];
-    document.getElementById('flash-income-val').textContent='R$ '+fmtBRL(topOrigem[1])+' no período';
+  const origemTotals = {};
+  recFilt.forEach(r => { origemTotals[r.origem] = (origemTotals[r.origem] || 0) + r.valor; });
+  const topOrigem = Object.entries(origemTotals).sort((a, b) => b[1] - a[1])[0];
+  if (topOrigem) {
+    document.getElementById('flash-income-name').textContent = topOrigem[0];
+    document.getElementById('flash-income-val').textContent  = 'R$ ' + fmtBRL(topOrigem[1]) + ' no período';
   } else {
-    document.getElementById('flash-income-name').textContent='—';
-    document.getElementById('flash-income-val').textContent='Nenhuma entrada registrada';
+    document.getElementById('flash-income-name').textContent = '—';
+    document.getElementById('flash-income-val').textContent  = 'Nenhuma entrada registrada';
   }
 
   // Flash — maior despesa por categoria
-  const catTotals={};
-  despFilt.forEach(d=>{ catTotals[d.cat]=(catTotals[d.cat]||0)+d.valor; });
-  const topCat=Object.entries(catTotals).sort((a,b)=>b[1]-a[1])[0];
-  if(topCat){
-    document.getElementById('flash-expense-name').textContent=topCat[0];
-    document.getElementById('flash-expense-val').textContent='R$ '+fmtBRL(topCat[1])+' no período';
+  const catTotals = {};
+  despFilt.forEach(d => { catTotals[d.cat] = (catTotals[d.cat] || 0) + d.valor; });
+  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+  if (topCat) {
+    document.getElementById('flash-expense-name').textContent = topCat[0];
+    document.getElementById('flash-expense-val').textContent  = 'R$ ' + fmtBRL(topCat[1]) + ' no período';
   } else {
-    document.getElementById('flash-expense-name').textContent='—';
-    document.getElementById('flash-expense-val').textContent='Nenhuma despesa registrada';
+    document.getElementById('flash-expense-name').textContent = '—';
+    document.getElementById('flash-expense-val').textContent  = 'Nenhuma despesa registrada';
   }
 
   updateCharts();
   buildFilterOptions();
-  
-  // Agora sempre salva na Nuvem em vez de Local Storage
   salvarNaNuvem();
 }
 
+/* ════════════════════════════════════════════
+   MELHORIA 1 — MÁSCARA BRL DINÂMICA
+   ════════════════════════════════════════════
+   Formata da direita para a esquerda em tempo
+   real enquanto o usuário digita:
+   "1" → "0,01" | "150" → "1,50" | "24500" → "245,00"
+   ──────────────────────────────────────────── */
+function aplicarMascaraBRL(input) {
+  // Guarda apenas os dígitos que o usuário digitou
+  let digits = input.value.replace(/\D/g, '');
+  if (!digits || digits === '000') { input.value = '0,00'; return; }
+  // Remove zeros à esquerda
+  digits = digits.replace(/^0+/, '') || '0';
+  // Garante mínimo de 3 dígitos para formar centavos
+  while (digits.length < 3) digits = '0' + digits;
+  // Separa centavos (2 últimos) e reais (o resto)
+  const cents = digits.slice(-2);
+  const reais = digits.slice(0, -2);
+  // Formata milhar nos reais
+  const reaisFormatado = reais.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  input.value = reaisFormatado + ',' + cents;
+
+  // Remove classe calc-mode ao aplicar máscara normal
+  input.classList.remove('calc-mode');
+}
+
+/* ════════════════════════════════════════════
+   MELHORIA 3 — CALCULADORA EMBUTIDA
+   ════════════════════════════════════════════
+   Permite expressões como "3 * 24.50" ou "100 + 15"
+   diretamente no campo de valor.
+   Usa new Function() em escopo isolado (sem eval direto)
+   + whitelist regex para bloquear código malicioso.
+   ──────────────────────────────────────────── */
+function avaliarExpressao(str) {
+  // Normaliza: remove R$, espaços, pontos de milhar, troca vírgula por ponto
+  let expr = str
+    .replace(/R\$\s*/g, '')
+    .replace(/\s/g, '')
+    .replace(/\./g, '')
+    .replace(/,/g, '.');
+
+  const temOperador = /[\+\-\*\/\(]/.test(expr);
+
+  if (temOperador) {
+    // Whitelist: só permite dígitos, ponto decimal, parênteses e operadores básicos
+    if (!/^[\d\.\+\-\*\/\(\)]+$/.test(expr)) {
+      showToast('Expressão inválida', 'error');
+      return 0;
+    }
+    try {
+      // new Function() cria escopo isolado — não acessa variáveis locais
+      const resultado = new Function('return (' + expr + ')')();
+      if (!isFinite(resultado) || isNaN(resultado) || resultado < 0) {
+        showToast('Resultado inválido', 'error');
+        return 0;
+      }
+      // Arredonda para 2 casas decimais evitando float imprecision
+      return Math.round(resultado * 100) / 100;
+    } catch (e) {
+      showToast('Expressão inválida', 'error');
+      return 0;
+    }
+  }
+
+  // Sem operadores: lê como valor BRL formatado normalmente
+  return parseFloat(expr) || 0;
+}
+
+/* Detecta se o input contém expressão matemática e aplica feedback visual */
+function onValorInput(input) {
+  const raw = input.value;
+  const temOperador = /[\+\-\*\/]/.test(raw) && /\d/.test(raw);
+  if (temOperador) {
+    // Modo calculadora: mostra o que o usuário digitou sem reformatar
+    input.classList.add('calc-mode');
+  } else {
+    // Modo máscara normal
+    input.classList.remove('calc-mode');
+    aplicarMascaraBRL(input);
+  }
+}
+
 /* ── Receitas Table ── */
-function renderReceitas(){
-  const tbody=document.getElementById('receita-body');
-  tbody.innerHTML='';
-  const list=receitas.filter(r=>passesFilter(r.data));
-  if(list.length===0){
-    tbody.innerHTML='<tr class="no-data-row"><td colspan="5">Nenhuma entrada no período selecionado</td></tr>';
+function renderReceitas() {
+  const tbody = document.getElementById('receita-body');
+  tbody.innerHTML = '';
+  const list = receitas.filter(r => passesFilter(r.data));
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr class="no-data-row"><td colspan="5">Nenhuma entrada no período selecionado</td></tr>';
     return;
   }
-  list.forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.setAttribute('data-id',r.id);
-    tr.innerHTML=`
+  list.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-id', r.id);
+    tr.innerHTML = `
       <td><input type="date" value="${r.data}" onchange="updateReceita('${r.id}','data',this.value)"></td>
       <td><select onchange="updateReceita('${r.id}','origem',this.value)">
-        ${receitaOrigens.map(o=>`<option${o===r.origem?' selected':''}>${o}</option>`).join('')}
+        ${receitaOrigens.map(o => `<option${o === r.origem ? ' selected' : ''}>${o}</option>`).join('')}
       </select></td>
       <td><input type="text" value="${r.desc}" placeholder="Descrição" onchange="updateReceita('${r.id}','desc',this.value)"></td>
-      <td><input type="text" class="val-input" value="${fmtBRL(r.valor)}" placeholder="0,00" onblur="updateReceitaValor('${r.id}',this)"></td>
+      <td><input type="text" class="val-input" value="${fmtBRL(r.valor)}" placeholder="ex: 150 ou 3*50"
+        oninput="onValorInput(this)"
+        onblur="updateReceitaValor('${r.id}',this)"
+        onkeydown="if(event.key==='Enter'){this.blur();}"></td>
       <td><div class="action-wrap">
         <button class="act-btn" title="Salvar" onclick="saveRow(this,'income')">💾</button>
         <button class="act-btn del" title="Excluir" onclick="deleteReceita('${r.id}')">🗑</button>
@@ -939,51 +1106,63 @@ function renderReceitas(){
     tbody.appendChild(tr);
   });
 }
-function updateReceita(id,field,value){
-  const r=receitas.find(x=>x.id===id);
-  if(r){r[field]=value;updateKPIs();}
+function updateReceita(id, field, value) {
+  const r = receitas.find(x => x.id === id);
+  if (r) { r[field] = value; updateKPIs(); }
 }
-function updateReceitaValor(id,input){
-  const raw=parseFloat(input.value.replace(/\./g,'').replace(',','.'))||0;
-  const r=receitas.find(x=>x.id===id);
-  if(r){r.valor=raw;input.value=fmtBRL(raw);updateKPIs();}
+function updateReceitaValor(id, input) {
+  // Melhoria 3: avalia expressão matemática se houver
+  const raw = avaliarExpressao(input.value);
+  const r   = receitas.find(x => x.id === id);
+  if (r) {
+    r.valor     = raw;
+    input.value = fmtBRL(raw);
+    input.classList.remove('calc-mode');
+    updateKPIs();
+  }
 }
-function addReceita(){
-  const r={id:uid(),data:today(),origem:receitaOrigens[0],desc:'',valor:0};
+function addReceita() {
+  const r = { id: uid(), data: today(), origem: receitaOrigens[0], desc: '', valor: 0 };
   receitas.push(r);
-  filtroMes=''; filtroAno='';
-  document.getElementById('filter-month').value='';
-  document.getElementById('filter-year').value='';
+  filtroMes = ''; filtroAno = '';
+  document.getElementById('filter-month').value = '';
+  document.getElementById('filter-year').value  = '';
   renderReceitas(); updateKPIs();
-  const rows=document.querySelectorAll('#receita-body tr');
-  if(rows.length){const inp=rows[rows.length-1].querySelectorAll('input');if(inp[1])inp[1].focus();}
+  const rows = document.querySelectorAll('#receita-body tr');
+  if (rows.length) {
+    const inp = rows[rows.length - 1].querySelectorAll('input');
+    if (inp[1]) inp[1].focus();
+  }
   showToast('✓ Nova entrada adicionada na Nuvem');
 }
-function deleteReceita(id){
-  receitas=receitas.filter(r=>r.id!==id);
+function deleteReceita(id) {
+  receitas = receitas.filter(r => r.id !== id);
   renderReceitas(); updateKPIs();
-  showToast('Entrada removida','error');
+  showToast('Entrada removida', 'error');
 }
 
 /* ── Despesas Table ── */
-function renderDespesas(){
-  const tbody=document.getElementById('despesa-body');
-  tbody.innerHTML='';
-  const list=despesas.filter(d=>passesFilter(d.data));
-  if(list.length===0){
-    tbody.innerHTML='<tr class="no-data-row"><td colspan="5">Nenhuma despesa no período selecionado</td></tr>';
+function renderDespesas() {
+  const tbody = document.getElementById('despesa-body');
+  tbody.innerHTML = '';
+  const list = despesas.filter(d => passesFilter(d.data));
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr class="no-data-row"><td colspan="5">Nenhuma despesa no período selecionado</td></tr>';
     return;
   }
-  list.forEach(d=>{
-    const tr=document.createElement('tr');
-    tr.setAttribute('data-id',d.id);
-    tr.innerHTML=`
+  list.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-id', d.id);
+    tr.innerHTML = `
       <td><input type="date" value="${d.data}" onchange="updateDespesa('${d.id}','data',this.value)"></td>
       <td><select onchange="updateDespesa('${d.id}','cat',this.value)">
-        ${despesaCats.map(c=>`<option${c===d.cat?' selected':''}>${c}</option>`).join('')}
+        ${despesaCats.map(c => `<option${c === d.cat ? ' selected' : ''}>${c}</option>`).join('')}
       </select></td>
       <td><input type="text" value="${d.desc}" placeholder="Descrição" onchange="updateDespesa('${d.id}','desc',this.value)"></td>
-      <td><input type="text" class="val-input-danger" value="${fmtBRL(d.valor)}" placeholder="0,00" onblur="updateDespesaValor('${d.id}',this)"></td>
+      <td><input type="text" class="val-input-danger" value="${fmtBRL(d.valor)}" placeholder="ex: 150 ou 3*50"
+        oninput="onValorInput(this)"
+        onblur="updateDespesaValor('${d.id}',this)"
+        onkeydown="if(event.key==='Enter'){this.blur();}"></td>
       <td><div class="action-wrap">
         <button class="act-btn" title="Salvar" onclick="saveRow(this,'expense')">💾</button>
         <button class="act-btn del" title="Excluir" onclick="deleteDespesa('${d.id}')">🗑</button>
@@ -991,69 +1170,80 @@ function renderDespesas(){
     tbody.appendChild(tr);
   });
 }
-function updateDespesa(id,field,value){
-  const d=despesas.find(x=>x.id===id);
-  if(d){d[field]=value;updateKPIs();}
+function updateDespesa(id, field, value) {
+  const d = despesas.find(x => x.id === id);
+  if (d) { d[field] = value; updateKPIs(); }
 }
-function updateDespesaValor(id,input){
-  const raw=parseFloat(input.value.replace(/\./g,'').replace(',','.'))||0;
-  const d=despesas.find(x=>x.id===id);
-  if(d){d.valor=raw;input.value=fmtBRL(raw);updateKPIs();}
+function updateDespesaValor(id, input) {
+  const raw = avaliarExpressao(input.value);
+  const d   = despesas.find(x => x.id === id);
+  if (d) {
+    d.valor     = raw;
+    input.value = fmtBRL(raw);
+    input.classList.remove('calc-mode');
+    updateKPIs();
+  }
 }
-function addDespesa(){
-  const d={id:uid(),data:today(),cat:despesaCats[0],desc:'',valor:0};
+function addDespesa() {
+  const d = { id: uid(), data: today(), cat: despesaCats[0], desc: '', valor: 0 };
   despesas.push(d);
-  filtroMes=''; filtroAno='';
-  document.getElementById('filter-month').value='';
-  document.getElementById('filter-year').value='';
+  filtroMes = ''; filtroAno = '';
+  document.getElementById('filter-month').value = '';
+  document.getElementById('filter-year').value  = '';
   renderDespesas(); updateKPIs();
-  const rows=document.querySelectorAll('#despesa-body tr');
-  if(rows.length){const inp=rows[rows.length-1].querySelectorAll('input');if(inp[1])inp[1].focus();}
+  const rows = document.querySelectorAll('#despesa-body tr');
+  if (rows.length) {
+    const inp = rows[rows.length - 1].querySelectorAll('input');
+    if (inp[1]) inp[1].focus();
+  }
   showToast('✓ Nova despesa adicionada na Nuvem');
 }
-function deleteDespesa(id){
-  despesas=despesas.filter(d=>d.id!==id);
+function deleteDespesa(id) {
+  despesas = despesas.filter(d => d.id !== id);
   renderDespesas(); updateKPIs();
-  showToast('Despesa removida','error');
+  showToast('Despesa removida', 'error');
 }
 
-function saveRow(btn,type){
-  btn.textContent='✅'; btn.classList.add('saved');
-  showToast(type==='income'?'✓ Salvo na Nuvem':'✓ Salvo na Nuvem');
-  setTimeout(()=>{btn.textContent='💾';btn.classList.remove('saved');},1800);
+function saveRow(btn, type) {
+  btn.textContent = '✅';
+  btn.classList.add('saved');
+  showToast(type === 'income' ? '✓ Salvo na Nuvem' : '✓ Salvo na Nuvem');
+  setTimeout(() => { btn.textContent = '💾'; btn.classList.remove('saved'); }, 1800);
 }
 
 /* ── Modal — Category Editor ── */
-function openModal(tipo){
-  modalTipo=tipo;
-  const cats=tipo==='receita'?[...receitaOrigens]:[...despesaCats];
-  document.getElementById('modal-title').textContent=tipo==='receita'?'Editar Origens de Receita':'Editar Categorias de Despesa';
-  const list=document.getElementById('modal-cats-list');
-  list.innerHTML='';
-  cats.forEach((c,i)=>addModalRow(c,i));
+function openModal(tipo) {
+  modalTipo = tipo;
+  const cats = tipo === 'receita' ? [...receitaOrigens] : [...despesaCats];
+  document.getElementById('modal-title').textContent = tipo === 'receita'
+    ? 'Editar Origens de Receita'
+    : 'Editar Categorias de Despesa';
+  const list = document.getElementById('modal-cats-list');
+  list.innerHTML = '';
+  cats.forEach(c => addModalRow(c));
   document.getElementById('modal-overlay').classList.add('open');
 }
-function addModalRow(val='',idx){
-  const list=document.getElementById('modal-cats-list');
-  const row=document.createElement('div');
-  row.className='modal-cat-row';
-  row.innerHTML=`<input class="modal-cat-input" type="text" value="${val}" placeholder="Nome da categoria"/>
+function addModalRow(val = '') {
+  const list = document.getElementById('modal-cats-list');
+  const row  = document.createElement('div');
+  row.className = 'modal-cat-row';
+  row.innerHTML = `<input class="modal-cat-input" type="text" value="${val}" placeholder="Nome da categoria"/>
     <button class="modal-cat-del" onclick="this.parentElement.remove()" title="Remover">🗑</button>`;
   list.appendChild(row);
 }
-function addModalCat(){ addModalRow(''); }
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
-function closeModalOutside(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
-function saveModal(){
-  const inputs=document.querySelectorAll('#modal-cats-list .modal-cat-input');
-  const vals=[...inputs].map(i=>i.value.trim()).filter(v=>v.length>0);
-  if(vals.length===0){showToast('Adicione ao menos uma categoria','error');return;}
-  if(modalTipo==='receita'){
-    receitaOrigens=vals;
-    receitas.forEach(r=>{if(!receitaOrigens.includes(r.origem))r.origem=receitaOrigens[0];});
+function addModalCat()  { addModalRow(''); }
+function closeModal()   { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+function saveModal() {
+  const inputs = document.querySelectorAll('#modal-cats-list .modal-cat-input');
+  const vals   = [...inputs].map(i => i.value.trim()).filter(v => v.length > 0);
+  if (vals.length === 0) { showToast('Adicione ao menos uma categoria', 'error'); return; }
+  if (modalTipo === 'receita') {
+    receitaOrigens = vals;
+    receitas.forEach(r => { if (!receitaOrigens.includes(r.origem)) r.origem = receitaOrigens[0]; });
   } else {
-    despesaCats=vals;
-    despesas.forEach(d=>{if(!despesaCats.includes(d.cat))d.cat=despesaCats[0];});
+    despesaCats = vals;
+    despesas.forEach(d => { if (!despesaCats.includes(d.cat)) d.cat = despesaCats[0]; });
   }
   closeModal();
   renderReceitas(); renderDespesas(); updateKPIs();
@@ -1061,101 +1251,125 @@ function saveModal(){
 }
 
 /* ── Charts ── */
-const DARK_COLORS  =['#00e5a0','#00c487','#00a36e','#007a52','#005c3d','#ff4d6d','#ff7a91','#c43b55','#f5a623','#9b5de5'];
-const LIGHT_COLORS =['#009966','#00b87a','#00cc88','#007a52','#005c3d','#d63050','#e85c75','#a02040','#d4880a','#7b3cc2'];
+const DARK_COLORS  = ['#00e5a0','#00c487','#00a36e','#007a52','#005c3d','#ff4d6d','#ff7a91','#c43b55','#f5a623','#9b5de5'];
+const LIGHT_COLORS = ['#009966','#00b87a','#00cc88','#007a52','#005c3d','#d63050','#e85c75','#a02040','#d4880a','#7b3cc2'];
+function getColors() { return isDark() ? DARK_COLORS : LIGHT_COLORS; }
 
-function getColors(){ return isDark()?DARK_COLORS:LIGHT_COLORS; }
+function buildDonut() {
+  const despFilt = despesas.filter(d => passesFilter(d.data));
+  const cats = {};
+  despFilt.forEach(d => { cats[d.cat] = (cats[d.cat] || 0) + d.valor; });
+  const labels = Object.keys(cats);
+  const data   = Object.values(cats);
+  const total  = data.reduce((a, v) => a + v, 0);
+  const colors = getColors();
 
-function buildDonut(){
-  const despFilt=despesas.filter(d=>passesFilter(d.data));
-  const cats={};
-  despFilt.forEach(d=>{ cats[d.cat]=(cats[d.cat]||0)+d.valor; });
-  const labels=Object.keys(cats);
-  const data=Object.values(cats);
-  const total=data.reduce((a,v)=>a+v,0);
-  const colors=getColors();
-  document.getElementById('donut-total').textContent='R$ '+fmtBRL(total);
-  const legend=document.getElementById('donut-legend');
-  legend.innerHTML=labels.map((l,i)=>`
+  document.getElementById('donut-total').textContent = 'R$ ' + fmtBRL(total);
+  const legend = document.getElementById('donut-legend');
+  legend.innerHTML = labels.map((l, i) => `
     <div class="legend-row">
-      <div class="legend-swatch" style="background:${colors[i%colors.length]}"></div>
+      <div class="legend-swatch" style="background:${colors[i % colors.length]}"></div>
       <span class="legend-name">${l}</span>
       <span class="legend-val">R$ ${fmtBRL(data[i])}</span>
-      <span class="legend-pct">${total?Math.round(data[i]/total*100):0}%</span>
+      <span class="legend-pct">${total ? Math.round(data[i] / total * 100) : 0}%</span>
     </div>`).join('');
-  const ctx=document.getElementById('donutChart').getContext('2d');
-  if(donutChart){donutChart.destroy();donutChart=null;}
-  if(labels.length===0) return;
-  donutChart=new Chart(ctx,{
-    type:'doughnut',
-    data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderWidth:2,borderColor:isDark()?'#101820':'#ffffff',hoverOffset:6}]},
-    options:{responsive:true,maintainAspectRatio:true,cutout:'72%',
-      plugins:{legend:{display:false},
-        tooltip:{callbacks:{label:c=>` R$ ${fmtBRL(c.raw)} (${total?Math.round(c.raw/total*100):0}%)`},
-          backgroundColor:isDark()?'#1a2228':'#fff',titleColor:isDark()?'#e8f0f5':'#0c1c26',
-          bodyColor:isDark()?'#7a9aaa':'#456070',borderColor:isDark()?'rgba(0,229,160,.25)':'rgba(0,149,106,.25)',borderWidth:1}}}
-  });
-}
 
-function buildBar(){
-  const dadosMensais={};
-  const reg=(data)=>{
-    if(!data) return null;
-    const mes=data.substring(0,7);
-    if(!dadosMensais[mes]) dadosMensais[mes]={rec:0,desp:0};
-    return mes;
-  };
-  receitas.forEach(r=>{const m=reg(r.data);if(m)dadosMensais[m].rec+=r.valor;});
-  despesas.forEach(d=>{const m=reg(d.data);if(m)dadosMensais[m].desp+=d.valor;});
-  let meses=Object.keys(dadosMensais).sort();
-  if(meses.length===0){ meses=[today().substring(0,7)]; dadosMensais[meses[0]]={rec:0,desp:0}; }
-  if(filtroAno||filtroMes){
-    meses=meses.filter(m=>{
-      const[y,mo]=m.split('-');
-      if(filtroAno && y!==filtroAno) return false;
-      if(filtroMes && mo!==filtroMes) return false;
-      return true;
-    });
-  }
-  const labels=meses.map(m=>mesLabel(m));
-  const recData=meses.map(m=>dadosMensais[m]?dadosMensais[m].rec:0);
-  const despData=meses.map(m=>dadosMensais[m]?dadosMensais[m].desp:0);
-  const ac=isDark()?'#00e5a0':'#00956a';
-  const dc=isDark()?'#ff4d6d':'#d63050';
-  const gc=isDark()?'rgba(255,255,255,.05)':'rgba(0,0,0,.06)';
-  const tc=isDark()?'#4d6575':'#8aa0ae';
-  const ttBg=isDark()?'#1a2228':'#ffffff';
-  const ttTi=isDark()?'#e8f0f5':'#0c1c26';
-  const ttBo=isDark()?'#7a9aaa':'#456070';
-  const ttBr=isDark()?'rgba(0,229,160,.25)':'rgba(0,149,106,.25)';
-  const ctx=document.getElementById('barChart').getContext('2d');
-  if(barChart){barChart.destroy();barChart=null;}
-  barChart=new Chart(ctx,{
-    type:'bar',
-    data:{labels,datasets:[
-      {label:'Receitas',data:recData,backgroundColor:ac,borderRadius:5,barPercentage:.75,categoryPercentage:.55},
-      {label:'Despesas',data:despData,backgroundColor:dc,borderRadius:5,barPercentage:.75,categoryPercentage:.55}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},
-        tooltip:{callbacks:{label:c=>` ${c.dataset.label}: R$ ${fmtBRL(c.raw)}`},
-          backgroundColor:ttBg,titleColor:ttTi,bodyColor:ttBo,borderColor:ttBr,borderWidth:1,padding:10,cornerRadius:8}},
-      scales:{
-        x:{ticks:{color:tc,font:{size:11,family:"'DM Mono',monospace"}},grid:{display:false},border:{color:gc}},
-        y:{ticks:{color:tc,font:{size:11,family:"'DM Mono',monospace"},callback:v=>'R$'+(v>=1000?Math.round(v/1000)+'k':v)},
-          grid:{color:gc,drawTicks:false},border:{display:false}}
+  const ctx = document.getElementById('donutChart').getContext('2d');
+  if (donutChart) { donutChart.destroy(); donutChart = null; }
+  if (labels.length === 0) return;
+  donutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 2, borderColor: isDark() ? '#101820' : '#ffffff', hoverOffset: 6 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true, cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: c => ` R$ ${fmtBRL(c.raw)} (${total ? Math.round(c.raw / total * 100) : 0}%)` },
+          backgroundColor: isDark() ? '#1a2228' : '#fff',
+          titleColor:      isDark() ? '#e8f0f5' : '#0c1c26',
+          bodyColor:       isDark() ? '#7a9aaa' : '#456070',
+          borderColor:     isDark() ? 'rgba(0,229,160,.25)' : 'rgba(0,149,106,.25)',
+          borderWidth: 1
+        }
       }
     }
   });
 }
 
-function updateCharts(){ buildDonut(); buildBar(); }
-function rebuildCharts(){
-  if(donutChart){donutChart.destroy();donutChart=null;}
-  if(barChart){barChart.destroy();barChart=null;}
-  updateCharts();
+function buildBar() {
+  const dadosMensais = {};
+  const reg = (data) => {
+    if (!data) return null;
+    const mes = data.substring(0, 7);
+    if (!dadosMensais[mes]) dadosMensais[mes] = { rec: 0, desp: 0 };
+    return mes;
+  };
+  receitas.forEach(r => { const m = reg(r.data); if (m) dadosMensais[m].rec  += r.valor; });
+  despesas.forEach(d => { const m = reg(d.data); if (m) dadosMensais[m].desp += d.valor; });
+  let meses = Object.keys(dadosMensais).sort();
+  if (meses.length === 0) { meses = [today().substring(0, 7)]; dadosMensais[meses[0]] = { rec: 0, desp: 0 }; }
+  if (filtroAno || filtroMes) {
+    meses = meses.filter(m => {
+      const [y, mo] = m.split('-');
+      if (filtroAno && y  !== filtroAno)  return false;
+      if (filtroMes && mo !== filtroMes)  return false;
+      return true;
+    });
+  }
+  const labels   = meses.map(m => mesLabel(m));
+  const recData  = meses.map(m => dadosMensais[m] ? dadosMensais[m].rec  : 0);
+  const despData = meses.map(m => dadosMensais[m] ? dadosMensais[m].desp : 0);
+  const ac  = isDark() ? '#00e5a0' : '#00956a';
+  const dc  = isDark() ? '#ff4d6d' : '#d63050';
+  const gc  = isDark() ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.06)';
+  const tc  = isDark() ? '#4d6575' : '#8aa0ae';
+  const ttBg = isDark() ? '#1a2228'               : '#ffffff';
+  const ttTi = isDark() ? '#e8f0f5'               : '#0c1c26';
+  const ttBo = isDark() ? '#7a9aaa'               : '#456070';
+  const ttBr = isDark() ? 'rgba(0,229,160,.25)'   : 'rgba(0,149,106,.25)';
+  const ctx = document.getElementById('barChart').getContext('2d');
+  if (barChart) { barChart.destroy(); barChart = null; }
+  barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Receitas',  data: recData,  backgroundColor: ac, borderRadius: 5, barPercentage: .75, categoryPercentage: .55 },
+        { label: 'Despesas', data: despData, backgroundColor: dc, borderRadius: 5, barPercentage: .75, categoryPercentage: .55 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: c => ` ${c.dataset.label}: R$ ${fmtBRL(c.raw)}` },
+          backgroundColor: ttBg, titleColor: ttTi, bodyColor: ttBo,
+          borderColor: ttBr, borderWidth: 1, padding: 10, cornerRadius: 8
+        }
+      },
+      scales: {
+        x: { ticks: { color: tc, font: { size: 11, family: "'DM Mono',monospace" } }, grid: { display: false }, border: { color: gc } },
+        y: {
+          ticks: { color: tc, font: { size: 11, family: "'DM Mono',monospace" }, callback: v => 'R$' + (v >= 1000 ? Math.round(v / 1000) + 'k' : v) },
+          grid: { color: gc, drawTicks: false }, border: { display: false }
+        }
+      }
+    }
+  });
 }
 
+function updateCharts()  { buildDonut(); buildBar(); }
+function rebuildCharts() {
+  if (donutChart) { donutChart.destroy(); donutChart = null; }
+  if (barChart)   { barChart.destroy();   barChart   = null; }
+  updateCharts();
+}
 </script>
 </body>
 </html>
