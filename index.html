@@ -301,6 +301,14 @@ input,select,textarea{font-family:inherit}
 .modal-form-select{padding:9px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none;cursor:pointer;width:100%;}
 .modal-info-box{background:var(--accent-glow);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:11px;color:var(--text2);margin-top:10px;font-family:'DM Mono',monospace;}
 
+.invest-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.invest-legend-side{padding:18px;display:flex;flex-direction:column;justify-content:center;}
+@media(max-width:600px){
+  .invest-chart-grid{grid-template-columns:1fr;}
+  .invest-chart-body{height:200px;padding:12px;}
+  .invest-legend-side{padding:0 14px 14px;}
+}
+
 /* ACOES TICKER SELECT */
 .ticker-datalist-wrap{position:relative;}
 
@@ -320,24 +328,149 @@ input,select,textarea{font-family:inherit}
 .kpi-card:nth-child(3){animation-delay:.19s}.kpi-card:nth-child(4){animation-delay:.26s}
 .kpi-card:nth-child(5){animation-delay:.33s}
 .panel,.chart-panel{animation:fadeInUp .5s ease .3s both;}
-@media(max-width:600px){
-  .topbar{padding:0 10px}.topbar-title{display:none}.status-text{display:none}
-  .hero,.kpi-section,.flash-section,.filter-bar,.tab-content{padding-left:14px;padding-right:14px}
-  .glasses-label{display:none}
-}
 .glasses-btn{transition:border-color .2s,color .2s,background .2s,box-shadow .2s;}
 .glasses-btn.active{box-shadow:0 0 0 3px var(--accent-glow);}
+
+/* ── TABLET ── */
 @media(max-width:768px){
-  body.glasses-mode{font-size:18px;}
+  /* Topbar compacta */
+  .topbar{padding:0 12px;height:48px;}
+  .topbar-title{display:none;}
+  .status-text{display:none;}
+  .glasses-label{display:none;}
+  .logout-btn{padding:4px 9px;font-size:10px;}
+  .theme-toggle{padding:4px 9px 4px 6px;}
+
+  /* Hero menor */
+  .hero{padding:20px 14px 14px;}
+
+  /* Flash cards em coluna */
+  .flash-section{padding:0 14px 14px;}
+  .flash-grid{grid-template-columns:1fr;}
+  .flash-card{padding:12px 14px;}
+  .flash-name{font-size:13px;}
+
+  /* KPI: 2 colunas */
+  .kpi-section{padding:0 14px 14px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .kpi-card{padding:16px 14px 14px;}
+  .kpi-value{font-size:18px!important;}
+  .kpi-icon{font-size:20px;}
+
+  /* Filter bar em linha wrappável */
+  .filter-bar{padding:0 14px 12px;gap:8px;}
+  .filter-select{padding:6px 10px;font-size:11px;}
+  .filter-btn-clear{padding:6px 10px;font-size:11px;}
+
+  /* Tabs: scroll horizontal, sem quebra */
+  .tabs-nav{padding:0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;display:flex;flex-wrap:nowrap;}
+  .tabs-nav::-webkit-scrollbar{display:none;}
+  .tab-btn{padding:10px 14px;font-size:10px;flex-shrink:0;}
+
+  /* Tab content sem padding lateral exagerado */
+  .tab-content{padding:14px;}
+
+  /* Tabelas: scroll horizontal com dica visual */
+  .tables-grid{grid-template-columns:1fr;gap:14px;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .data-table{min-width:520px;}
+  .data-table th{padding:7px 8px;font-size:8px;}
+  .data-table td{padding:6px 8px;font-size:12px;}
+  .data-table input[type="text"],
+  .data-table input[type="date"],
+  .data-table select{padding:5px 6px;font-size:11px;}
+
+  /* Panel header compacto no mobile */
+  .panel-header{padding:10px 14px;flex-wrap:wrap;gap:8px;}
+  .panel-header-actions{gap:5px;}
+  .edit-cats-btn{padding:3px 8px;font-size:10px;}
+  .ai-chip{padding:3px 8px;font-size:8px;}
+  .panel-title{font-size:12px;}
+
+  /* Act buttons maiores para touch */
+  .act-btn{width:32px;height:32px;font-size:14px;}
+  .add-row-btn{padding:13px;font-size:12px;}
+
+  /* Fixo badge menor */
+  .fixo-badge{font-size:7px;padding:2px 5px;}
+
+  /* Charts: coluna única */
+  .charts-grid{grid-template-columns:1fr;}
+  .bar-wrap{height:200px;}
+
+  /* Investimentos: stats 2 colunas */
+  .invest-stats{grid-template-columns:1fr 1fr;}
+  .invest-stat-val{font-size:15px;}
+
+  /* Gráfico investimentos: em coluna */
+  .invest-chart-panel > div[style]{display:flex!important;flex-direction:column!important;}
+  .invest-chart-body{height:200px;padding:12px;}
+
+  /* Modais maiores no mobile */
+  .modal{margin:10px;border-radius:14px;}
+  .modal-form-row{grid-template-columns:1fr;}
+
+  /* Footer compacto */
+  .footer{flex-direction:column;gap:4px;padding:14px;}
+  .footer-sep{display:none;}
+
+  /* Toast no centro inferior */
+  .toast{bottom:16px;right:12px;left:12px;max-width:100%;text-align:center;}
+}
+
+/* ── MOBILE PEQUENO ── */
+@media(max-width:420px){
+  .topbar{height:44px;padding:0 8px;}
+  .logo-mark{width:24px;height:24px;font-size:10px;}
+  .glasses-btn{padding:4px 8px;font-size:12px;}
+  .theme-toggle{padding:3px 8px 3px 5px;}
+  .logout-btn{padding:3px 8px;font-size:9px;}
+
+  .hero{padding:16px 12px 10px;}
+  .hero-title{font-size:26px!important;}
+  .hero-eyebrow{font-size:9px;}
+
+  .kpi-section{padding:0 12px 12px;}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .kpi-card{padding:13px 11px 11px;border-radius:12px;}
+  .kpi-value{font-size:15px!important;}
+  .kpi-tag{font-size:8px;}
+  .kpi-sub{font-size:9px;}
+  .kpi-icon{font-size:18px;}
+
+  .flash-section{padding:0 12px 12px;}
+  .flash-card{padding:10px 12px;gap:10px;}
+  .flash-emoji{font-size:22px;}
+  .flash-name{font-size:12px;}
+  .flash-val{font-size:10px;}
+  .flash-badge{font-size:7px;padding:2px 6px;}
+
+  .filter-bar{padding:0 12px 10px;}
+  .filter-label{display:none;}
+  .filter-select{flex:1;min-width:0;}
+
+  .tabs-nav{padding:0 12px;}
+  .tab-btn{padding:9px 10px;font-size:9px;}
+
+  .tab-content{padding:10px 12px;}
+  .data-table{min-width:480px;}
+
+  .invest-stats{grid-template-columns:1fr;}
+
+  .fixos-grid{grid-template-columns:1fr;}
+}
+
+/* ── GLASSES MODE (acessibilidade) ── */
+@media(max-width:768px){
   body.glasses-mode .data-table{font-size:15px;}
-  body.glasses-mode .data-table th{padding:13px 14px;font-size:11px;}
-  body.glasses-mode .data-table td{padding:13px 14px;}
-  body.glasses-mode .data-table input[type="text"],.data-table input[type="date"],.data-table select{padding:10px 12px;font-size:15px;min-height:46px;border-radius:8px;}
-  body.glasses-mode .val-input,.val-input-danger{font-size:15px!important;}
-  body.glasses-mode .act-btn{width:44px;height:44px;font-size:20px;border-radius:11px;}
-  body.glasses-mode .add-row-btn{padding:18px;font-size:15px;}
-  body.glasses-mode .filter-select,.filter-btn-clear{padding:10px 16px;font-size:14px;min-height:42px;}
-  body.glasses-mode .kpi-value{font-size:clamp(22px,4vw,28px)!important;}
+  body.glasses-mode .data-table th{padding:12px 10px;font-size:10px;}
+  body.glasses-mode .data-table td{padding:12px 10px;}
+  body.glasses-mode .data-table input[type="text"],
+  body.glasses-mode .data-table input[type="date"],
+  body.glasses-mode .data-table select{padding:10px 10px;font-size:14px;min-height:44px;}
+  body.glasses-mode .act-btn{width:42px;height:42px;font-size:18px;}
+  body.glasses-mode .add-row-btn{padding:16px;font-size:14px;}
+  body.glasses-mode .kpi-value{font-size:20px!important;}
 }
 </style>
 </head>
@@ -626,9 +759,9 @@ input,select,textarea{font-family:inherit}
         <span class="chart-title" style="color:var(--invest)">Distribuição da Carteira</span>
         <span class="chart-badge">Por valor total</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+      <div class="invest-chart-grid">
         <div class="invest-chart-body"><canvas id="investDonutChart"></canvas></div>
-        <div style="padding:18px;display:flex;flex-direction:column;justify-content:center;">
+        <div class="invest-legend-side">
           <div id="invest-legend" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
       </div>
