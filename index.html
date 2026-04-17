@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -460,6 +461,71 @@ input,select,textarea{font-family:inherit}
   .fixos-grid{grid-template-columns:1fr;}
 }
 
+/* ── EXPORT BUTTON ── */
+.export-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:7px;padding:4px 10px;color:var(--text3);font-size:11px;font-family:'DM Mono',monospace;transition:border-color .2s,color .2s,background .2s;white-space:nowrap;}
+.export-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow);}
+.export-btn svg{flex-shrink:0;}
+
+/* ── ALERT BADGE (sino) ── */
+.alert-btn{position:relative;display:flex;align-items:center;justify-content:center;width:34px;height:34px;background:none;border:1px solid var(--border);border-radius:99px;color:var(--text3);font-size:16px;transition:border-color .2s,color .2s,background .2s;flex-shrink:0;}
+.alert-btn:hover{border-color:var(--warn);color:var(--warn);background:var(--warn-glow);}
+.alert-btn.has-alerts{border-color:rgba(245,166,35,.5);color:var(--warn);animation:alertPulse 2s ease infinite;}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 0 0 var(--warn-glow)}50%{box-shadow:0 0 0 6px transparent}}
+.alert-badge-count{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;border-radius:99px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;min-width:16px;height:16px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg2);}
+
+/* ── ALERTS DROPDOWN ── */
+.alerts-overlay{position:fixed;inset:0;z-index:500;display:none;}
+.alerts-overlay.open{display:block;}
+.alerts-panel{position:fixed;top:58px;right:16px;z-index:501;background:var(--card);border:1px solid var(--card-border);border-radius:16px;width:320px;max-height:420px;overflow-y:auto;box-shadow:var(--shadow);animation:fadeInUp .2s ease;}
+.alerts-panel-header{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.alerts-panel-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--text);}
+.alerts-close{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);transition:background .15s;}
+.alert-item:last-child{border-bottom:none;}
+.alert-item:hover{background:var(--row-hover);}
+.alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.alert-text{font-size:12px;color:var(--text2);line-height:1.45;}
+.alert-text strong{color:var(--text);display:block;margin-bottom:2px;}
+.alert-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.07em;text-transform:uppercase;padding:1px 6px;border-radius:99px;margin-top:4px;}
+.alert-tag.vence-hoje{background:var(--danger-glow);color:var(--danger);border:1px solid rgba(255,77,109,.3);}
+.alert-tag.vence-semana{background:var(--warn-glow);color:var(--warn);border:1px solid rgba(245,166,35,.3);}
+.alert-tag.budget-over{background:var(--danger-glow);color:var(--danger);border:1px solid rgba(255,77,109,.3);}
+.alert-tag.budget-warn{background:var(--warn-glow);color:var(--warn);border:1px solid rgba(245,166,35,.3);}
+.alerts-empty{padding:24px 16px;text-align:center;color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;}
+
+/* ── BUDGET (METAS) SECTION ── */
+.budget-section{padding:0 28px 20px;max-width:1400px;margin:0 auto;}
+.budget-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.budget-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.budget-card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:16px 18px;transition:box-shadow .2s,border-color .2s;}
+.budget-card:hover{box-shadow:var(--shadow);border-color:var(--border2);}
+.budget-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.budget-cat{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.budget-vals{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-align:right;}
+.budget-vals span{color:var(--text2);}
+.budget-bar-bg{height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:8px;}
+.budget-bar-fill{height:100%;border-radius:99px;transition:width .4s ease;}
+.budget-bar-fill.ok{background:var(--accent);}
+.budget-bar-fill.warn{background:var(--warn);}
+.budget-bar-fill.over{background:var(--danger);}
+.budget-pct{font-family:'DM Mono',monospace;font-size:10px;}
+.budget-pct.ok{color:var(--accent);}
+.budget-pct.warn{color:var(--warn);}
+.budget-pct.over{color:var(--danger);}
+.budget-edit-row{display:flex;align-items:center;gap:6px;margin-top:8px;}
+.budget-input{flex:1;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:5px 8px;font-size:12px;font-family:'DM Mono',monospace;outline:none;transition:border-color .15s;}
+.budget-input:focus{border-color:var(--border2);}
+.budget-save-btn{background:var(--accent);border:none;border-radius:6px;color:#060a0d;padding:5px 10px;font-size:11px;font-family:'DM Mono',monospace;font-weight:700;transition:opacity .2s;}
+.budget-save-btn:hover{opacity:.85;}
+.budget-no-data{color:var(--text3);font-family:'DM Mono',monospace;font-size:11px;padding:20px 0;}
+
+/* ── SMART INPUT SUGGESTION ── */
+.smart-suggestion{position:absolute;z-index:50;background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:5px 0;min-width:160px;box-shadow:var(--shadow);display:none;}
+.smart-suggestion.open{display:block;}
+.smart-sug-item{padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .12s;}
+.smart-sug-item:hover{background:var(--row-hover);color:var(--accent);}
+.smart-sug-item span.sug-cat{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-glow);border-radius:4px;padding:1px 5px;}
+
 /* ── GLASSES MODE (acessibilidade) ── */
 @media(max-width:768px){
   body.glasses-mode .data-table{font-size:15px;}
@@ -508,6 +574,10 @@ input,select,textarea{font-family:inherit}
   <div class="topbar-right">
     <div class="status-dot"></div>
     <span class="status-text" id="user-display">Nuvem Conectada</span>
+    <button class="alert-btn" id="alertBtn" title="Alertas" onclick="toggleAlerts()">
+      🔔
+      <span class="alert-badge-count" id="alertCount" style="display:none">0</span>
+    </button>
     <button class="glasses-btn" id="glassesToggle" title="Modo Acessibilidade">
       <span>👓</span><span class="glasses-label" id="glassesLabel">Glasses</span>
     </button>
@@ -605,6 +675,11 @@ input,select,textarea{font-family:inherit}
   <button class="tab-btn" onclick="switchTab('fixos')">📌 Fixos</button>
   <button class="tab-btn invest-tab" onclick="switchTab('investimentos')">💹 Investimentos</button>
   <button class="tab-btn" onclick="switchTab('graficos')">📈 Gráficos</button>
+  <button class="tab-btn" onclick="switchTab('metas')">🎯 Metas</button>
+  <button class="export-btn" style="margin-left:auto;margin-bottom:1px;" onclick="exportarExcel()" title="Exportar tudo para Excel">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Excel
+  </button>
 </div>
 
 <!-- TAB: LANÇAMENTOS -->
@@ -620,6 +695,10 @@ input,select,textarea{font-family:inherit}
           </div>
         </div>
         <div class="panel-header-actions">
+          <button class="export-btn" onclick="exportarCSV('receitas')" title="Exportar Receitas">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
           <button class="edit-cats-btn" onclick="openModal('receita')">✏ Categorias</button>
           <div class="ai-chip"><span class="ai-chip-dot"></span>Nuvem</div>
         </div>
@@ -646,6 +725,10 @@ input,select,textarea{font-family:inherit}
           </div>
         </div>
         <div class="panel-header-actions">
+          <button class="export-btn" onclick="exportarCSV('despesas')" title="Exportar Despesas">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            CSV
+          </button>
           <button class="edit-cats-btn" onclick="openModal('despesa')">✏ Categorias</button>
           <button class="edit-cats-btn" style="color:var(--invest);border-color:rgba(155,93,229,.3);" onclick="openParcelamentoModal()">🗓 Parcelar</button>
           <div class="ai-chip"><span class="ai-chip-dot"></span>Nuvem</div>
@@ -805,6 +888,26 @@ input,select,textarea{font-family:inherit}
   </div>
 </div>
 
+<!-- TAB: METAS DE GASTOS -->
+<div class="tab-content" id="tab-metas">
+  <div class="budget-header-row">
+    <div>
+      <div class="section-title" style="font-size:16px;">🎯 Metas de Gastos Mensais</div>
+      <div style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:4px;">Defina limites por categoria e acompanhe o progresso</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <select class="filter-select" id="budget-month-sel" onchange="renderBudgets()" style="font-size:11px;">
+        <option value="">Mês atual</option>
+      </select>
+      <button class="export-btn" onclick="exportarCSV('despesas')" style="color:var(--text2);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar
+      </button>
+    </div>
+  </div>
+  <div class="budget-grid" id="budget-grid"></div>
+</div>
+
 <footer class="footer">
   <span>© 2025-2026 Império Autônomo</span>
   <span class="footer-sep">·</span>
@@ -814,6 +917,17 @@ input,select,textarea{font-family:inherit}
 </footer>
 
 <div class="toast" id="toast"></div>
+
+<!-- ALERTS PANEL -->
+<div class="alerts-overlay" id="alerts-overlay" onclick="closeAlerts()">
+</div>
+<div class="alerts-panel" id="alerts-panel" style="display:none;">
+  <div class="alerts-panel-header">
+    <span class="alerts-panel-title">🔔 Alertas</span>
+    <button class="alerts-close" onclick="closeAlerts()">×</button>
+  </div>
+  <div id="alerts-list"></div>
+</div>
 
 <!-- MODAL: CATEGORIES -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
@@ -944,7 +1058,7 @@ document.getElementById('login-user').addEventListener('keydown', e => { if (e.k
 /* ── Firestore ── */
 function salvarNaNuvem() {
   if (!currentUser) return;
-  db.collection('users').doc(currentUser.uid).set({ receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [] });
+  db.collection('users').doc(currentUser.uid).set({ receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [], budgets });
 }
 function carregarDaNuvem() {
   if (!currentUser) return;
@@ -956,6 +1070,7 @@ function carregarDaNuvem() {
       investimentos = data.investimentos || [];
       if (data.receitaOrigens) receitaOrigens = data.receitaOrigens;
       if (data.despesaCats)    despesaCats    = data.despesaCats;
+      if (data.budgets)        budgets        = data.budgets;
     } else {
       receitas = []; despesas = []; investimentos = [];
     }
@@ -993,11 +1108,12 @@ function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  const idx = ['lancamentos','fixos','investimentos','graficos'].indexOf(name);
+  const idx = ['lancamentos','fixos','investimentos','graficos','metas'].indexOf(name);
   document.querySelectorAll('.tab-btn')[idx].classList.add('active');
   if (name === 'graficos') setTimeout(() => { rebuildCharts(); }, 80);
   if (name === 'investimentos') setTimeout(() => buildInvestDonut(), 80);
   if (name === 'fixos') renderFixos();
+  if (name === 'metas') renderBudgets();
 }
 
 /* ── Theme ── */
@@ -1100,6 +1216,7 @@ function updateKPIs() {
 
   buildFilterOptions();
   salvarNaNuvem();
+  setTimeout(checkAlerts, 100);
 }
 
 /* ── BRL Mask ── */
@@ -1533,6 +1650,276 @@ const dl = document.createElement('datalist');
 dl.id = 'acoes-list';
 ACOES_B3.forEach(t => { const opt = document.createElement('option'); opt.value = t; dl.appendChild(opt); });
 document.body.appendChild(dl);
+
+/* ================================================================
+   EXPORTAÇÃO CSV / EXCEL
+   ================================================================ */
+function exportarCSV(tipo) {
+  let rows, filename, headers;
+  if (tipo === 'receitas') {
+    headers = ['Data','Origem','Descrição','Valor (R$)','Fixo'];
+    rows = receitas.map(r => [r.data, r.origem, r.desc, r.valor.toFixed(2).replace('.',','), r.fixo ? 'Sim' : 'Não']);
+    filename = 'receitas_imperio.csv';
+  } else {
+    headers = ['Data','Categoria','Descrição','Valor (R$)','Fixo','Parcela'];
+    rows = despesas.map(d => [d.data, d.cat, d.desc, d.valor.toFixed(2).replace('.',','), d.fixo ? 'Sim' : 'Não', d.parcela || '']);
+    filename = 'despesas_imperio.csv';
+  }
+  const bom = '\uFEFF';
+  const csv = bom + [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`✓ ${tipo === 'receitas' ? 'Receitas' : 'Despesas'} exportadas!`);
+}
+
+function exportarExcel() {
+  if (typeof XLSX === 'undefined') { showToast('Aguarde, carregando biblioteca...', 'warn'); return; }
+  const wb = XLSX.utils.book_new();
+
+  const recRows = [['Data','Origem','Descrição','Valor','Fixo'], ...receitas.map(r => [r.data, r.origem, r.desc, r.valor, r.fixo ? 'Sim' : 'Não'])];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(recRows), 'Receitas');
+
+  const despRows = [['Data','Categoria','Descrição','Valor','Fixo','Parcela'], ...despesas.map(d => [d.data, d.cat, d.desc, d.valor, d.fixo ? 'Sim' : 'Não', d.parcela || ''])];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(despRows), 'Despesas');
+
+  const invRows = [['Ticker','Categoria','Qtd','Preço Médio','Total'], ...investimentos.map(i => [i.ticker, i.cat, i.qtd, i.preco, i.qtd * i.preco])];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(invRows), 'Investimentos');
+
+  XLSX.writeFile(wb, 'imperio_autonomo.xlsx');
+  showToast('✓ Excel exportado com 3 abas!');
+}
+
+/* ================================================================
+   METAS DE GASTOS (BUDGETS)
+   ================================================================ */
+let budgets = {}; // { 'categoria': 500 }
+
+function saveBudgets() {
+  if (!currentUser) return;
+  db.collection('users').doc(currentUser.uid).update({ budgets }).catch(() => {});
+  showToast('✓ Meta salva!');
+}
+
+function renderBudgets() {
+  const grid = document.getElementById('budget-grid');
+  if (!grid) return;
+
+  // Popula o seletor de mês
+  const sel = document.getElementById('budget-month-sel');
+  const meses = new Set();
+  despesas.forEach(d => { if (d.data) meses.add(d.data.substring(0,7)); });
+  const savedSelVal = sel.value;
+  sel.innerHTML = '<option value="">Mês atual</option>';
+  [...meses].sort().reverse().forEach(m => {
+    const [y, mo] = m.split('-');
+    const nomes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = `${nomes[parseInt(mo)-1]}/${y.slice(2)}`;
+    if (m === savedSelVal) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  const filtroMesBudget = sel.value || new Date().toISOString().substring(0,7);
+  const despFiltradas = despesas.filter(d => d.data && d.data.startsWith(filtroMesBudget));
+
+  // Agrega gasto por categoria
+  const gastosCat = {};
+  despFiltradas.forEach(d => { gastosCat[d.cat] = (gastosCat[d.cat] || 0) + d.valor; });
+
+  // Usa todas as categorias cadastradas + as que têm gastos
+  const todasCats = [...new Set([...despesaCats, ...Object.keys(gastosCat)])];
+
+  if (todasCats.length === 0) {
+    grid.innerHTML = '<div class="budget-no-data">Nenhuma despesa cadastrada ainda.</div>';
+    return;
+  }
+
+  grid.innerHTML = todasCats.map(cat => {
+    const gasto  = gastosCat[cat] || 0;
+    const limite = budgets[cat] || 0;
+    const pct    = limite > 0 ? Math.min((gasto / limite) * 100, 100) : 0;
+    const pctReal = limite > 0 ? Math.round((gasto / limite) * 100) : 0;
+    const cls    = pctReal >= 100 ? 'over' : pctReal >= 80 ? 'warn' : 'ok';
+    const barW   = limite > 0 ? pct : 0;
+    return `
+    <div class="budget-card">
+      <div class="budget-card-top">
+        <span class="budget-cat">${cat}</span>
+        <div class="budget-vals">
+          <div>Gasto: <span>R$ ${fmtBRL(gasto)}</span></div>
+          ${limite > 0 ? `<div>Meta: <span>R$ ${fmtBRL(limite)}</span></div>` : '<div style="color:var(--text3);">Sem meta definida</div>'}
+        </div>
+      </div>
+      <div class="budget-bar-bg">
+        <div class="budget-bar-fill ${cls}" style="width:${barW}%"></div>
+      </div>
+      ${limite > 0 ? `<div class="budget-pct ${cls}">${pctReal}% utilizado${pctReal >= 100 ? ' 🚨' : pctReal >= 80 ? ' ⚠️' : ' ✓'}</div>` : ''}
+      <div class="budget-edit-row">
+        <input class="budget-input" type="text" placeholder="Meta: ex. 500" value="${limite > 0 ? fmtBRL(limite) : ''}" id="budget-input-${cat.replace(/\s/g,'_')}"/>
+        <button class="budget-save-btn" onclick="salvarMetaCat('${cat}')">Salvar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function salvarMetaCat(cat) {
+  const id = cat.replace(/\s/g,'_');
+  const raw = document.getElementById('budget-input-' + id)?.value || '';
+  const val = parseFloat(raw.replace(/\./g,'').replace(',','.')) || 0;
+  budgets[cat] = val;
+  saveBudgets();
+  renderBudgets();
+  checkAlerts();
+}
+
+/* ================================================================
+   ALERTAS INTELIGENTES
+   ================================================================ */
+function checkAlerts() {
+  const alerts = [];
+  const hoje = new Date();
+  const diaHoje = hoje.getDate();
+  const mesAtual = hoje.toISOString().substring(0,7);
+
+  // 1. Despesas fixas que vencem esta semana / hoje
+  const fixasDespesas = despesas.filter(d => d.fixo);
+  const receitasFixas = receitas.filter(r => r.fixo);
+  [...fixasDespesas, ...receitasFixas].forEach(item => {
+    if (!item.data) return;
+    const dia = parseInt(item.data.split('-')[2]);
+    const diff = dia - diaHoje;
+    if (diff === 0) {
+      alerts.push({ icon: '🚨', titulo: item.desc || item.origem || 'Item fixo', sub: `Vence HOJE — R$ ${fmtBRL(item.valor)}`, tag: 'vence-hoje', tagLabel: 'HOJE' });
+    } else if (diff > 0 && diff <= 7) {
+      alerts.push({ icon: '⚠️', titulo: item.desc || item.origem || 'Item fixo', sub: `Vence em ${diff} dia${diff>1?'s':''} — R$ ${fmtBRL(item.valor)}`, tag: 'vence-semana', tagLabel: `${diff}D` });
+    }
+  });
+
+  // 2. Parcelas que vencem este mês
+  const parcelasDoMes = despesas.filter(d => d.parcela && d.data && d.data.startsWith(mesAtual));
+  if (parcelasDoMes.length > 0) {
+    const total = parcelasDoMes.reduce((a,d) => a+d.valor, 0);
+    alerts.push({ icon: '🗓', titulo: `${parcelasDoMes.length} parcela${parcelasDoMes.length>1?'s':''} este mês`, sub: `Total: R$ ${fmtBRL(total)}`, tag: 'vence-semana', tagLabel: 'PARCELA' });
+  }
+
+  // 3. Metas de budget ultrapassadas
+  const gastosCat = {};
+  despesas.filter(d => d.data && d.data.startsWith(mesAtual)).forEach(d => { gastosCat[d.cat] = (gastosCat[d.cat] || 0) + d.valor; });
+  Object.entries(budgets).forEach(([cat, limite]) => {
+    if (!limite) return;
+    const gasto = gastosCat[cat] || 0;
+    const pct = Math.round((gasto / limite) * 100);
+    if (pct >= 100) {
+      alerts.push({ icon: '🔴', titulo: `Meta de "${cat}" estourada!`, sub: `Gastou R$ ${fmtBRL(gasto)} / Meta R$ ${fmtBRL(limite)} (${pct}%)`, tag: 'budget-over', tagLabel: `${pct}%` });
+    } else if (pct >= 80) {
+      alerts.push({ icon: '🟡', titulo: `"${cat}" em ${pct}% da meta`, sub: `Gastou R$ ${fmtBRL(gasto)} de R$ ${fmtBRL(limite)}`, tag: 'budget-warn', tagLabel: `${pct}%` });
+    }
+  });
+
+  // Atualiza badge
+  const btn = document.getElementById('alertBtn');
+  const badge = document.getElementById('alertCount');
+  if (alerts.length > 0) {
+    btn.classList.add('has-alerts');
+    badge.style.display = 'flex';
+    badge.textContent = alerts.length > 9 ? '9+' : alerts.length;
+  } else {
+    btn.classList.remove('has-alerts');
+    badge.style.display = 'none';
+  }
+
+  // Popula painel
+  const list = document.getElementById('alerts-list');
+  if (alerts.length === 0) {
+    list.innerHTML = '<div class="alerts-empty">✅ Tudo certo! Nenhum alerta no momento.</div>';
+  } else {
+    list.innerHTML = alerts.map(a => `
+      <div class="alert-item">
+        <div class="alert-icon">${a.icon}</div>
+        <div class="alert-text">
+          <strong>${a.titulo}</strong>
+          ${a.sub}
+          <div><span class="alert-tag ${a.tag}">${a.tagLabel}</span></div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function toggleAlerts() {
+  const panel = document.getElementById('alerts-panel');
+  const overlay = document.getElementById('alerts-overlay');
+  const isOpen = panel.style.display !== 'none';
+  if (isOpen) {
+    panel.style.display = 'none';
+    overlay.classList.remove('open');
+  } else {
+    checkAlerts();
+    panel.style.display = 'block';
+    overlay.classList.add('open');
+  }
+}
+function closeAlerts() {
+  document.getElementById('alerts-panel').style.display = 'none';
+  document.getElementById('alerts-overlay').classList.remove('open');
+}
+
+/* ================================================================
+   SMART INPUT — Categorização Automática
+   ================================================================ */
+const SMART_MAP = [
+  { keywords: ['uber','99','taxi','cabify','ônibus','metro','gasolina','combustivel','estacionamento','pedágio'], cat: 'Transporte' },
+  { keywords: ['ifood','rappi','mcdonalds','burger','pizza','restaurante','lanche','almoço','jantar','mercado','supermercado','açougue'], cat: 'Alimentação' },
+  { keywords: ['netflix','spotify','amazon','prime','disney','youtube','hbo','paramount','apple tv','deezer'], cat: 'Assinaturas' },
+  { keywords: ['farmácia','droga','remédio','consulta','médico','hospital','plano de saúde','unimed'], cat: 'Saúde' },
+  { keywords: ['meta ads','facebook ads','google ads','tráfego','campanha','anuncio'], cat: 'Anúncios Meta' },
+  { keywords: ['shopify','hotmart','eduzz','monetizze','systeme','clickfunnels'], cat: 'Ferramentas SaaS' },
+  { keywords: ['aws','vercel','hostinger','hostgator','servidor','domínio','cloudflare'], cat: 'Hospedagem' },
+  { keywords: ['freelancer','designer','programador','desenvolvedor','copywriter','assistente'], cat: 'Equipe' },
+  { keywords: ['curso','treinamento','mentoria','masterclass','ebook','livro','udemy','hotmart curso'], cat: 'Educação' },
+  { keywords: ['aluguel','condomínio','iptu','energia','água','internet','telefone'], cat: 'Moradia' },
+  { keywords: ['academia','gym','natação','futebol','esporte'], cat: 'Saúde' },
+];
+
+function smartCategoria(descricao) {
+  const lower = descricao.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  for (const rule of SMART_MAP) {
+    for (const kw of rule.keywords) {
+      const kwNorm = kw.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      if (lower.includes(kwNorm)) return rule.cat;
+    }
+  }
+  return null;
+}
+
+// Hook: attach smart input listeners after each render
+// This is called directly from renderDespesas below via a wrapper flag
+function attachSmartInputListeners() {
+  document.querySelectorAll('#despesa-body tr').forEach(tr => {
+    const descInput = tr.querySelectorAll('input[type="text"]')[0];
+    const catSelect = tr.querySelector('select');
+    if (!descInput || !catSelect || descInput._smartAttached) return;
+    descInput._smartAttached = true;
+    descInput.addEventListener('input', () => {
+      const sugestao = smartCategoria(descInput.value);
+      if (sugestao && [...catSelect.options].some(o => o.value === sugestao)) {
+        catSelect.value = sugestao;
+        catSelect.style.borderColor = 'var(--accent)';
+        setTimeout(() => catSelect.style.borderColor = '', 1500);
+        const id = tr.getAttribute('data-id');
+        if (id) updateDespesa(id, 'cat', sugestao);
+      }
+    });
+  });
+}
+// Patch renderDespesas to also attach smart listeners
+(function() {
+  const _orig = window.renderDespesas;
+  window.renderDespesas = function() { _orig(); attachSmartInputListeners(); };
+})();
+
 </script>
 </body>
 </html>
