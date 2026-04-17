@@ -1,42 +1,23 @@
-const CACHE_NAME = "imperio-v1";
+const CACHE_NAME = "imperio-v3";
 
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png"
+const BASE = "/IMPERIO_AUTONOMO_GESTOR/";
+
+const FILES = [
+  BASE,
+  BASE + "index.html",
+  BASE + "manifest.json",
+  BASE + "icon-192.png",
+  BASE + "icon-512.png"
 ];
 
-// INSTALAÇÃO
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES))
   );
 });
 
-// ATIVAÇÃO (limpa cache antigo)
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
-  );
-});
-
-// FETCH (offline first)
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+self.addEventListener("fetch", (e) => {
+  e.respondWith(
+    caches.match(e.request).then(res => res || fetch(e.request))
   );
 });
