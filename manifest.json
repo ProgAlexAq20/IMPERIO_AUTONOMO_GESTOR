@@ -1,12 +1,12 @@
 {
   "name": "Império Autônomo Gestor",
   "short_name": "Império",
-  "start_url": "/",
+  "start_url": "/IMPERIO_AUTONOMO_GESTOR/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "orientation": "portrait",
-  "scope": "/",
+  "scope": "/IMPERIO_AUTONOMO_GESTOR/",
   "icons": [
     {
       "src": "icon-192.png",
