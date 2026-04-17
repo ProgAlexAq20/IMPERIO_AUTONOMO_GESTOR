@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Império Autônomo — Gestão Financeira 2025-2026</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
@@ -53,6 +56,28 @@ input,select,textarea{font-family:inherit}
   --row-hover:rgba(0,149,106,.05);--shadow:0 4px 24px rgba(0,0,0,.08);
   --chart-grid:rgba(0,0,0,.06);--chart-tick:#8aa0ae;
   --login-bg:#dce5ea;
+}
+/* SPLASH */
+#splash {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#splash img {
+  width: 120px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(0.95); }
 }
 
 /* LOGIN */
@@ -543,6 +568,9 @@ input,select,textarea{font-family:inherit}
 </style>
 </head>
 <body>
+<div id="splash">
+  <img src="icon-512.png">
+</div>
 
 <div id="login-screen">
   <div class="login-box">
@@ -1925,8 +1953,24 @@ function attachSmartInputListeners() {
 </script>
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
+  navigator.serviceWorker.register("service-worker.js")
+    .then(reg => {
+      reg.onupdatefound = () => {
+        const newWorker = reg.installing;
+        newWorker.onstatechange = () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            console.log("Novo update disponível!");
+            location.reload();
+          }
+        };
+      };
+    });
 }
+</script>
+<script>
+window.addEventListener("load", () => {
+  document.getElementById("splash").style.display = "none";
+});
 </script>
 </body>
 </html>
