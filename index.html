@@ -647,8 +647,11 @@ input,select,textarea{font-family:inherit}
       <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     </div>
     <button class="login-btn" onclick="doLogin()">Entrar com e-mail →</button>
-    <div class="login-err" id="login-err">Credenciais inválidas. Verifique no Firebase.</div>
+    <div class="login-err" id="login-err" style="white-space:pre-line;font-size:11px;line-height:1.5;">Credenciais inválidas. Verifique no Firebase.</div>
     <div class="migrate-banner" id="migrate-banner">🔄 Dados antigos encontrados — migrando para sua conta Google…</div>
+    <div style="margin-top:12px;padding:8px 12px;border-radius:7px;background:var(--input-bg);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:.04em;">
+      Domínio atual: <span id="domain-display" style="color:var(--accent)"></span>
+    </div>
   </div>
 </div>
 
@@ -1208,29 +1211,97 @@ function updateUserDisplay(user) {
   }
 }
 
-/* ── Login com Google (método principal) ── */
+/* ── Login com Google — Popup com fallback automático para Redirect ── */
 function doLoginGoogle() {
   setLoadingState(true);
   const errEl = document.getElementById('login-err');
   errEl.style.display = 'none';
 
-  // signInWithPopup: melhor para PWA e GitHub Pages.
-  // NÃO usar signInWithRedirect neste setup — o redirect URL precisa estar
-  // autorizado no Firebase Console E o SW pode interceptar o retorno.
   auth.signInWithPopup(googleProvider)
     .then(result => {
-      console.log('[Auth] Login Google OK:', result.user.uid);
+      console.log('[Auth] Login Google (popup) OK:', result.user.uid);
       // onAuthStateChanged cuida do resto
     })
     .catch(err => {
-      console.error('[Auth] Erro login Google:', err.code, err.message);
+      console.error('[Auth] Erro popup Google — código:', err.code, '| mensagem:', err.message);
+
+      // ── Erros que devem usar REDIRECT como fallback ──────────────
+      // popup-blocked: browser bloqueou (Safari, PWA instalada, Firefox mobile)
+      // operation-not-allowed: Google Auth desabilitado no Firebase Console
+      //   → mas neste caso redirect também falha, então mostra erro claro
+      const deveUsarRedirect = [
+        'auth/popup-blocked',
+        'auth/popup-closed-by-user',  // usuário fechou — tenta redirect
+      ].includes(err.code);
+
+      if (deveUsarRedirect) {
+        console.log('[Auth] Popup falhou — tentando signInWithRedirect...');
+        setLoadingState(true, 'Redirecionando para o Google...');
+        // Persiste a intenção para o return do redirect
+        sessionStorage.setItem('ia_pendingRedirect', '1');
+        auth.signInWithRedirect(googleProvider).catch(redirectErr => {
+          console.error('[Auth] Redirect também falhou:', redirectErr.code);
+          setLoadingState(false);
+          errEl.textContent   = diagnosticarErroGoogle(redirectErr);
+          errEl.style.display = 'block';
+        });
+        return; // não executa o bloco abaixo
+      }
+
+      // ── Outros erros: mostra mensagem diagnóstica ────────────────
       setLoadingState(false);
-      let msg = 'Erro ao entrar com Google.';
-      if (err.code === 'auth/popup-closed-by-user')      msg = 'Popup fechado. Tente novamente.';
-      if (err.code === 'auth/popup-blocked')             msg = 'Popup bloqueado pelo navegador. Libere popups para este site.';
-      if (err.code === 'auth/network-request-failed')    msg = 'Sem conexão. Verifique sua internet.';
-      errEl.textContent    = msg;
-      errEl.style.display  = 'block';
+      errEl.textContent   = diagnosticarErroGoogle(err);
+      errEl.style.display = 'block';
+    });
+}
+
+/* ── Traduz códigos de erro Firebase em mensagens úteis ── */
+function diagnosticarErroGoogle(err) {
+  const codigo = err.code || '';
+  console.error('[Auth] Diagnóstico:', codigo, err.message);
+
+  const erros = {
+    'auth/unauthorized-domain':
+      '❌ Domínio não autorizado no Firebase.\n\nVá em Firebase Console → Authentication → Settings → Authorized domains e adicione o domínio atual: ' + location.hostname,
+    'auth/operation-not-allowed':
+      '❌ Google Auth não está ativado no Firebase Console.\n\nVá em Authentication → Sign-in method → Google → Ativar.',
+    'auth/popup-blocked':
+      '🔒 Popup bloqueado. O browser bloqueou a janela do Google. Permita popups para este site nas configurações do navegador.',
+    'auth/popup-closed-by-user':
+      'Janela do Google fechada antes de concluir. Tente novamente.',
+    'auth/network-request-failed':
+      '📡 Sem conexão com a internet. Verifique sua rede e tente novamente.',
+    'auth/cancelled-popup-request':
+      'Solicitação cancelada. Tente novamente.',
+    'auth/account-exists-with-different-credential':
+      'Já existe uma conta com este e-mail usando outro método de login. Use e-mail/senha.',
+    'auth/user-disabled':
+      'Esta conta foi desativada. Entre em contato com o administrador.',
+    'auth/internal-error':
+      'Erro interno do Firebase. Verifique se o domínio está autorizado e o Google Auth está ativado.',
+  };
+
+  return erros[codigo] || `Erro Google Auth (${codigo}). Abra o console (F12) para detalhes.`;
+}
+
+/* ── Processa retorno do signInWithRedirect (chamado no carregamento) ── */
+function verificarRedirectLogin() {
+  if (!sessionStorage.getItem('ia_pendingRedirect')) return;
+  sessionStorage.removeItem('ia_pendingRedirect');
+
+  console.log('[Auth] Verificando resultado de redirect...');
+  auth.getRedirectResult()
+    .then(result => {
+      if (result && result.user) {
+        console.log('[Auth] Login Google (redirect) OK:', result.user.uid);
+        // onAuthStateChanged cuida do resto
+      }
+    })
+    .catch(err => {
+      console.error('[Auth] Erro no retorno do redirect:', err.code, err.message);
+      const errEl = document.getElementById('login-err');
+      errEl.textContent   = diagnosticarErroGoogle(err);
+      errEl.style.display = 'block';
     });
 }
 
@@ -1273,10 +1344,14 @@ function doLogout() {
 }
 
 /* ── Helpers de UI para loading state ── */
-function setLoadingState(on) {
-  document.getElementById('login-loading').className = on ? 'login-loading show' : 'login-loading';
-  document.getElementById('googleLoginBtn').disabled  = on;
-  document.querySelector('.login-btn').disabled       = on;
+function setLoadingState(on, msg) {
+  const loadEl = document.getElementById('login-loading');
+  const gBtn   = document.getElementById('googleLoginBtn');
+  const eBtn   = document.querySelector('.login-btn');
+  loadEl.textContent = msg || (on ? '⏳ Autenticando…' : '');
+  loadEl.className   = on ? 'login-loading show' : 'login-loading';
+  if (gBtn)  gBtn.disabled  = on;
+  if (eBtn)  eBtn.disabled  = on;
 }
 function resetLoadingState() { setLoadingState(false); }
 
@@ -1285,6 +1360,15 @@ function hideSplash() {
   const splash = document.getElementById('splash');
   if (splash) splash.style.display = 'none';
 }
+
+/* Verifica redirect do Google imediatamente ao carregar a página */
+verificarRedirectLogin();
+
+/* Exibe o domínio atual na tela de login para diagnóstico */
+(function() {
+  const el = document.getElementById('domain-display');
+  if (el) el.textContent = location.hostname + (location.pathname !== '/' ? location.pathname.split('/').slice(0,2).join('/') : '');
+})();
 
 /* ══════════════════════════════════════════════════════════════
    MIGRAÇÃO DE DADOS LEGADOS
