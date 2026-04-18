@@ -6,6 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Gestão financeira inteligente com sincronização em nuvem — Império Autônomo"/>
 <title>Império Autônomo — Gestão Financeira 2025-2026</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
@@ -607,8 +608,170 @@ input,select,textarea{font-family:inherit}
 }
 .migrate-banner.show{display:block;}
 
+/* ════════════════════════════════════════════════════════════════
+   NOVOS ESTILOS v5 — UX PREMIUM, BACKUP, OFFLINE, PWA
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Ripple Effect (botões) ── */
+.ripple-host{position:relative;overflow:hidden;}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);
+  transform:scale(0);animation:rippleAnim .55s linear;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
+
+/* ── Micro-animações de entrada ── */
+@keyframes slideInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.anim-up{animation:slideInUp .38s cubic-bezier(.4,0,.2,1) both;}
+.anim-left{animation:slideInLeft .32s cubic-bezier(.4,0,.2,1) both;}
+.anim-scale{animation:scaleIn .28s cubic-bezier(.4,0,.2,1) both;}
+
+/* ── Transições SPA (tabs) ── */
+.tab-content{
+  animation:none;
+  transition:opacity .22s ease,transform .22s cubic-bezier(.4,0,.2,1);
+}
+.tab-content.tab-entering{
+  animation:tabEnter .28s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes tabEnter{
+  from{opacity:0;transform:translateY(10px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* ── Skeleton Loading ── */
+.skeleton{
+  background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:6px;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skeleton-row{height:38px;margin-bottom:8px;}
+.skeleton-kpi{height:90px;border-radius:14px;margin-bottom:12px;}
+.skeleton-line-sm{height:12px;width:60%;border-radius:4px;margin-bottom:6px;}
+.skeleton-line-lg{height:20px;width:80%;border-radius:4px;margin-bottom:10px;}
+
+/* ── Indicador Online/Offline ── */
+.offline-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:9000;
+  background:var(--warn);color:#060a0d;
+  padding:8px 20px;text-align:center;
+  font-family:'DM Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.04em;transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.offline-banner.show{transform:translateY(0);}
+.sync-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--accent);
+  display:inline-block;margin-right:5px;flex-shrink:0;
+  transition:background .3s;
+}
+.sync-dot.offline{background:var(--warn);animation:none;}
+.sync-dot.syncing{background:var(--warn);animation:syncPulse .8s ease infinite;}
+@keyframes syncPulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ── Botão de Instalação PWA ── */
+#pwa-install-banner{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  z-index:8000;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;
+}
+#pwa-install-banner.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all;}
+.pwa-install-card{
+  background:var(--card);border:1px solid var(--border2);border-radius:16px;
+  padding:16px 20px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);min-width:280px;max-width:340px;
+}
+.pwa-install-icon{font-size:28px;flex-shrink:0;}
+.pwa-install-text{flex:1;}
+.pwa-install-title{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--text);margin-bottom:3px;}
+.pwa-install-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.pwa-install-actions{display:flex;gap:8px;margin-top:10px;}
+.pwa-install-btn{padding:7px 16px;background:var(--accent);color:#060a0d;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;cursor:pointer;transition:opacity .2s;}
+.pwa-install-btn:hover{opacity:.85;}
+.pwa-install-dismiss{padding:7px 12px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;}
+
+/* ── Modal Backup/Restauração ── */
+.backup-modal-body{padding:20px;}
+.backup-section{margin-bottom:20px;}
+.backup-section-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.backup-btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.backup-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:10px;font-family:'Instrument Sans',sans-serif;
+  font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;border:none;
+}
+.backup-btn-export{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border2);}
+.backup-btn-export:hover{background:var(--accent);color:#060a0d;}
+.backup-btn-import{background:var(--invest-glow);color:var(--invest);border:1px solid rgba(155,93,229,.3);}
+.backup-btn-import:hover{background:var(--invest);color:#fff;}
+.backup-btn-danger{background:var(--danger-glow);color:var(--danger);border:1px solid rgba(255,77,109,.3);}
+.backup-btn-danger:hover{background:var(--danger);color:#fff;}
+.backup-info{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:8px;line-height:1.5;}
+.backup-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.backup-stat{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+.backup-stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--accent);}
+.backup-stat-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* ── Confirm Dialog ── */
+.confirm-overlay{position:fixed;inset:0;z-index:9000;background:rgba(6,10,13,.8);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.confirm-overlay.open{opacity:1;pointer-events:all;}
+.confirm-box{background:var(--card);border:1px solid var(--card-border);border-radius:16px;
+  padding:28px;max-width:380px;width:100%;box-shadow:var(--shadow);
+  transform:scale(.94);transition:transform .2s;}
+.confirm-overlay.open .confirm-box{transform:scale(1);}
+.confirm-icon{font-size:32px;text-align:center;margin-bottom:12px;}
+.confirm-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);text-align:center;margin-bottom:8px;}
+.confirm-msg{font-size:13px;color:var(--text2);text-align:center;line-height:1.55;margin-bottom:20px;}
+.confirm-actions{display:flex;gap:10px;}
+.confirm-cancel{flex:1;padding:11px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-size:13px;cursor:pointer;transition:border-color .2s;}
+.confirm-cancel:hover{border-color:var(--border2);}
+.confirm-ok{flex:1;padding:11px;background:var(--danger);border:none;border-radius:9px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:opacity .2s;}
+.confirm-ok:hover{opacity:.85;}
+
+/* ── Notificações Push ── */
+.notif-btn{
+  display:flex;align-items:center;gap:5px;
+  background:none;border:1px solid var(--border);border-radius:99px;
+  padding:5px 10px;color:var(--text3);font-size:12px;
+  transition:border-color .2s,color .2s,background .2s;
+  font-family:'DM Mono',monospace;
+}
+.notif-btn:hover{border-color:var(--border2);color:var(--accent);background:var(--accent-glow);}
+.notif-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-glow);}
+
+/* ── IndexedDB sync queue indicator ── */
+.sync-queue-badge{
+  position:fixed;top:58px;right:14px;z-index:200;
+  background:var(--warn);color:#060a0d;
+  font-family:'DM Mono',monospace;font-size:9px;font-weight:700;
+  padding:3px 9px;border-radius:99px;letter-spacing:.04em;
+  display:none;animation:fadeInUp .3s ease both;
+}
+
+/* ── Botão Backup no topbar ── */
+.backup-topbar-btn{
+  display:flex;align-items:center;gap:5px;
+  background:none;border:1px solid var(--border);border-radius:99px;
+  padding:5px 10px;color:var(--text3);font-size:11px;
+  font-family:'DM Mono',monospace;letter-spacing:.04em;
+  transition:border-color .2s,color .2s;white-space:nowrap;
+}
+.backup-topbar-btn:hover{border-color:var(--border2);color:var(--accent);}
+
+/* Mobile responsive overrides */
+@media(max-width:600px){
+  .pwa-install-card{min-width:unset;width:calc(100vw - 28px);}
+  #pwa-install-banner{bottom:70px;width:100%;padding:0 14px;}
+  .backup-stats{grid-template-columns:1fr 1fr;}
+  .backup-btn-row{flex-direction:column;}
+  .notif-btn{display:none;}
+  .backup-topbar-btn span.backup-label{display:none;}
+}
 </style>
-</head>
 <body>
 <div id="splash">
   <img src="icon-512.png">
@@ -678,6 +841,12 @@ input,select,textarea{font-family:inherit}
       <span class="theme-toggle-label" id="themeLabel">Light</span>
     </button>
     <button class="logout-btn" onclick="doLogout()">Sair ↩</button>
+    <button class="backup-topbar-btn" onclick="openBackupModal()" title="Backup e Restauração">
+      💾 <span class="backup-label">Backup</span>
+    </button>
+    <button class="notif-btn" id="notifBtn" onclick="togglePushNotifications()" title="Notificações Push">
+      🔔
+    </button>
   </div>
 </header>
 
@@ -2326,6 +2495,578 @@ function attachSmartInputListeners() {
 
 </script>
 <script>
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 1 — INDEXEDDB: Cache local para modo offline real
+   Salva dados localmente antes do Firebase.
+   Ao abrir offline: carrega do IDB e sincroniza quando voltar.
+   ════════════════════════════════════════════════════════════════ */
+const IDB_NAME    = 'imperioAutonomo';
+const IDB_VERSION = 2;
+const IDB_STORE   = 'userData';
+let idb = null;
+
+function abrirIDB() {
+  return new Promise((resolve, reject) => {
+    if (idb) { resolve(idb); return; }
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE, { keyPath: 'uid' });
+      }
+      if (!db.objectStoreNames.contains('syncQueue')) {
+        db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    req.onsuccess = e => { idb = e.target.result; resolve(idb); };
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+async function salvarNoIDB(uid, dados) {
+  try {
+    const db = await abrirIDB();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put({ uid, ...dados, _ts: Date.now() });
+    return new Promise(r => tx.oncomplete = r);
+  } catch(e) { console.warn('[IDB] Erro ao salvar:', e); }
+}
+
+async function carregarDoIDB(uid) {
+  try {
+    const db  = await abrirIDB();
+    const tx  = db.transaction(IDB_STORE, 'readonly');
+    const req = tx.objectStore(IDB_STORE).get(uid);
+    return new Promise((res, rej) => {
+      req.onsuccess = () => res(req.result || null);
+      req.onerror   = () => rej(req.error);
+    });
+  } catch(e) { console.warn('[IDB] Erro ao carregar:', e); return null; }
+}
+
+/* Fila de sincronização offline → Firebase */
+const syncQueue = [];
+let isSyncing   = false;
+
+async function adicionarNaFila(dados) {
+  syncQueue.push({ dados, tentativas: 0, ts: Date.now() });
+  atualizarBadgeSync();
+}
+
+async function processarFila() {
+  if (isSyncing || syncQueue.length === 0 || !navigator.onLine) return;
+  isSyncing = true;
+  atualizarBadgeSync();
+
+  while (syncQueue.length > 0) {
+    const item = syncQueue[0];
+    const user = auth.currentUser;
+    if (!user) break;
+    try {
+      await db.collection('users').doc(user.uid).set(item.dados, { merge: true });
+      syncQueue.shift();
+      console.log('[Sync] ✓ Item da fila sincronizado');
+    } catch(e) {
+      item.tentativas++;
+      if (item.tentativas >= 3) {
+        console.error('[Sync] Falha após 3 tentativas. Descartando:', e);
+        syncQueue.shift();
+      } else {
+        console.warn('[Sync] Tentativa', item.tentativas, 'falhou:', e.message);
+        break;
+      }
+    }
+  }
+  isSyncing = false;
+  atualizarBadgeSync();
+}
+
+function atualizarBadgeSync() {
+  const badge = document.getElementById('syncQueueBadge');
+  if (!badge) return;
+  if (syncQueue.length > 0 || isSyncing) {
+    badge.style.display = 'block';
+    badge.textContent   = isSyncing ? '⏳ Sincronizando…' : `📤 ${syncQueue.length} item(s) aguardando sync`;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+/* ── Patch salvarNaNuvem para usar IDB + fila offline ── */
+(function() {
+  const _origSalvar = window.salvarNaNuvem;
+  window.salvarNaNuvem = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const payload = { receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [], budgets };
+
+    // 1. Sempre salva no IDB primeiro (instantâneo, offline-safe)
+    await salvarNoIDB(user.uid, payload);
+
+    // 2. Se online: salva no Firebase normalmente
+    if (navigator.onLine) {
+      _origSalvar();
+    } else {
+      // Se offline: coloca na fila para sync posterior
+      adicionarNaFila(payload);
+      showToast('💾 Salvo localmente — sincronizará ao reconectar', 'warn');
+    }
+  };
+})();
+
+/* ── Patch carregarDaNuvem: carrega IDB primeiro, Firebase depois ── */
+(function() {
+  const _origCarregar = window.carregarDaNuvem;
+  window.carregarDaNuvem = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Tenta IDB primeiro para resposta imediata
+    const local = await carregarDoIDB(user.uid);
+    if (local && (local.receitas?.length || local.despesas?.length)) {
+      console.log('[IDB] Dados locais encontrados — exibindo imediatamente');
+      receitas      = local.receitas      || [];
+      despesas      = local.despesas      || [];
+      investimentos = local.investimentos || [];
+      budgets       = local.budgets       || {};
+      if (local.receitaOrigens) receitaOrigens = local.receitaOrigens;
+      if (local.despesaCats)    despesaCats    = local.despesaCats;
+      buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
+    }
+
+    // Depois sincroniza com Firebase em background
+    _origCarregar();
+  };
+})();
+
+/* ── Detector online/offline ── */
+function atualizarStatusConexao() {
+  const banner  = document.getElementById('offlineBanner');
+  const dot     = document.querySelector('.sync-dot');
+  if (navigator.onLine) {
+    banner?.classList.remove('show');
+    dot?.classList.remove('offline');
+    // Tenta processar fila de sync ao reconectar
+    setTimeout(processarFila, 1500);
+  } else {
+    banner?.classList.add('show');
+    dot?.classList.add('offline');
+  }
+}
+window.addEventListener('online',  atualizarStatusConexao);
+window.addEventListener('offline', atualizarStatusConexao);
+atualizarStatusConexao();
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 2 — BACKUP & RESTAURAÇÃO JSON
+   ════════════════════════════════════════════════════════════════ */
+function openBackupModal() {
+  document.getElementById('bk-receitas-count').textContent = receitas.length;
+  document.getElementById('bk-despesas-count').textContent = despesas.length;
+  document.getElementById('bk-invest-count').textContent   = investimentos.length;
+  document.getElementById('backup-modal-overlay').classList.add('open');
+}
+function closeBackupModal() { document.getElementById('backup-modal-overlay').classList.remove('open'); }
+function closeBackupModalOutside(e) { if (e.target === document.getElementById('backup-modal-overlay')) closeBackupModal(); }
+
+function exportarBackupJSON() {
+  const snapshot = {
+    _versao: 5,
+    _exportadoEm: new Date().toISOString(),
+    _app: 'Império Autônomo',
+    receitas, despesas, investimentos, budgets, receitaOrigens, despesaCats
+  };
+  const json = JSON.stringify(snapshot, null, 2);
+  const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const data = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+  a.href     = url;
+  a.download = `imperio_autonomo_backup_${data}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✓ Backup exportado com sucesso!');
+}
+
+function importarBackupJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    let dados;
+    try {
+      dados = JSON.parse(e.target.result);
+    } catch {
+      showToast('❌ Arquivo inválido — não é um JSON válido', 'error');
+      return;
+    }
+
+    // Validação estrutural
+    const temReceitas = Array.isArray(dados.receitas);
+    const temDespesas = Array.isArray(dados.despesas);
+    if (!temReceitas || !temDespesas) {
+      showToast('❌ JSON não reconhecido — estrutura inválida', 'error');
+      return;
+    }
+
+    const totalItens = (dados.receitas?.length || 0) + (dados.despesas?.length || 0) + (dados.investimentos?.length || 0);
+
+    showConfirm(
+      '📥',
+      'Restaurar Backup?',
+      `O arquivo contém ${totalItens} registros (${dados.receitas.length} receitas, ${dados.despesas.length} despesas, ${dados.investimentos?.length || 0} investimentos).\n\nOs dados atuais serão substituídos. Esta ação não pode ser desfeita.`,
+      () => {
+        receitas      = dados.receitas      || [];
+        despesas      = dados.despesas      || [];
+        investimentos = dados.investimentos || [];
+        budgets       = dados.budgets       || {};
+        if (dados.receitaOrigens) receitaOrigens = dados.receitaOrigens;
+        if (dados.despesaCats)    despesaCats    = dados.despesaCats;
+        buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
+        salvarNaNuvem();
+        closeBackupModal();
+        showToast(`✓ ${totalItens} registros restaurados!`);
+        document.getElementById('backup-import-info').textContent = `✓ Importado: ${file.name}`;
+      }
+    );
+  };
+  reader.readAsText(file);
+  input.value = ''; // reset para permitir re-importar o mesmo arquivo
+}
+
+function limparTodosDados() {
+  showConfirm(
+    '🗑',
+    'Apagar TODOS os dados?',
+    'Esta ação é irreversível. Todos os seus dados (receitas, despesas, investimentos e metas) serão removidos permanentemente do Firebase.\n\nFaça um backup antes de continuar!',
+    async () => {
+      receitas = []; despesas = []; investimentos = []; budgets = {};
+      buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
+      salvarNaNuvem();
+      closeBackupModal();
+      showToast('🗑 Todos os dados foram apagados', 'error');
+    },
+    'Apagar tudo'
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 3 — CONFIRM DIALOG (substitui window.confirm nativo)
+   ════════════════════════════════════════════════════════════════ */
+let _confirmCallback = null;
+
+function showConfirm(icon, title, msg, onOk, okLabel = 'Confirmar') {
+  document.getElementById('confirm-icon').textContent  = icon;
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  document.getElementById('confirm-ok-btn').textContent = okLabel;
+  _confirmCallback = onOk;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+  _confirmCallback = null;
+}
+document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+  if (_confirmCallback) _confirmCallback();
+  closeConfirm();
+});
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 4 — BOTÃO DE INSTALAÇÃO PWA
+   ════════════════════════════════════════════════════════════════ */
+let _deferredInstall = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredInstall = e;
+  // Não mostra se usuário já dispensou
+  if (sessionStorage.getItem('pwa_dismissed')) return;
+  setTimeout(() => {
+    document.getElementById('pwa-install-banner').classList.add('show');
+  }, 3000);
+});
+
+document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  const { outcome } = await _deferredInstall.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('pwa-install-banner').classList.remove('show');
+    showToast('✓ App instalado com sucesso!');
+  }
+  _deferredInstall = null;
+});
+
+function dismissPwaInstall() {
+  document.getElementById('pwa-install-banner').classList.remove('show');
+  sessionStorage.setItem('pwa_dismissed', '1');
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwa-install-banner').classList.remove('show');
+  showToast('📲 Império Autônomo instalado!');
+});
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 5 — NOTIFICAÇÕES PUSH (Firebase-free, Web Push API)
+   ════════════════════════════════════════════════════════════════ */
+async function togglePushNotifications() {
+  const btn = document.getElementById('notifBtn');
+  if (!('Notification' in window)) {
+    showToast('Notificações não suportadas neste navegador', 'warn');
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    // Já ativo: manda notificação de teste
+    enviarNotificacaoLocal('🔔 Notificações ativas!', 'Você receberá alertas sobre vencimentos e metas.');
+    btn.classList.add('active');
+    return;
+  }
+
+  if (Notification.permission === 'denied') {
+    showToast('🔕 Permissão negada. Ative nas configurações do navegador.', 'warn');
+    return;
+  }
+
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    btn.classList.add('active');
+    enviarNotificacaoLocal('✅ Notificações ativadas!', 'Império Autônomo vai te avisar sobre vencimentos e metas.');
+    // Agenda checagem diária via SW
+    agendarNotificacoesVencimento();
+    showToast('✓ Notificações ativadas!');
+  } else {
+    showToast('Permissão não concedida', 'warn');
+  }
+}
+
+function enviarNotificacaoLocal(title, body, options = {}) {
+  if (Notification.permission !== 'granted') return;
+  const sw = navigator.serviceWorker?.controller;
+  if (sw) {
+    sw.postMessage({ type: 'SHOW_NOTIFICATION', title, body, ...options });
+  } else {
+    new Notification(title, {
+      body,
+      icon: './icon-192.png',
+      badge: './icon-192.png',
+      ...options
+    });
+  }
+}
+
+function agendarNotificacoesVencimento() {
+  // Verifica alertas e notifica uma vez por dia
+  const ultimaChecagem = localStorage.getItem('ia_last_notif_check');
+  const hoje = new Date().toDateString();
+  if (ultimaChecagem === hoje) return;
+  localStorage.setItem('ia_last_notif_check', hoje);
+
+  const hoje2 = new Date();
+  const em7d  = new Date(hoje2.getTime() + 7 * 86400000);
+  const proxVencimentos = despesas.filter(d => {
+    if (!d.data) return false;
+    const dt = new Date(d.data + 'T12:00:00');
+    return dt >= hoje2 && dt <= em7d;
+  });
+
+  if (proxVencimentos.length > 0) {
+    const total = proxVencimentos.reduce((a, d) => a + d.valor, 0);
+    enviarNotificacaoLocal(
+      `⚠️ ${proxVencimentos.length} vencimento(s) próximo(s)`,
+      `Total: R$ ${fmtBRL(total)} nos próximos 7 dias`
+    );
+  }
+}
+
+// Ativa ícone se já tem permissão
+if (Notification.permission === 'granted') {
+  document.getElementById('notifBtn')?.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 6 — UX PREMIUM: RIPPLE, MICRO-ANIMAÇÕES, TRANSIÇÕES
+   ════════════════════════════════════════════════════════════════ */
+
+/* Ripple Effect em todos os botões */
+function adicionarRipple(e) {
+  const btn  = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x    = e.clientX - rect.left - size / 2;
+  const y    = e.clientY - rect.top  - size / 2;
+  const rip  = document.createElement('span');
+  rip.className = 'ripple';
+  rip.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+  btn.appendChild(rip);
+  rip.addEventListener('animationend', () => rip.remove());
+}
+
+function ativarRipple() {
+  document.querySelectorAll('button:not(.ripple-host)').forEach(btn => {
+    btn.classList.add('ripple-host');
+    btn.addEventListener('click', adicionarRipple);
+  });
+}
+ativarRipple();
+
+// Reaplica ripple quando novo conteúdo é renderizado
+(function patchRenderForRipple() {
+  const fns = ['renderReceitas','renderDespesas','renderInvestimentos','renderBudgets','renderFixos'];
+  fns.forEach(fn => {
+    const orig = window[fn];
+    if (orig) window[fn] = function() { orig.apply(this, arguments); setTimeout(ativarRipple, 50); };
+  });
+})();
+
+/* Transições SPA entre tabs */
+(function patchSwitchTab() {
+  const _orig = window.switchTab;
+  window.switchTab = function(name) {
+    _orig(name);
+    const content = document.getElementById('tab-' + name);
+    if (content) {
+      content.classList.remove('tab-entering');
+      void content.offsetWidth; // force reflow
+      content.classList.add('tab-entering');
+    }
+  };
+})();
+
+/* Animação stagger nos KPI cards ao carregar */
+function animarKPICards() {
+  document.querySelectorAll('.kpi-card').forEach((card, i) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(16px)';
+    setTimeout(() => {
+      card.style.transition = 'opacity .4s ease, transform .4s ease';
+      card.style.opacity    = '1';
+      card.style.transform  = 'translateY(0)';
+    }, 60 + i * 70);
+  });
+}
+
+/* Skeleton loading para tabelas */
+function mostrarSkeletonTabela(tbodyId, colunas = 5) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  tbody.innerHTML = Array.from({ length: 4 }, () => `
+    <tr>${Array.from({ length: colunas }, () => `
+      <td><div class="skeleton skeleton-row" style="height:14px;margin:4px 0;"></div></td>`).join('')}
+    </tr>`).join('');
+}
+
+/* Anima KPIs ao atualizar valores */
+(function patchUpdateKPIs() {
+  const _orig = window.updateKPIs;
+  window.updateKPIs = function() {
+    _orig.apply(this, arguments);
+    // Pulsa os valores ao atualizar
+    document.querySelectorAll('.kpi-value').forEach(el => {
+      el.style.transition = 'transform .15s ease';
+      el.style.transform  = 'scale(1.06)';
+      setTimeout(() => { el.style.transform = 'scale(1)'; }, 150);
+    });
+    // Verifica notificações de vencimento
+    if (Notification.permission === 'granted') agendarNotificacoesVencimento();
+  };
+})();
+
+/* Patch carregarDaNuvem para mostrar skeleton enquanto carrega */
+(function patchCarregarSkeleton() {
+  const _orig = window.carregarDaNuvem;
+  window.carregarDaNuvem = function() {
+    mostrarSkeletonTabela('receita-body', 6);
+    mostrarSkeletonTabela('despesa-body', 6);
+    _orig.apply(this, arguments);
+    // Anima KPI cards após carregar
+    setTimeout(animarKPICards, 300);
+  };
+})();
+
+/* Hover 3D suave nos KPI cards (apenas desktop) */
+if (window.matchMedia('(hover:hover)').matches) {
+  document.addEventListener('mousemove', e => {
+    document.querySelectorAll('.kpi-card, .flash-card, .panel').forEach(card => {
+      const rect  = card.getBoundingClientRect();
+      const cx    = rect.left + rect.width  / 2;
+      const cy    = rect.top  + rect.height / 2;
+      const dx    = (e.clientX - cx) / rect.width;
+      const dy    = (e.clientY - cy) / rect.height;
+      const dist  = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 0.7) {
+        card.style.transform = `perspective(800px) rotateY(${dx*4}deg) rotateX(${-dy*4}deg) translateY(-2px)`;
+      } else {
+        card.style.transform = '';
+      }
+    });
+  });
+}
+
+/* Input focus animado */
+document.addEventListener('focusin', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
+    e.target.style.transition = 'box-shadow .2s ease';
+    e.target.style.boxShadow  = '0 0 0 3px var(--accent-glow)';
+  }
+});
+document.addEventListener('focusout', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
+    e.target.style.boxShadow = '';
+  }
+});
+
+/* ── Swipe horizontal entre tabs (mobile) ── */
+(function() {
+  const TABS = ['lancamentos','fixos','investimentos','graficos','metas'];
+  let startX = 0, startY = 0;
+  const main = document.body;
+
+  main.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }, { passive: true });
+
+  main.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    // Só swipe horizontal (ignora scroll vertical)
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+    // Não faz swipe dentro de tabelas com scroll horizontal
+    if (e.target.closest('.table-wrap, .modal, .alerts-panel')) return;
+
+    const activeTab = document.querySelector('.tab-content.active');
+    if (!activeTab) return;
+    const idx = TABS.indexOf(activeTab.id.replace('tab-',''));
+    if (idx < 0) return;
+
+    const nextIdx = dx < 0
+      ? Math.min(idx + 1, TABS.length - 1)
+      : Math.max(idx - 1, 0);
+    if (nextIdx !== idx) switchTab(TABS[nextIdx]);
+  }, { passive: true });
+})();
+
+/* ════════════════════════════════════════════════════════════════
+   MÓDULO 7 — REGRAS FIRESTORE (lembrete no console)
+   ════════════════════════════════════════════════════════════════ */
+console.log(
+`%c🔐 FIRESTORE SECURITY RULES — LEMBRE DE APLICAR:
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}`,
+'color:#00e5a0;font-family:monospace;font-size:11px;'
+);
+</script>
+<script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker.js', { scope: '/IMPERIO_AUTONOMO_GESTOR/' })
     .then(reg => {
@@ -2363,5 +3104,105 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<!-- OFFLINE BANNER -->
+<div class="offline-banner" id="offlineBanner">
+  📡 Sem conexão — trabalhando offline. Dados serão sincronizados ao reconectar.
+</div>
+
+<!-- SYNC QUEUE BADGE -->
+<div class="sync-queue-badge" id="syncQueueBadge">⏳ Sincronizando…</div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner">
+  <div class="pwa-install-card">
+    <div class="pwa-install-icon">📲</div>
+    <div class="pwa-install-text">
+      <div class="pwa-install-title">Instalar Império Autônomo</div>
+      <div class="pwa-install-sub">Abra como app nativo, sem navegador</div>
+      <div class="pwa-install-actions">
+        <button class="pwa-install-btn" id="pwaInstallBtn">Instalar App</button>
+        <button class="pwa-install-dismiss" onclick="dismissPwaInstall()">Agora não</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: BACKUP & RESTAURAÇÃO -->
+<div class="modal-overlay" id="backup-modal-overlay" onclick="closeBackupModalOutside(event)">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">💾 Backup & Restauração</div>
+      <button class="modal-close" onclick="closeBackupModal()">×</button>
+    </div>
+    <div class="backup-modal-body">
+      <!-- Stats -->
+      <div class="backup-stats">
+        <div class="backup-stat">
+          <div class="backup-stat-val" id="bk-receitas-count">0</div>
+          <div class="backup-stat-label">Receitas</div>
+        </div>
+        <div class="backup-stat">
+          <div class="backup-stat-val" id="bk-despesas-count">0</div>
+          <div class="backup-stat-label">Despesas</div>
+        </div>
+        <div class="backup-stat">
+          <div class="backup-stat-val" id="bk-invest-count">0</div>
+          <div class="backup-stat-label">Investimentos</div>
+        </div>
+      </div>
+
+      <!-- Exportar -->
+      <div class="backup-section">
+        <div class="backup-section-title">📤 Exportar dados</div>
+        <div class="backup-btn-row">
+          <button class="backup-btn backup-btn-export" onclick="exportarBackupJSON()">
+            📄 Backup JSON completo
+          </button>
+          <button class="backup-btn backup-btn-export" onclick="exportarExcel()">
+            📊 Exportar Excel (.xlsx)
+          </button>
+        </div>
+        <div class="backup-info">JSON contém todos os dados (receitas, despesas, investimentos, metas, categorias). Use para migração ou segurança.</div>
+      </div>
+
+      <!-- Importar -->
+      <div class="backup-section">
+        <div class="backup-section-title">📥 Importar / Restaurar</div>
+        <div class="backup-btn-row">
+          <button class="backup-btn backup-btn-import" onclick="document.getElementById('backup-file-input').click()">
+            📂 Importar JSON de Backup
+          </button>
+        </div>
+        <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="importarBackupJSON(this)"/>
+        <div class="backup-info" id="backup-import-info">Selecione um arquivo .json gerado por esta aplicação. Os dados atuais serão substituídos após confirmação.</div>
+      </div>
+
+      <!-- Perigo -->
+      <div class="backup-section">
+        <div class="backup-section-title" style="color:var(--danger)">⚠️ Zona de perigo</div>
+        <div class="backup-btn-row">
+          <button class="backup-btn backup-btn-danger" onclick="limparTodosDados()">
+            🗑 Apagar todos os dados
+          </button>
+        </div>
+        <div class="backup-info">Esta ação remove permanentemente todos os seus dados do Firebase. Faça um backup antes!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirm-icon">⚠️</div>
+    <div class="confirm-title" id="confirm-title">Confirmar ação</div>
+    <div class="confirm-msg" id="confirm-msg">Tem certeza?</div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+      <button class="confirm-ok" id="confirm-ok-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
