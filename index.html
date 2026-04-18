@@ -565,6 +565,48 @@ input,select,textarea{font-family:inherit}
   body.glasses-mode .add-row-btn{padding:16px;font-size:14px;}
   body.glasses-mode .kpi-value{font-size:20px!important;}
 }
+
+/* GOOGLE AUTH BUTTON */
+.google-btn{
+  width:100%;padding:13px;margin-top:10px;
+  background:var(--card2);color:var(--text);
+  border:1px solid var(--border);border-radius:9px;
+  font-family:'Instrument Sans',sans-serif;font-weight:600;font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:border-color .2s,background .2s;cursor:pointer;
+}
+.google-btn:hover{border-color:var(--border2);background:var(--row-hover);}
+.google-btn svg{flex-shrink:0;}
+.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0 4px;color:var(--text3);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.login-loading{
+  display:none;text-align:center;padding:10px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);
+  letter-spacing:.06em;
+}
+.login-loading.show{display:block;}
+/* User avatar na topbar */
+.user-avatar{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border2);
+  object-fit:cover;flex-shrink:0;
+}
+.user-avatar-placeholder{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--accent-glow);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:var(--accent);
+  flex-shrink:0;
+}
+/* Migração banner */
+.migrate-banner{
+  background:var(--warn-glow);border:1px solid rgba(245,166,35,.35);
+  border-radius:10px;padding:10px 14px;margin-top:14px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--warn);
+  line-height:1.5;display:none;
+}
+.migrate-banner.show{display:block;}
+
 </style>
 </head>
 <body>
@@ -582,17 +624,31 @@ input,select,textarea{font-family:inherit}
       </div>
     </div>
     <div class="login-title">Acesso ao Painel</div>
-    <div class="login-sub">Insira seu usuário para conectar à nuvem</div>
+    <div class="login-sub">Entre com sua conta Google para sincronizar dados com segurança</div>
+
+    <!-- BOTÃO GOOGLE (método principal) -->
+    <button class="google-btn" onclick="doLoginGoogle()" id="googleLoginBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/><path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 0 0 0 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+      Entrar com Google
+    </button>
+
+    <!-- LOADING STATE -->
+    <div class="login-loading" id="login-loading">⏳ Autenticando…</div>
+
+    <!-- DIVISOR (login e/senha como alternativa) -->
+    <div class="login-divider">ou acesse com e-mail</div>
+
     <div class="login-field">
-      <label class="login-label" for="login-user">Usuário</label>
-      <input class="login-input" id="login-user" type="text" placeholder="seu nome de usuário" autocomplete="username"/>
+      <label class="login-label" for="login-user">Usuário / E-mail</label>
+      <input class="login-input" id="login-user" type="text" placeholder="usuario ou email@dominio.com" autocomplete="username"/>
     </div>
     <div class="login-field">
       <label class="login-label" for="login-pass">Senha</label>
       <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
     </div>
-    <button class="login-btn" onclick="doLogin()">Conectar ao Banco de Dados →</button>
+    <button class="login-btn" onclick="doLogin()">Entrar com e-mail →</button>
     <div class="login-err" id="login-err">Credenciais inválidas. Verifique no Firebase.</div>
+    <div class="migrate-banner" id="migrate-banner">🔄 Dados antigos encontrados — migrando para sua conta Google…</div>
   </div>
 </div>
 
@@ -604,6 +660,9 @@ input,select,textarea{font-family:inherit}
   <div class="topbar-right">
     <div class="status-dot"></div>
     <span class="status-text" id="user-display">Nuvem Conectada</span>
+    <div id="user-avatar-wrap" style="display:none;">
+      <div class="user-avatar-placeholder" id="user-avatar-placeholder" title="">IA</div>
+    </div>
     <button class="alert-btn" id="alertBtn" title="Alertas" onclick="toggleAlerts()">
       🔔
       <span class="alert-badge-count" id="alertCount" style="display:none">0</span>
@@ -1028,18 +1087,45 @@ input,select,textarea{font-family:inherit}
 <script>
 'use strict';
 
+/* ══════════════════════════════════════════════════════════════
+   FIREBASE — Inicialização com persistência local (PWA-safe)
+   ══════════════════════════════════════════════════════════════ */
 const firebaseConfig = {
-  apiKey: "AIzaSyCXx9UCUCZbZkAYTX_yeeFW3sU1DyPgjtk",
-  authDomain: "imperio-autonomo.firebaseapp.com",
-  projectId: "imperio-autonomo",
-  storageBucket: "imperio-autonomo.firebasestorage.app",
+  apiKey:            "AIzaSyCXx9UCUCZbZkAYTX_yeeFW3sU1DyPgjtk",
+  authDomain:        "imperio-autonomo.firebaseapp.com",
+  projectId:         "imperio-autonomo",
+  storageBucket:     "imperio-autonomo.firebasestorage.app",
   messagingSenderId: "648590141593",
-  appId: "1:648590141593:web:adaefc36b4f4f5fe337008"
+  appId:             "1:648590141593:web:adaefc36b4f4f5fe337008"
 };
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
+
+/* ── Persistência: LOCAL garante que o usuário fica logado
+   mesmo após fechar o app, reinstalar a PWA ou trocar aba.
+   É a única opção correta para apps PWA / GitHub Pages. ── */
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .catch(err => console.error('[Auth] Erro ao definir persistência:', err));
+
+/* ── Firestore: cache offline para funcionar sem internet ── */
+db.settings({ cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED });
+db.enablePersistence({ synchronizeTabs: true })
+  .catch(err => {
+    if (err.code === 'failed-precondition') {
+      console.warn('[Firestore] Múltiplas abas abertas — offline persistence desativado nesta aba');
+    } else if (err.code === 'unimplemented') {
+      console.warn('[Firestore] Navegador não suporta offline persistence');
+    }
+  });
+
+/* ── Estado global: NUNCA use localStorage como fonte de UID ── */
 let currentUser = null;
+
+/* ── Provider Google configurado uma única vez ── */
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 let receitaOrigens = ['Vendas E-book','Consultoria IA','Afiliados','Curso Online','Mentoria','Freelance','Produto Digital','Assinatura'];
 let despesaCats    = ['Anúncios Meta','Ferramentas SaaS','Hospedagem','Equipe','Tráfego Pago','Software','Educação','Outros'];
@@ -1058,54 +1144,258 @@ let donutChart = null;
 let barChart   = null;
 let investDonutChart = null;
 
-/* ── Auth ── */
-auth.onAuthStateChanged(user => {
+/* ══════════════════════════════════════════════════════════════
+   AUTH — Observer principal
+   Disparado automaticamente pelo Firebase ao:
+   - abrir o app (verifica sessão salva no localStorage)
+   - completar login / logout
+   - token expirar e ser renovado
+   ══════════════════════════════════════════════════════════════ */
+auth.onAuthStateChanged(async user => {
+  hideSplash();   // esconde splash assim que o Firebase responder
+
   if (user) {
+    // ── Usuário autenticado ─────────────────────────────────────
+    console.log('[Auth] Usuário autenticado:', user.uid, '|', user.email);
     currentUser = user;
-    document.getElementById('login-screen').classList.add('hide');
-    setTimeout(() => document.getElementById('login-screen').style.display = 'none', 450);
-    document.getElementById('user-display').textContent = user.email.split('@')[0].toUpperCase();
+
+    // UI: fecha tela de login
+    const ls = document.getElementById('login-screen');
+    ls.classList.add('hide');
+    setTimeout(() => ls.style.display = 'none', 450);
+
+    // UI: exibe nome/avatar na topbar
+    updateUserDisplay(user);
+
+    // Verifica se há dados legados no localStorage para migrar
+    await migrarDadosLegados(user.uid);
+
+    // Carrega dados do Firestore usando o UID real
     carregarDaNuvem();
+
   } else {
+    // ── Usuário não autenticado ─────────────────────────────────
+    console.log('[Auth] Usuário não autenticado — exibindo login');
     currentUser = null;
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('login-screen').classList.remove('hide');
+    const ls = document.getElementById('login-screen');
+    ls.style.display = 'flex';
+    ls.classList.remove('hide');
+    resetLoadingState();
   }
 });
-function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  const email = u.includes('@') ? u : u + '@imperio.com';
-  auth.signInWithEmailAndPassword(email, p).catch(() => {
-    document.getElementById('login-err').style.display = 'block';
-    document.getElementById('login-pass').value = '';
-  });
+
+/* ── Atualiza avatar/nome na topbar ── */
+function updateUserDisplay(user) {
+  const display   = document.getElementById('user-display');
+  const avatarWrap = document.getElementById('user-avatar-wrap');
+  const placeholder= document.getElementById('user-avatar-placeholder');
+
+  // Nome curto exibido na topbar
+  const nome = user.displayName
+    ? user.displayName.split(' ')[0].toUpperCase()
+    : user.email.split('@')[0].toUpperCase();
+  display.textContent = nome;
+
+  // Avatar: foto do Google ou iniciais
+  if (avatarWrap) {
+    avatarWrap.style.display = 'flex';
+    if (user.photoURL) {
+      avatarWrap.innerHTML = `<img class="user-avatar" src="${user.photoURL}" alt="${nome}" title="${user.email}" onerror="this.parentElement.innerHTML='<div class=\"user-avatar-placeholder\">${nome.charAt(0)}</div>'"/>`;
+    } else {
+      placeholder.textContent = nome.charAt(0);
+      placeholder.title       = user.email;
+    }
+  }
 }
-function doLogout() { auth.signOut(); }
+
+/* ── Login com Google (método principal) ── */
+function doLoginGoogle() {
+  setLoadingState(true);
+  const errEl = document.getElementById('login-err');
+  errEl.style.display = 'none';
+
+  // signInWithPopup: melhor para PWA e GitHub Pages.
+  // NÃO usar signInWithRedirect neste setup — o redirect URL precisa estar
+  // autorizado no Firebase Console E o SW pode interceptar o retorno.
+  auth.signInWithPopup(googleProvider)
+    .then(result => {
+      console.log('[Auth] Login Google OK:', result.user.uid);
+      // onAuthStateChanged cuida do resto
+    })
+    .catch(err => {
+      console.error('[Auth] Erro login Google:', err.code, err.message);
+      setLoadingState(false);
+      let msg = 'Erro ao entrar com Google.';
+      if (err.code === 'auth/popup-closed-by-user')      msg = 'Popup fechado. Tente novamente.';
+      if (err.code === 'auth/popup-blocked')             msg = 'Popup bloqueado pelo navegador. Libere popups para este site.';
+      if (err.code === 'auth/network-request-failed')    msg = 'Sem conexão. Verifique sua internet.';
+      errEl.textContent    = msg;
+      errEl.style.display  = 'block';
+    });
+}
+
+/* ── Login com e-mail/senha (método alternativo) ── */
+function doLogin() {
+  const u     = document.getElementById('login-user').value.trim();
+  const p     = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.style.display = 'none';
+
+  if (!u || !p) { errEl.textContent = 'Preencha usuário e senha.'; errEl.style.display = 'block'; return; }
+
+  setLoadingState(true);
+  const email = u.includes('@') ? u : u + '@imperio.com';
+
+  auth.signInWithEmailAndPassword(email, p)
+    .then(() => console.log('[Auth] Login e-mail OK'))
+    .catch(err => {
+      console.error('[Auth] Erro login e-mail:', err.code);
+      setLoadingState(false);
+      let msg = 'Credenciais inválidas.';
+      if (err.code === 'auth/user-not-found')    msg = 'Usuário não encontrado.';
+      if (err.code === 'auth/wrong-password')    msg = 'Senha incorreta.';
+      if (err.code === 'auth/too-many-requests') msg = 'Muitas tentativas. Aguarde e tente novamente.';
+      errEl.textContent    = msg;
+      errEl.style.display  = 'block';
+      document.getElementById('login-pass').value = '';
+    });
+}
+
+/* ── Logout ── */
+function doLogout() {
+  auth.signOut()
+    .then(() => {
+      console.log('[Auth] Logout OK');
+      // Limpa estado local
+      receitas = []; despesas = []; investimentos = []; budgets = {};
+    })
+    .catch(err => console.error('[Auth] Erro logout:', err));
+}
+
+/* ── Helpers de UI para loading state ── */
+function setLoadingState(on) {
+  document.getElementById('login-loading').className = on ? 'login-loading show' : 'login-loading';
+  document.getElementById('googleLoginBtn').disabled  = on;
+  document.querySelector('.login-btn').disabled       = on;
+}
+function resetLoadingState() { setLoadingState(false); }
+
+/* ── Esconde splash screen ── */
+function hideSplash() {
+  const splash = document.getElementById('splash');
+  if (splash) splash.style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MIGRAÇÃO DE DADOS LEGADOS
+   Se o app salvava dados no localStorage com uma chave de ID
+   local (ex: 'ia_receitas'), migra para o Firestore usando o
+   UID real do usuário autenticado.
+   Só executa uma vez — após migrar, remove os dados locais.
+   ══════════════════════════════════════════════════════════════ */
+async function migrarDadosLegados(uid) {
+  const LEGACY_KEYS = ['ia_receitas','ia_despesas','ia_investimentos','ia_origens','ia_cats','ia_budgets'];
+  const temDadosLegados = LEGACY_KEYS.some(k => localStorage.getItem(k) !== null);
+
+  if (!temDadosLegados) return;   // nada a migrar
+
+  console.log('[Migração] Dados legados encontrados no localStorage. Iniciando migração para uid:', uid);
+
+  // Mostra banner
+  const banner = document.getElementById('migrate-banner');
+  if (banner) banner.className = 'migrate-banner show';
+
+  try {
+    // Verifica se já existe documento no Firestore para este uid
+    const doc = await db.collection('users').doc(uid).get();
+    const jaTemDados = doc.exists && (
+      (doc.data().receitas && doc.data().receitas.length > 0) ||
+      (doc.data().despesas && doc.data().despesas.length > 0)
+    );
+
+    if (!jaTemDados) {
+      // Não tem dados na nuvem — migra
+      const dadosMigrar = {};
+      const recSalvas   = localStorage.getItem('ia_receitas');
+      const despSalvas  = localStorage.getItem('ia_despesas');
+      const invSalvos   = localStorage.getItem('ia_investimentos');
+      const origens     = localStorage.getItem('ia_origens');
+      const cats        = localStorage.getItem('ia_cats');
+      const budgetsSv   = localStorage.getItem('ia_budgets');
+
+      if (recSalvas)  dadosMigrar.receitas       = JSON.parse(recSalvas);
+      if (despSalvas) dadosMigrar.despesas        = JSON.parse(despSalvas);
+      if (invSalvos)  dadosMigrar.investimentos   = JSON.parse(invSalvos);
+      if (origens)    dadosMigrar.receitaOrigens  = JSON.parse(origens);
+      if (cats)       dadosMigrar.despesaCats     = JSON.parse(cats);
+      if (budgetsSv)  dadosMigrar.budgets         = JSON.parse(budgetsSv);
+
+      await db.collection('users').doc(uid).set(dadosMigrar, { merge: true });
+      console.log('[Migração] ✓ Dados migrados com sucesso para uid:', uid);
+    } else {
+      console.log('[Migração] Usuário já tem dados na nuvem. Legados descartados.');
+    }
+
+    // Remove dados legados do localStorage (independente de migrar ou não)
+    LEGACY_KEYS.forEach(k => localStorage.removeItem(k));
+    console.log('[Migração] localStorage limpo.');
+
+  } catch (err) {
+    console.error('[Migração] Erro:', err);
+  } finally {
+    if (banner) banner.className = 'migrate-banner';
+  }
+}
+
 document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
 
 /* ── Firestore ── */
 function salvarNaNuvem() {
-  if (!currentUser) return;
-  db.collection('users').doc(currentUser.uid).set({ receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [], budgets });
+  // Sempre valida auth.currentUser — NUNCA usa variável local
+  const user = auth.currentUser;
+  if (!user) { console.warn('[DB] salvarNaNuvem: sem usuário autenticado'); return; }
+  // Double-check: uid local deve bater com Firebase (paranoia saudável)
+  if (currentUser && currentUser.uid !== user.uid) {
+    console.error('[DB] INCONSISTÊNCIA DE UID — abortando gravação');
+    return;
+  }
+  db.collection('users').doc(user.uid).set(
+    { receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [], budgets },
+    { merge: true }   // merge evita sobrescrever campos que não estamos enviando
+  ).catch(err => console.error('[DB] Erro ao salvar:', err));
 }
 function carregarDaNuvem() {
-  if (!currentUser) return;
-  db.collection('users').doc(currentUser.uid).get().then(doc => {
-    if (doc.exists) {
-      const data = doc.data();
-      receitas      = data.receitas      || [];
-      despesas      = data.despesas      || [];
-      investimentos = data.investimentos || [];
-      if (data.receitaOrigens) receitaOrigens = data.receitaOrigens;
-      if (data.despesaCats)    despesaCats    = data.despesaCats;
-      if (data.budgets)        budgets        = data.budgets;
-    } else {
-      receitas = []; despesas = []; investimentos = [];
-    }
-    buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
-  }).catch(() => showToast('Erro ao carregar dados', 'error'));
+  const user = auth.currentUser;
+  if (!user) { console.warn('[DB] carregarDaNuvem: sem usuário'); return; }
+  console.log('[DB] Carregando dados para uid:', user.uid);
+
+  db.collection('users').doc(user.uid).get()
+    .then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        receitas      = data.receitas      || [];
+        despesas      = data.despesas      || [];
+        investimentos = data.investimentos || [];
+        budgets       = data.budgets       || {};
+        if (data.receitaOrigens) receitaOrigens = data.receitaOrigens;
+        if (data.despesaCats)    despesaCats    = data.despesaCats;
+        console.log('[DB] Dados carregados — receitas:', receitas.length, '| despesas:', despesas.length);
+      } else {
+        // Primeiro acesso com este UID — cria documento vazio
+        console.log('[DB] Nenhum dado encontrado para uid:', user.uid, '— conta nova');
+        receitas = []; despesas = []; investimentos = []; budgets = {};
+        db.collection('users').doc(user.uid).set(
+          { receitas:[], despesas:[], investimentos:[], receitaOrigens, despesaCats, budgets:{} }
+        ).catch(e => console.error('[DB] Erro ao criar doc inicial:', e));
+      }
+      buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
+    })
+    .catch(err => {
+      console.error('[DB] Erro ao carregar dados:', err);
+      // Offline: Firestore usa cache local automaticamente — showToast apenas se for erro real
+      if (err.code !== 'unavailable') showToast('Erro ao carregar dados', 'error');
+    });
 }
 
 /* ── Helpers ── */
@@ -1952,25 +2242,42 @@ function attachSmartInputListeners() {
 
 </script>
 <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js', { scope: '/IMPERIO_AUTONOMO_GESTOR/' })
     .then(reg => {
-      reg.onupdatefound = () => {
+      console.log('[SW] Registrado com sucesso. Scope:', reg.scope);
+
+      reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
-        newWorker.onstatechange = () => {
-          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-            console.log("Novo update disponível!");
-            location.reload();
+        console.log('[SW] Novo Service Worker encontrado');
+
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[SW] Update disponível — notificando via controllerchange');
+            // Ativa imediatamente
+            newWorker.postMessage('SKIP_WAITING');
           }
-        };
-      };
-    });
+        });
+      });
+    })
+    .catch(err => console.error('[SW] Falha no registro:', err));
 }
 </script>
 <script>
-window.addEventListener("load", () => {
-  document.getElementById("splash").style.display = "none";
-});
+/* hideSplash é chamado pelo onAuthStateChanged — mas como fallback,
+   se o Firebase demorar mais que 4s, esconde o splash mesmo assim */
+setTimeout(() => {
+  const splash = document.getElementById('splash');
+  if (splash) splash.style.display = 'none';
+}, 4000);
+
+/* Detecta atualização de SW e notifica o usuário */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    showToast('🔄 App atualizado! Recarregando…');
+    setTimeout(() => location.reload(), 1500);
+  });
+}
 </script>
 </body>
 </html>
