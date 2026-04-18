@@ -1,12 +1,15 @@
 {
   "name": "Império Autônomo Gestor",
   "short_name": "Império",
-  "start_url": "/IMPERIO_AUTONOMO_GESTOR/",
+  "description": "Gestão financeira inteligente com sincronização em nuvem",
+  "start_url": "/IMPERIO_AUTONOMO_GESTOR/?source=pwa",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "background_color": "#080c0f",
+  "theme_color": "#080c0f",
+  "orientation": "portrait-primary",
   "scope": "/IMPERIO_AUTONOMO_GESTOR/",
+  "lang": "pt-BR",
+  "categories": ["finance", "productivity"],
   "icons": [
     {
       "src": "icon-192.png",
@@ -20,5 +23,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
 }
