@@ -1,17 +1,16 @@
 /* ============================================================
-   SERVICE WORKER — Império Autônomo PWA
-   Versão: v4-google-auth
-   
+   SERVICE WORKER — Império Autônomo PWA v5
+   ============================================================
    ESTRATÉGIA:
    - App Shell (HTML/CSS/JS/ícones) → Cache First
-   - Firebase / CDN externas → Network First (sem cache)
-   - Google Auth redirect → sempre Network (nunca cachear)
+   - Firebase / CDN externas       → Network First (sem cache)
+   - Google Auth redirect          → sempre Network
+   - Notificações Push             → suportadas via push event
    ============================================================ */
 
-const CACHE_NAME = 'imperio-v4';
+const CACHE_NAME = 'imperio-v5';
 const BASE       = '/IMPERIO_AUTONOMO_GESTOR/';
 
-/* Recursos do App Shell que serão cacheados na instalação */
 const SHELL_FILES = [
   BASE,
   BASE + 'index.html',
@@ -20,100 +19,92 @@ const SHELL_FILES = [
   BASE + 'icon-512.png'
 ];
 
-/* Domínios que NUNCA devem ser interceptados/cacheados.
-   Firebase Auth usa redirects e tokens sensíveis ao tempo. */
 const NEVER_CACHE = [
-  'firebaseapp.com',
-  'googleapis.com',
-  'gstatic.com',
-  'accounts.google.com',
-  'securetoken.google.com',
-  'identitytoolkit.googleapis.com',
-  'firestore.googleapis.com'
+  'firebaseapp.com','googleapis.com','gstatic.com',
+  'accounts.google.com','securetoken.google.com',
+  'identitytoolkit.googleapis.com','firestore.googleapis.com',
+  'generativelanguage.googleapis.com'
 ];
 
-/* ── INSTALL: pré-cacheia o App Shell ── */
+/* ── INSTALL ── */
 self.addEventListener('install', event => {
-  console.log('[SW] Instalando', CACHE_NAME);
+  console.log('[SW v5] Instalando', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('[SW] Cacheando App Shell');
-        return cache.addAll(SHELL_FILES);
-      })
-      .then(() => self.skipWaiting()) // Ativa imediatamente sem esperar fechar abas
+      .then(cache => cache.addAll(SHELL_FILES).catch(e => console.warn('[SW] Shell parcial:', e)))
+      .then(() => self.skipWaiting())
   );
 });
 
-/* ── ACTIVATE: limpa caches antigos ── */
+/* ── ACTIVATE ── */
 self.addEventListener('activate', event => {
-  console.log('[SW] Ativando', CACHE_NAME);
+  console.log('[SW v5] Ativando', CACHE_NAME);
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => {
-            console.log('[SW] Removendo cache antigo:', key);
-            return caches.delete(key);
-          })
-      )
-    ).then(() => self.clients.claim()) // Assume controle imediato de todas as abas
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
-/* ── FETCH: intercepta requisições ── */
+/* ── FETCH ── */
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
+  if (NEVER_CACHE.some(d => url.hostname.includes(d))) return;
+  if (event.request.method !== 'GET') return;
 
-  /* 1. Nunca interceptar Firebase/Google — sempre network direto */
-  if (NEVER_CACHE.some(domain => url.hostname.includes(domain))) {
-    return; // deixa o browser resolver normalmente
-  }
-
-  /* 2. Navegação (HTML) → Network First, fallback para cache */
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
-        .then(response => {
-          /* Atualiza o cache com a versão mais recente do HTML */
-          const cloned = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, cloned));
-          return response;
-        })
-        .catch(() => {
-          /* Offline → retorna HTML cacheado */
-          console.log('[SW] Offline — retornando index.html do cache');
-          return caches.match(BASE + 'index.html');
-        })
+        .then(r => { caches.open(CACHE_NAME).then(c => c.put(event.request, r.clone())); return r; })
+        .catch(() => caches.match(BASE + 'index.html'))
     );
     return;
   }
 
-  /* 3. Recursos estáticos do App Shell → Cache First */
   event.respondWith(
     caches.match(event.request).then(cached => {
-      if (cached) return cached;
-
-      /* Não está no cache: busca na rede e cacheia */
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
-        }
-        const cloned = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, cloned));
-        return response;
-      }).catch(() => {
-        /* Recurso não disponível offline — retorna vazio sem travar */
-        console.warn('[SW] Recurso indisponível offline:', event.request.url);
-      });
+      const net = fetch(event.request).then(r => {
+        if (r && r.status === 200 && r.type !== 'opaque')
+          caches.open(CACHE_NAME).then(c => c.put(event.request, r.clone()));
+        return r;
+      }).catch(() => cached);
+      return cached || net;
     })
   );
 });
 
-/* ── MESSAGE: força atualização via postMessage ── */
+/* ── PUSH ── */
+self.addEventListener('push', event => {
+  let data = { title: 'Império Autônomo', body: 'Nova notificação financeira.' };
+  try { data = event.data?.json() || data; } catch {}
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body, icon: BASE + 'icon-192.png',
+      badge: BASE + 'icon-192.png', vibrate: [200, 100, 200],
+      data: data.url || BASE,
+      actions: [{ action: 'open', title: '📊 Abrir painel' }, { action: 'dismiss', title: 'Dispensar' }]
+    })
+  );
+});
+
+/* ── NOTIFICATION CLICK ── */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  if (event.action === 'dismiss') return;
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      const found = list.find(c => c.url.includes(BASE) && 'focus' in c);
+      return found ? found.focus() : clients.openWindow(event.notification.data || BASE);
+    })
+  );
+});
+
+/* ── MESSAGE ── */
 self.addEventListener('message', event => {
-  if (event.data === 'SKIP_WAITING') {
-    self.skipWaiting();
+  if (event.data === 'SKIP_WAITING') { self.skipWaiting(); return; }
+  if (event.data?.type === 'SHOW_NOTIFICATION') {
+    self.registration.showNotification(event.data.title, {
+      body: event.data.body, icon: BASE + 'icon-192.png', vibrate: [150, 80, 150]
+    });
   }
 });
