@@ -267,7 +267,7 @@ input,select,textarea{font-family:inherit}
 }
 
 /* LOGIN */
-#login-screen{position:fixed;inset:0;z-index:9999;background:var(--login-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;transition:opacity .4s,transform .4s;}
+#login-screen{position:fixed;inset:0;z-index:9999;background:var(--login-bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;transition:opacity .4s,transform .4s;padding:16px;}
 #login-screen.hide{opacity:0;transform:scale(1.04);pointer-events:none}
 .login-box{background:var(--card);border:1px solid var(--card-border);border-radius:20px;padding:40px 40px 36px;width:100%;max-width:400px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
 .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-dim));}
@@ -548,61 +548,65 @@ input,select,textarea{font-family:inherit}
 /* ── TABLET ── */
 @media(max-width:768px){
   /* Topbar compacta */
-  .topbar{padding:0 12px;height:48px;}
+  .topbar{padding:0 12px;height:48px;gap:6px;}
+  .topbar-right{gap:6px;flex-wrap:nowrap;}
   .topbar-title{display:none;}
   .status-text{display:none;}
   .glasses-label{display:none;}
-  .logout-btn{padding:4px 9px;font-size:10px;}
-  .theme-toggle{padding:4px 9px 4px 6px;}
+  .logout-btn{padding:5px 10px;font-size:10px;white-space:nowrap;flex-shrink:0;}
+  .theme-toggle{padding:4px 9px 4px 6px;flex-shrink:0;}
+  .alert-btn{width:30px;height:30px;font-size:14px;flex-shrink:0;}
+  .glasses-btn{padding:4px 8px;font-size:13px;flex-shrink:0;}
 
   /* Hero menor */
   .hero{padding:20px 14px 14px;}
 
   /* Flash cards em coluna */
-  .flash-section{padding:0 14px 14px;}
+  .flash-section{padding:0 16px 16px;}
   .flash-grid{grid-template-columns:1fr;}
-  .flash-card{padding:12px 14px;}
+  .flash-card{padding:12px 14px;gap:12px;}
   .flash-name{font-size:13px;}
+  .flash-badge{top:8px;right:10px;}
 
   /* KPI: 2 colunas */
-  .kpi-section{padding:0 14px 14px;}
+  .kpi-section{padding:0 16px 16px;}
   .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .kpi-card{padding:16px 14px 14px;}
   .kpi-value{font-size:18px!important;}
   .kpi-icon{font-size:20px;}
 
-  /* Filter bar em linha wrappável */
-  .filter-bar{padding:0 14px 12px;gap:8px;}
+  /* Filter bar */
+  .filter-bar{padding:0 16px 12px;gap:8px;flex-wrap:wrap;}
   .filter-select{padding:6px 10px;font-size:11px;}
   .filter-btn-clear{padding:6px 10px;font-size:11px;}
 
   /* Tabs: scroll horizontal, sem quebra */
-  .tabs-nav{padding:0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;display:flex;flex-wrap:nowrap;}
+  .tabs-nav{padding:0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;white-space:nowrap;display:flex;flex-wrap:nowrap;}
   .tabs-nav::-webkit-scrollbar{display:none;}
   .tab-btn{padding:10px 14px;font-size:10px;flex-shrink:0;}
 
-  /* Tab content sem padding lateral exagerado */
-  .tab-content{padding:14px;}
+  /* Tab content */
+  .tab-content{padding:14px 16px;}
 
-  /* Tabelas: scroll horizontal com dica visual */
+  /* Tabelas: scroll horizontal */
   .tables-grid{grid-template-columns:1fr;gap:14px;}
   .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .data-table{min-width:520px;}
+  .data-table{min-width:500px;}
   .data-table th{padding:7px 8px;font-size:8px;}
-  .data-table td{padding:6px 8px;font-size:12px;}
+  .data-table td{padding:7px 8px;font-size:12px;}
   .data-table input[type="text"],
   .data-table input[type="date"],
   .data-table select{padding:5px 6px;font-size:11px;}
 
   /* Panel header compacto no mobile */
   .panel-header{padding:10px 14px;flex-wrap:wrap;gap:8px;}
-  .panel-header-actions{gap:5px;}
+  .panel-header-actions{gap:5px;flex-wrap:wrap;}
   .edit-cats-btn{padding:3px 8px;font-size:10px;}
   .ai-chip{padding:3px 8px;font-size:8px;}
   .panel-title{font-size:12px;}
 
   /* Act buttons maiores para touch */
-  .act-btn{width:32px;height:32px;font-size:14px;}
+  .act-btn{width:34px;height:34px;font-size:14px;}
   .add-row-btn{padding:13px;font-size:12px;}
 
   /* Fixo badge menor */
@@ -615,14 +619,19 @@ input,select,textarea{font-family:inherit}
   /* Investimentos: stats 2 colunas */
   .invest-stats{grid-template-columns:1fr 1fr;}
   .invest-stat-val{font-size:15px;}
+  .invest-header{flex-direction:column;align-items:flex-start;}
 
   /* Gráfico investimentos: em coluna */
   .invest-chart-panel > div[style]{display:flex!important;flex-direction:column!important;}
   .invest-chart-body{height:200px;padding:12px;}
 
-  /* Modais maiores no mobile */
-  .modal{margin:10px;border-radius:14px;}
+  /* Modais */
+  .modal-overlay{padding:12px;}
+  .modal{margin:0;border-radius:14px;max-height:calc(100vh - 24px);overflow-y:auto;}
   .modal-form-row{grid-template-columns:1fr;}
+
+  /* Alertas */
+  .alerts-panel{width:calc(100vw - 24px);right:12px;left:12px;}
 
   /* Footer compacto */
   .footer{flex-direction:column;gap:4px;padding:14px;}
@@ -630,48 +639,84 @@ input,select,textarea{font-family:inherit}
 
   /* Toast no centro inferior */
   .toast{bottom:16px;right:12px;left:12px;max-width:100%;text-align:center;}
+
+  /* Cartões e Contas */
+  .cartoes-grid{grid-template-columns:1fr;}
+  .contas-grid{grid-template-columns:1fr 1fr;}
+  .config-section{max-width:100%;}
+  .budget-grid{grid-template-columns:1fr;}
+  .suporte-tipo-grid{grid-template-columns:1fr 1fr;}
 }
 
 /* ── MOBILE PEQUENO ── */
 @media(max-width:420px){
-  .topbar{height:44px;padding:0 8px;}
-  .logo-mark{width:24px;height:24px;font-size:10px;}
-  .glasses-btn{padding:4px 8px;font-size:12px;}
-  .theme-toggle{padding:3px 8px 3px 5px;}
-  .logout-btn{padding:3px 8px;font-size:9px;}
+  .topbar{height:46px;padding:0 10px;gap:4px;}
+  .topbar-right{gap:4px;}
+  .logo-mark{width:26px;height:26px;font-size:10px;}
+  .glasses-btn{padding:4px 7px;font-size:12px;}
+  .theme-toggle{padding:3px 7px 3px 5px;}
+  .logout-btn{padding:4px 8px;font-size:9px;}
+  .alert-btn{width:28px;height:28px;font-size:13px;}
 
   .hero{padding:16px 12px 10px;}
-  .hero-title{font-size:26px!important;}
+  .hero-title{font-size:24px!important;line-height:1.1;}
   .hero-eyebrow{font-size:9px;}
+  .hero-line{margin-top:12px;}
 
   .kpi-section{padding:0 12px 12px;}
   .kpi-grid{grid-template-columns:1fr 1fr;gap:8px;}
-  .kpi-card{padding:13px 11px 11px;border-radius:12px;}
-  .kpi-value{font-size:15px!important;}
-  .kpi-tag{font-size:8px;}
+  .kpi-card{padding:12px 10px 10px;border-radius:12px;}
+  .kpi-value{font-size:14px!important;}
+  .kpi-tag{font-size:8px;margin-bottom:6px;}
   .kpi-sub{font-size:9px;}
-  .kpi-icon{font-size:18px;}
+  .kpi-icon{font-size:16px;bottom:8px;right:10px;}
 
   .flash-section{padding:0 12px 12px;}
-  .flash-card{padding:10px 12px;gap:10px;}
-  .flash-emoji{font-size:22px;}
+  .flash-card{padding:10px 12px;gap:10px;border-radius:12px;}
+  .flash-emoji{font-size:20px;}
   .flash-name{font-size:12px;}
   .flash-val{font-size:10px;}
-  .flash-badge{font-size:7px;padding:2px 6px;}
+  .flash-badge{font-size:7px;padding:2px 6px;top:8px;right:8px;}
 
-  .filter-bar{padding:0 12px 10px;}
+  .filter-bar{padding:0 12px 10px;gap:6px;}
   .filter-label{display:none;}
-  .filter-select{flex:1;min-width:0;}
+  .filter-select{flex:1;min-width:0;font-size:11px;}
+  .filter-btn-clear{font-size:10px;padding:6px 8px;}
 
   .tabs-nav{padding:0 12px;}
   .tab-btn{padding:9px 10px;font-size:9px;}
 
   .tab-content{padding:10px 12px;}
-  .data-table{min-width:480px;}
+  .data-table{min-width:460px;}
+  .data-table th{padding:6px 7px;font-size:8px;}
+  .data-table td{padding:6px 7px;font-size:11px;}
 
-  .invest-stats{grid-template-columns:1fr;}
+  .invest-stats{grid-template-columns:1fr 1fr;}
+  .invest-stat-val{font-size:14px;}
+  .invest-stat-card{padding:12px;}
 
   .fixos-grid{grid-template-columns:1fr;}
+  .contas-grid{grid-template-columns:1fr;}
+  .cartoes-grid{grid-template-columns:1fr;}
+
+  .budget-card{padding:12px 14px;}
+  .cartao-card{padding:16px;}
+
+  .modal-overlay{padding:8px;}
+  .modal{border-radius:12px;}
+  .modal-body{padding:14px;}
+  .modal-footer{padding:0 14px 14px;}
+
+  .login-box{padding:28px 20px 24px;border-radius:16px;}
+  .login-title{font-size:19px;}
+  .login-sub{font-size:12px;margin-bottom:20px;}
+
+  .suporte-tipo-grid{grid-template-columns:1fr;}
+  .theme-grid{grid-template-columns:1fr 1fr;}
+  .simulador-form{grid-template-columns:1fr;}
+
+  .confirm-box{padding:22px 18px 16px;border-radius:14px;}
+  .alerts-panel{max-height:70vh;}
 }
 
 /* ── EXPORT BUTTON ── */
@@ -1142,9 +1187,7 @@ input,select,textarea{font-family:inherit}
   <div class="topbar-right">
     <div class="status-dot"></div>
     <span class="status-text" id="user-display">Nuvem Conectada</span>
-    <div id="user-avatar-wrap" style="display:none;">
-      <div class="user-avatar-placeholder" id="user-avatar-placeholder" title="">IA</div>
-    </div>
+
     <button class="alert-btn" id="alertBtn" title="Alertas" onclick="toggleAlerts()">
       🔔
       <span class="alert-badge-count" id="alertCount" style="display:none">0</span>
