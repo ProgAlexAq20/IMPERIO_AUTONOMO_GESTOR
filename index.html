@@ -6,7 +6,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="description" content="Gestão financeira inteligente com sincronização em nuvem — Império Autônomo"/>
 <title>Império Autônomo — Gestão Financeira 2025-2026</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
@@ -58,27 +57,137 @@ input,select,textarea{font-family:inherit}
   --chart-grid:rgba(0,0,0,.06);--chart-tick:#8aa0ae;
   --login-bg:#dce5ea;
 }
-/* SPLASH */
+/* ══════════════════════════════════════
+   SPLASH SCREEN — Premium Intro
+   ══════════════════════════════════════ */
 #splash {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  background: #0f172a;
+  inset: 0;
+  z-index: 99999;
+  background: #060a0d;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  flex-direction: column;
+  gap: 0;
+  transition: opacity .6s cubic-bezier(.4,0,.2,1), transform .6s cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+#splash.fade-out {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
 }
 
-#splash img {
-  width: 120px;
-  animation: pulse 1.5s infinite;
+/* Background animado: grade de pontos */
+#splash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(0,229,160,.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: splashGridMove 8s linear infinite;
+}
+@keyframes splashGridMove {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 40px; }
 }
 
-@keyframes pulse {
-  0% { opacity: 0.6; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0.6; transform: scale(0.95); }
+/* Anel de luz pulsando atrás do logo */
+#splash-ring {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,160,.18) 0%, transparent 70%);
+  animation: splashRing 2s ease-in-out infinite alternate;
+}
+@keyframes splashRing {
+  from { transform: scale(.85); opacity: .5; }
+  to   { transform: scale(1.15); opacity: 1; }
+}
+
+/* Container central */
+#splash-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  animation: splashEntrance .8s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes splashEntrance {
+  from { opacity: 0; transform: scale(.7) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Logo mark */
+#splash-logo-mark {
+  width: 80px;
+  height: 80px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #00e5a0 0%, #00b87a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: #060a0d;
+  box-shadow: 0 0 40px rgba(0,229,160,.35), 0 0 80px rgba(0,229,160,.15);
+  animation: splashLogoPulse 2s ease-in-out infinite alternate;
+}
+@keyframes splashLogoPulse {
+  from { box-shadow: 0 0 30px rgba(0,229,160,.3), 0 0 60px rgba(0,229,160,.1); }
+  to   { box-shadow: 0 0 50px rgba(0,229,160,.5), 0 0 100px rgba(0,229,160,.2); }
+}
+
+/* Texto do splash */
+#splash-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  color: #e8f0f5;
+  letter-spacing: -.02em;
+  animation: splashEntrance .8s .15s cubic-bezier(.34,1.56,.64,1) both;
+}
+#splash-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: #4d6575;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-top: -16px;
+  animation: splashEntrance .8s .25s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* Barra de progresso */
+#splash-bar-wrap {
+  width: 180px;
+  height: 2px;
+  background: rgba(255,255,255,.06);
+  border-radius: 99px;
+  overflow: hidden;
+  animation: splashEntrance .8s .35s cubic-bezier(.34,1.56,.64,1) both;
+}
+#splash-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00e5a0, #00b87a);
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+/* Tagline rodapé */
+#splash-tagline {
+  position: absolute;
+  bottom: 32px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: #2a3d48;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 /* LOGIN */
@@ -608,173 +717,93 @@ input,select,textarea{font-family:inherit}
 }
 .migrate-banner.show{display:block;}
 
-/* ════════════════════════════════════════════════════════════════
-   NOVOS ESTILOS v5 — UX PREMIUM, BACKUP, OFFLINE, PWA
-   ════════════════════════════════════════════════════════════════ */
 
-/* ── Ripple Effect (botões) ── */
-.ripple-host{position:relative;overflow:hidden;}
-.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);
-  transform:scale(0);animation:rippleAnim .55s linear;pointer-events:none;}
-@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
+/* ══════════════════════════════════════
+   TOGGLE SWITCH (Configurações)
+   ══════════════════════════════════════ */
+.toggle-switch{display:flex;align-items:center;cursor:pointer;flex-shrink:0;}
+.toggle-switch input{display:none;}
+.toggle-track{width:40px;height:22px;border-radius:99px;background:var(--border);position:relative;transition:background .25s;border:1px solid var(--border);}
+.toggle-switch input:checked + .toggle-track{background:var(--accent);border-color:var(--accent);}
+.toggle-thumb{position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .25s cubic-bezier(.4,0,.2,1);box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.toggle-switch input:checked + .toggle-track .toggle-thumb{left:20px;}
 
-/* ── Micro-animações de entrada ── */
-@keyframes slideInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideInLeft{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
-.anim-up{animation:slideInUp .38s cubic-bezier(.4,0,.2,1) both;}
-.anim-left{animation:slideInLeft .32s cubic-bezier(.4,0,.2,1) both;}
-.anim-scale{animation:scaleIn .28s cubic-bezier(.4,0,.2,1) both;}
+/* ══════════════════════════════════════
+   CONFIG SECTION
+   ══════════════════════════════════════ */
+.config-section{display:flex;flex-direction:column;gap:18px;max-width:680px;margin:0 auto;}
+.config-block{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px 24px;transition:box-shadow .2s;}
+.config-block:hover{box-shadow:var(--shadow);}
+.config-block-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:5px;}
+.config-block-sub{font-size:12px;color:var(--text3);margin-bottom:18px;line-height:1.5;}
+.config-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--border);}
+.config-row:last-of-type{border-bottom:none;}
+.config-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text2);letter-spacing:.04em;flex-shrink:0;}
+.config-hint{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);line-height:1.5;}
+.config-range{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;background:var(--border);outline:none;cursor:pointer;}
+.config-range::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px var(--accent-glow);}
+.upload-audio-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;background:var(--accent-glow);border:1px solid var(--border2);border-radius:8px;color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.upload-audio-btn:hover{background:rgba(0,229,160,.28);}
+.config-test-btn{padding:7px 14px;background:var(--accent-glow);border:1px solid var(--border2);border-radius:8px;color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;transition:background .15s;}
+.config-test-btn:hover{background:rgba(0,229,160,.28);}
+.config-danger-btn{padding:7px 14px;background:var(--danger-glow);border:1px solid rgba(255,77,109,.3);border-radius:8px;color:var(--danger);font-size:11px;font-family:'DM Mono',monospace;transition:background .15s;}
+.config-danger-btn:hover{background:rgba(255,77,109,.25);}
+.config-theme-btn{padding:7px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:11px;transition:background .15s,border-color .15s,color .15s;}
+.config-theme-btn.active{background:var(--accent-glow);border-color:var(--border2);color:var(--accent);}
+.config-theme-btn:hover{border-color:var(--border2);color:var(--accent);}
 
-/* ── Transições SPA (tabs) ── */
-.tab-content{
-  animation:none;
-  transition:opacity .22s ease,transform .22s cubic-bezier(.4,0,.2,1);
-}
-.tab-content.tab-entering{
-  animation:tabEnter .28s cubic-bezier(.4,0,.2,1) both;
-}
-@keyframes tabEnter{
-  from{opacity:0;transform:translateY(10px) scale(.99)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
+/* ══════════════════════════════════════
+   SUPORTE SECTION
+   ══════════════════════════════════════ */
+.suporte-section{max-width:680px;margin:0 auto;}
+.suporte-hero{text-align:center;padding:20px 0 28px;}
+.suporte-hero-icon{font-size:42px;margin-bottom:10px;}
+.suporte-hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--text);letter-spacing:-.02em;margin-bottom:6px;}
+.suporte-hero-sub{font-size:13px;color:var(--text3);line-height:1.5;}
+.suporte-form-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:24px;margin-bottom:20px;}
+.suporte-form-group{margin-bottom:16px;}
+.suporte-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
+.suporte-input{width:100%;padding:10px 13px;background:var(--input-bg);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;transition:border-color .15s,background .15s;}
+.suporte-input:focus{border-color:var(--border2);background:var(--input-focus);}
+.suporte-textarea{width:100%;padding:10px 13px;background:var(--input-bg);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;resize:vertical;min-height:100px;transition:border-color .15s,background .15s;line-height:1.5;}
+.suporte-textarea:focus{border-color:var(--border2);background:var(--input-focus);}
+.suporte-select{width:100%;padding:10px 13px;background:var(--card2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:13px;outline:none;cursor:pointer;}
+.suporte-tipo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.suporte-tipo-btn{padding:10px;background:var(--input-bg);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-size:12px;font-weight:500;transition:background .15s,border-color .15s,color .15s;}
+.suporte-tipo-btn:hover{border-color:var(--border2);color:var(--accent);}
+.suporte-tipo-btn.active{background:var(--accent-glow);border-color:var(--border2);color:var(--accent);}
+.suporte-submit-btn{width:100%;padding:14px;background:var(--accent);color:#060a0d;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;transition:opacity .2s,transform .1s;margin-top:4px;}
+.suporte-submit-btn:hover{opacity:.88;}
+.suporte-submit-btn:active{transform:scale(.98);}
+.suporte-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.suporte-sent{text-align:center;padding:24px 0 10px;}
+.suporte-sent-icon{font-size:44px;margin-bottom:10px;}
+.suporte-sent-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--accent);margin-bottom:6px;}
+.suporte-sent-sub{font-size:13px;color:var(--text3);line-height:1.5;margin-bottom:16px;}
+.suporte-novo-btn{padding:9px 20px;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--accent);font-size:12px;font-family:'DM Mono',monospace;transition:background .15s;}
+.suporte-novo-btn:hover{background:var(--accent-glow);}
+.suporte-faq{margin-top:8px;}
+.suporte-faq-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:12px;}
+.suporte-faq-item{background:var(--card);border:1px solid var(--card-border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color .2s;}
+.suporte-faq-item:hover{border-color:var(--border2);}
+.suporte-faq-q{padding:14px 16px;font-size:13px;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-weight:500;}
+.suporte-faq-q span{font-size:16px;color:var(--accent);transition:transform .25s;}
+.suporte-faq-item.open .suporte-faq-q span{transform:rotate(45deg);}
+.suporte-faq-a{max-height:0;overflow:hidden;font-size:13px;color:var(--text3);line-height:1.6;padding:0 16px;transition:max-height .35s ease,padding .35s;}
+.suporte-faq-item.open .suporte-faq-a{max-height:200px;padding:0 16px 14px;}
 
-/* ── Skeleton Loading ── */
-.skeleton{
-  background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);
-  background-size:200% 100%;
-  animation:shimmer 1.4s infinite;
-  border-radius:6px;
-}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skeleton-row{height:38px;margin-bottom:8px;}
-.skeleton-kpi{height:90px;border-radius:14px;margin-bottom:12px;}
-.skeleton-line-sm{height:12px;width:60%;border-radius:4px;margin-bottom:6px;}
-.skeleton-line-lg{height:20px;width:80%;border-radius:4px;margin-bottom:10px;}
-
-/* ── Indicador Online/Offline ── */
-.offline-banner{
-  position:fixed;bottom:0;left:0;right:0;z-index:9000;
-  background:var(--warn);color:#060a0d;
-  padding:8px 20px;text-align:center;
-  font-family:'DM Mono',monospace;font-size:12px;font-weight:700;
-  letter-spacing:.04em;transform:translateY(100%);
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-}
-.offline-banner.show{transform:translateY(0);}
-.sync-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--accent);
-  display:inline-block;margin-right:5px;flex-shrink:0;
-  transition:background .3s;
-}
-.sync-dot.offline{background:var(--warn);animation:none;}
-.sync-dot.syncing{background:var(--warn);animation:syncPulse .8s ease infinite;}
-@keyframes syncPulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* ── Botão de Instalação PWA ── */
-#pwa-install-banner{
-  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
-  z-index:8000;opacity:0;pointer-events:none;
-  transition:opacity .3s,transform .3s;
-}
-#pwa-install-banner.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:all;}
-.pwa-install-card{
-  background:var(--card);border:1px solid var(--border2);border-radius:16px;
-  padding:16px 20px;display:flex;align-items:center;gap:14px;
-  box-shadow:0 12px 40px rgba(0,0,0,.5);min-width:280px;max-width:340px;
-}
-.pwa-install-icon{font-size:28px;flex-shrink:0;}
-.pwa-install-text{flex:1;}
-.pwa-install-title{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--text);margin-bottom:3px;}
-.pwa-install-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
-.pwa-install-actions{display:flex;gap:8px;margin-top:10px;}
-.pwa-install-btn{padding:7px 16px;background:var(--accent);color:#060a0d;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;cursor:pointer;transition:opacity .2s;}
-.pwa-install-btn:hover{opacity:.85;}
-.pwa-install-dismiss{padding:7px 12px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;}
-
-/* ── Modal Backup/Restauração ── */
-.backup-modal-body{padding:20px;}
-.backup-section{margin-bottom:20px;}
-.backup-section-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
-.backup-btn-row{display:flex;gap:10px;flex-wrap:wrap;}
-.backup-btn{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 18px;border-radius:10px;font-family:'Instrument Sans',sans-serif;
-  font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;border:none;
-}
-.backup-btn-export{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border2);}
-.backup-btn-export:hover{background:var(--accent);color:#060a0d;}
-.backup-btn-import{background:var(--invest-glow);color:var(--invest);border:1px solid rgba(155,93,229,.3);}
-.backup-btn-import:hover{background:var(--invest);color:#fff;}
-.backup-btn-danger{background:var(--danger-glow);color:var(--danger);border:1px solid rgba(255,77,109,.3);}
-.backup-btn-danger:hover{background:var(--danger);color:#fff;}
-.backup-info{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:8px;line-height:1.5;}
-.backup-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.backup-stat{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
-.backup-stat-val{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--accent);}
-.backup-stat-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
-
-/* ── Confirm Dialog ── */
-.confirm-overlay{position:fixed;inset:0;z-index:9000;background:rgba(6,10,13,.8);
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  opacity:0;pointer-events:none;transition:opacity .2s;}
-.confirm-overlay.open{opacity:1;pointer-events:all;}
-.confirm-box{background:var(--card);border:1px solid var(--card-border);border-radius:16px;
-  padding:28px;max-width:380px;width:100%;box-shadow:var(--shadow);
-  transform:scale(.94);transition:transform .2s;}
-.confirm-overlay.open .confirm-box{transform:scale(1);}
-.confirm-icon{font-size:32px;text-align:center;margin-bottom:12px;}
-.confirm-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);text-align:center;margin-bottom:8px;}
-.confirm-msg{font-size:13px;color:var(--text2);text-align:center;line-height:1.55;margin-bottom:20px;}
-.confirm-actions{display:flex;gap:10px;}
-.confirm-cancel{flex:1;padding:11px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-size:13px;cursor:pointer;transition:border-color .2s;}
-.confirm-cancel:hover{border-color:var(--border2);}
-.confirm-ok{flex:1;padding:11px;background:var(--danger);border:none;border-radius:9px;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:opacity .2s;}
-.confirm-ok:hover{opacity:.85;}
-
-/* ── Notificações Push ── */
-.notif-btn{
-  display:flex;align-items:center;gap:5px;
-  background:none;border:1px solid var(--border);border-radius:99px;
-  padding:5px 10px;color:var(--text3);font-size:12px;
-  transition:border-color .2s,color .2s,background .2s;
-  font-family:'DM Mono',monospace;
-}
-.notif-btn:hover{border-color:var(--border2);color:var(--accent);background:var(--accent-glow);}
-.notif-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-glow);}
-
-/* ── IndexedDB sync queue indicator ── */
-.sync-queue-badge{
-  position:fixed;top:58px;right:14px;z-index:200;
-  background:var(--warn);color:#060a0d;
-  font-family:'DM Mono',monospace;font-size:9px;font-weight:700;
-  padding:3px 9px;border-radius:99px;letter-spacing:.04em;
-  display:none;animation:fadeInUp .3s ease both;
-}
-
-/* ── Botão Backup no topbar ── */
-.backup-topbar-btn{
-  display:flex;align-items:center;gap:5px;
-  background:none;border:1px solid var(--border);border-radius:99px;
-  padding:5px 10px;color:var(--text3);font-size:11px;
-  font-family:'DM Mono',monospace;letter-spacing:.04em;
-  transition:border-color .2s,color .2s;white-space:nowrap;
-}
-.backup-topbar-btn:hover{border-color:var(--border2);color:var(--accent);}
-
-/* Mobile responsive overrides */
-@media(max-width:600px){
-  .pwa-install-card{min-width:unset;width:calc(100vw - 28px);}
-  #pwa-install-banner{bottom:70px;width:100%;padding:0 14px;}
-  .backup-stats{grid-template-columns:1fr 1fr;}
-  .backup-btn-row{flex-direction:column;}
-  .notif-btn{display:none;}
-  .backup-topbar-btn span.backup-label{display:none;}
-}
 </style>
+</head>
 <body>
 <div id="splash">
-  <img src="icon-512.png">
+  <div id="splash-ring"></div>
+  <div id="splash-center">
+    <div id="splash-logo-mark">IA</div>
+    <div id="splash-title">Império Autônomo</div>
+    <div id="splash-sub">Gestão Financeira Cloud</div>
+    <div id="splash-bar-wrap"><div id="splash-bar"></div></div>
+  </div>
+  <div id="splash-tagline">Sincronizando com a nuvem…</div>
 </div>
 
 <div id="login-screen">
@@ -841,12 +870,6 @@ input,select,textarea{font-family:inherit}
       <span class="theme-toggle-label" id="themeLabel">Light</span>
     </button>
     <button class="logout-btn" onclick="doLogout()">Sair ↩</button>
-    <button class="backup-topbar-btn" onclick="openBackupModal()" title="Backup e Restauração">
-      💾 <span class="backup-label">Backup</span>
-    </button>
-    <button class="notif-btn" id="notifBtn" onclick="togglePushNotifications()" title="Notificações Push">
-      🔔
-    </button>
   </div>
 </header>
 
@@ -937,6 +960,8 @@ input,select,textarea{font-family:inherit}
   <button class="tab-btn invest-tab" onclick="switchTab('investimentos')">💹 Investimentos</button>
   <button class="tab-btn" onclick="switchTab('graficos')">📈 Gráficos</button>
   <button class="tab-btn" onclick="switchTab('metas')">🎯 Metas</button>
+  <button class="tab-btn" onclick="switchTab('configuracoes')" style="color:var(--text3);">⚙️ Config</button>
+  <button class="tab-btn" onclick="switchTab('suporte')" style="color:var(--text3);">🎧 Suporte</button>
   <button class="export-btn" style="margin-left:auto;margin-bottom:1px;" onclick="exportarExcel()" title="Exportar tudo para Excel">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     Excel
@@ -1167,6 +1192,188 @@ input,select,textarea{font-family:inherit}
     </div>
   </div>
   <div class="budget-grid" id="budget-grid"></div>
+</div>
+
+<!-- TAB: CONFIGURAÇÕES -->
+<div class="tab-content" id="tab-configuracoes">
+  <div class="config-section">
+    <div class="config-block">
+      <div class="config-block-title">🔔 Notificações Sonoras</div>
+      <div class="config-block-sub">Configure o som do sino de alertas. Você pode usar o som padrão ou fazer upload do seu próprio arquivo de áudio.</div>
+
+      <div class="config-row">
+        <div class="config-label">Notificações ativas</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="notif-toggle" onchange="salvarConfig()">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="config-row">
+        <div class="config-label">Volume</div>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;">
+          <input type="range" id="notif-volume" min="0" max="100" value="70"
+            oninput="document.getElementById('vol-display').textContent=this.value+'%'; salvarConfig()"
+            class="config-range"/>
+          <span id="vol-display" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);min-width:36px;">70%</span>
+        </div>
+      </div>
+
+      <div class="config-row">
+        <div class="config-label">Som personalizado</div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1;">
+          <label class="upload-audio-btn" for="audio-upload-input">
+            📁 Escolher arquivo de áudio
+          </label>
+          <input type="file" id="audio-upload-input" accept="audio/*" style="display:none"
+            onchange="handleAudioUpload(this)"/>
+          <div id="audio-filename" class="config-hint">Usando: som padrão</div>
+        </div>
+      </div>
+
+      <div class="config-row">
+        <div class="config-label">Testar som</div>
+        <button class="config-test-btn" onclick="tocarSomAlerta()">▶ Tocar agora</button>
+      </div>
+
+      <div class="config-row" style="margin-top:4px;">
+        <div class="config-label">Restaurar padrão</div>
+        <button class="config-danger-btn" onclick="restaurarAudioPadrao()">↺ Restaurar</button>
+      </div>
+
+      <div class="config-hint" style="margin-top:8px;">
+        ⚠️ Formatos aceitos: MP3, WAV, OGG, AAC · Tamanho máximo: 2MB<br>
+        O arquivo fica armazenado localmente no seu dispositivo.
+      </div>
+    </div>
+
+    <div class="config-block">
+      <div class="config-block-title">🎨 Aparência</div>
+      <div class="config-block-sub">Personalize a experiência visual do app.</div>
+      <div class="config-row">
+        <div class="config-label">Tema</div>
+        <div style="display:flex;gap:8px;">
+          <button class="config-theme-btn" id="btn-dark" onclick="setTheme('dark')">🌙 Dark</button>
+          <button class="config-theme-btn" id="btn-light" onclick="setTheme('light')">☀️ Light</button>
+        </div>
+      </div>
+      <div class="config-row">
+        <div class="config-label">Modo Glasses</div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="glasses-toggle-config" onchange="toggleGlassesConfig()">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="config-block">
+      <div class="config-block-title">🔐 Conta</div>
+      <div class="config-block-sub">Informações da sua conta conectada.</div>
+      <div class="config-row">
+        <div class="config-label">Usuário</div>
+        <span id="config-user-email" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);">—</span>
+      </div>
+      <div class="config-row">
+        <div class="config-label">UID</div>
+        <span id="config-user-uid" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">—</span>
+      </div>
+      <div class="config-row" style="margin-top:4px;">
+        <div class="config-label">Sair da conta</div>
+        <button class="config-danger-btn" onclick="doLogout()">↩ Logout</button>
+      </div>
+    </div>
+
+    <div class="config-block">
+      <div class="config-block-title">📱 App Info</div>
+      <div class="config-row"><div class="config-label">Versão</div><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);">v4.1 — 2025</span></div>
+      <div class="config-row"><div class="config-label">Domínio</div><span id="config-domain" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);"></span></div>
+      <div class="config-row"><div class="config-label">Service Worker</div><span id="config-sw-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">verificando…</span></div>
+      <div style="margin-top:12px;">
+        <button class="config-test-btn" onclick="forcarAtualizacao()">🔄 Verificar atualização</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: SUPORTE -->
+<div class="tab-content" id="tab-suporte">
+  <div class="suporte-section">
+    <div class="suporte-hero">
+      <div class="suporte-hero-icon">🎧</div>
+      <div class="suporte-hero-title">Central de Suporte</div>
+      <div class="suporte-hero-sub">Abra um chamado e nossa equipe responderá em breve por e-mail.</div>
+    </div>
+
+    <div class="suporte-form-card">
+      <div class="suporte-form-group">
+        <label class="suporte-label">Tipo de chamado</label>
+        <div class="suporte-tipo-grid" id="suporte-tipo-grid">
+          <button class="suporte-tipo-btn active" data-tipo="melhoria" onclick="selecionarTipo(this)">💡 Melhoria</button>
+          <button class="suporte-tipo-btn" data-tipo="bug" onclick="selecionarTipo(this)">🐛 Bug / Erro</button>
+          <button class="suporte-tipo-btn" data-tipo="duvida" onclick="selecionarTipo(this)">❓ Dúvida</button>
+          <button class="suporte-tipo-btn" data-tipo="outro" onclick="selecionarTipo(this)">📝 Outro</button>
+        </div>
+      </div>
+
+      <div class="suporte-form-group">
+        <label class="suporte-label">Prioridade</label>
+        <select class="suporte-select" id="suporte-prioridade">
+          <option value="baixa">🟢 Baixa — não é urgente</option>
+          <option value="media" selected>🟡 Média — incomoda mas funciona</option>
+          <option value="alta">🔴 Alta — impede o uso</option>
+        </select>
+      </div>
+
+      <div class="suporte-form-group">
+        <label class="suporte-label">Título do chamado</label>
+        <input class="suporte-input" id="suporte-titulo" type="text"
+          placeholder="Ex: Botão de exportar não funciona no celular"/>
+      </div>
+
+      <div class="suporte-form-group">
+        <label class="suporte-label">Descrição detalhada</label>
+        <textarea class="suporte-textarea" id="suporte-desc" rows="5"
+          placeholder="Descreva o problema ou melhoria com o máximo de detalhes. &#10;Ex: Quando clico em... o app... em um iPhone 14 com iOS 17."></textarea>
+      </div>
+
+      <div class="suporte-form-group">
+        <label class="suporte-label">Seu e-mail (para receber a resposta)</label>
+        <input class="suporte-input" id="suporte-email" type="email"
+          placeholder="seu@email.com"/>
+      </div>
+
+      <button class="suporte-submit-btn" onclick="enviarChamado()" id="suporte-submit-btn">
+        <span id="suporte-submit-label">📨 Enviar Chamado</span>
+      </button>
+
+      <div class="suporte-sent" id="suporte-sent" style="display:none;">
+        <div class="suporte-sent-icon">✅</div>
+        <div class="suporte-sent-title">Chamado enviado!</div>
+        <div class="suporte-sent-sub">Recebemos sua mensagem e responderemos em breve no e-mail informado.</div>
+        <button class="suporte-novo-btn" onclick="novoChamado()">+ Abrir novo chamado</button>
+      </div>
+    </div>
+
+    <div class="suporte-faq">
+      <div class="suporte-faq-title">Dúvidas frequentes</div>
+      <div class="suporte-faq-item" onclick="this.classList.toggle('open')">
+        <div class="suporte-faq-q">Meus dados são seguros? <span>+</span></div>
+        <div class="suporte-faq-a">Sim. Todos os dados ficam no Firebase Firestore vinculados exclusivamente ao seu UID Google. Nenhuma informação é compartilhada.</div>
+      </div>
+      <div class="suporte-faq-item" onclick="this.classList.toggle('open')">
+        <div class="suporte-faq-q">Como funciona o modo offline? <span>+</span></div>
+        <div class="suporte-faq-a">O app usa cache local (Service Worker + Firestore offline). Você pode visualizar e editar dados sem internet. A sincronização ocorre automaticamente quando a conexão voltar.</div>
+      </div>
+      <div class="suporte-faq-item" onclick="this.classList.toggle('open')">
+        <div class="suporte-faq-q">Perdi meus dados, o que fazer? <span>+</span></div>
+        <div class="suporte-faq-a">Abra um chamado do tipo "Bug" com prioridade Alta. Informe seu e-mail de conta Google. Mantemos backups automáticos no Firestore.</div>
+      </div>
+      <div class="suporte-faq-item" onclick="this.classList.toggle('open')">
+        <div class="suporte-faq-q">Como instalar o app no celular? <span>+</span></div>
+        <div class="suporte-faq-a">No Chrome (Android): menu ⋮ → "Adicionar à tela inicial". No Safari (iOS): botão compartilhar → "Adicionar à Tela de Início".</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer class="footer">
@@ -1524,11 +1731,53 @@ function setLoadingState(on, msg) {
 }
 function resetLoadingState() { setLoadingState(false); }
 
-/* ── Esconde splash screen ── */
-function hideSplash() {
-  const splash = document.getElementById('splash');
-  if (splash) splash.style.display = 'none';
+/* ── Splash Screen — animação de saída profissional ── */
+let _splashProgress = 0;
+let _splashInterval = null;
+let _splashReady    = false;  // Firebase respondeu
+let _splashMin      = false;  // Tempo mínimo de exibição passou
+
+function startSplashProgress() {
+  const bar = document.getElementById('splash-bar');
+  if (!bar) return;
+  _splashInterval = setInterval(() => {
+    // Avança rápido até 85%, depois pausa esperando Firebase
+    if (_splashProgress < 85) _splashProgress += Math.random() * 4 + 2;
+    else if (_splashReady)    _splashProgress += 5;
+    _splashProgress = Math.min(_splashProgress, 100);
+    bar.style.width = _splashProgress + '%';
+    if (_splashProgress >= 100) { clearInterval(_splashInterval); _splashInterval = null; }
+  }, 60);
 }
+
+function hideSplash() {
+  _splashReady = true;
+  _splashProgress = 100;
+  const bar = document.getElementById('splash');
+  if (bar) document.getElementById('splash-bar') && (document.getElementById('splash-bar').style.width = '100%');
+
+  // Aguarda mínimo de 1.2s para a splash não piscar
+  if (!_splashMin) {
+    setTimeout(executarFadeSplash, 400);
+  } else {
+    executarFadeSplash();
+  }
+}
+
+function executarFadeSplash() {
+  const splash = document.getElementById('splash');
+  if (!splash || splash.style.display === 'none') return;
+  splash.classList.add('fade-out');
+  setTimeout(() => { splash.style.display = 'none'; }, 650);
+}
+
+// Inicia barra de progresso assim que o script carrega
+startSplashProgress();
+// Tempo mínimo de splash: 1.2s
+setTimeout(() => {
+  _splashMin = true;
+  if (_splashReady) executarFadeSplash();
+}, 1200);
 
 /* Verifica redirect do Google imediatamente ao carregar a página */
 verificarRedirectLogin();
@@ -1681,12 +1930,13 @@ function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  const idx = ['lancamentos','fixos','investimentos','graficos','metas'].indexOf(name);
-  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
-  if (name === 'graficos') setTimeout(() => { rebuildCharts(); }, 80);
-  if (name === 'investimentos') setTimeout(() => buildInvestDonut(), 80);
-  if (name === 'fixos') renderFixos();
-  if (name === 'metas') renderBudgets();
+  const idx = ['lancamentos','fixos','investimentos','graficos','metas','configuracoes','suporte'].indexOf(name);
+  if (idx >= 0) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  if (name === 'graficos')       setTimeout(() => { rebuildCharts(); }, 80);
+  if (name === 'investimentos')  setTimeout(() => buildInvestDonut(), 80);
+  if (name === 'fixos')          renderFixos();
+  if (name === 'metas')          renderBudgets();
+  if (name === 'configuracoes')  renderConfiguracoes();
 }
 
 /* ── Theme ── */
@@ -2493,578 +2743,329 @@ function attachSmartInputListeners() {
   window.renderDespesas = function() { _orig(); attachSmartInputListeners(); };
 })();
 
-</script>
-<script>
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 1 — INDEXEDDB: Cache local para modo offline real
-   Salva dados localmente antes do Firebase.
-   Ao abrir offline: carrega do IDB e sincroniza quando voltar.
-   ════════════════════════════════════════════════════════════════ */
-const IDB_NAME    = 'imperioAutonomo';
-const IDB_VERSION = 2;
-const IDB_STORE   = 'userData';
-let idb = null;
 
-function abrirIDB() {
-  return new Promise((resolve, reject) => {
-    if (idb) { resolve(idb); return; }
-    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(IDB_STORE)) {
-        db.createObjectStore(IDB_STORE, { keyPath: 'uid' });
-      }
-      if (!db.objectStoreNames.contains('syncQueue')) {
-        db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
-      }
-    };
-    req.onsuccess = e => { idb = e.target.result; resolve(idb); };
-    req.onerror   = () => reject(req.error);
-  });
+/* ════════════════════════════════════════════════════════════
+   SISTEMA DE ÁUDIO — Notificações customizáveis
+   ════════════════════════════════════════════════════════════ */
+
+// Estado do sistema de áudio (persiste no localStorage)
+let audioConfig = {
+  ativo:   true,
+  volume:  0.7,
+  arquivo: null,   // base64 do arquivo customizado
+  nome:    'som padrão'
+};
+
+// AudioContext criado sob demanda (política do browser: requer interação do user)
+let _audioCtx      = null;
+let _audioBuffer   = null;  // buffer do arquivo customizado decodificado
+
+function getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return _audioCtx;
 }
 
-async function salvarNoIDB(uid, dados) {
+/* Carrega configurações salvas do localStorage */
+function carregarAudioConfig() {
   try {
-    const db = await abrirIDB();
-    const tx = db.transaction(IDB_STORE, 'readwrite');
-    tx.objectStore(IDB_STORE).put({ uid, ...dados, _ts: Date.now() });
-    return new Promise(r => tx.oncomplete = r);
-  } catch(e) { console.warn('[IDB] Erro ao salvar:', e); }
-}
-
-async function carregarDoIDB(uid) {
-  try {
-    const db  = await abrirIDB();
-    const tx  = db.transaction(IDB_STORE, 'readonly');
-    const req = tx.objectStore(IDB_STORE).get(uid);
-    return new Promise((res, rej) => {
-      req.onsuccess = () => res(req.result || null);
-      req.onerror   = () => rej(req.error);
-    });
-  } catch(e) { console.warn('[IDB] Erro ao carregar:', e); return null; }
-}
-
-/* Fila de sincronização offline → Firebase */
-const syncQueue = [];
-let isSyncing   = false;
-
-async function adicionarNaFila(dados) {
-  syncQueue.push({ dados, tentativas: 0, ts: Date.now() });
-  atualizarBadgeSync();
-}
-
-async function processarFila() {
-  if (isSyncing || syncQueue.length === 0 || !navigator.onLine) return;
-  isSyncing = true;
-  atualizarBadgeSync();
-
-  while (syncQueue.length > 0) {
-    const item = syncQueue[0];
-    const user = auth.currentUser;
-    if (!user) break;
-    try {
-      await db.collection('users').doc(user.uid).set(item.dados, { merge: true });
-      syncQueue.shift();
-      console.log('[Sync] ✓ Item da fila sincronizado');
-    } catch(e) {
-      item.tentativas++;
-      if (item.tentativas >= 3) {
-        console.error('[Sync] Falha após 3 tentativas. Descartando:', e);
-        syncQueue.shift();
-      } else {
-        console.warn('[Sync] Tentativa', item.tentativas, 'falhou:', e.message);
-        break;
+    const saved = localStorage.getItem('ia_audio_config');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      audioConfig = { ...audioConfig, ...parsed };
+      // Re-decodifica buffer customizado se existir
+      if (audioConfig.arquivo) {
+        decodificarAudioBase64(audioConfig.arquivo).catch(() => {
+          audioConfig.arquivo = null; audioConfig.nome = 'som padrão';
+        });
       }
     }
-  }
-  isSyncing = false;
-  atualizarBadgeSync();
+  } catch(e) {}
 }
 
-function atualizarBadgeSync() {
-  const badge = document.getElementById('syncQueueBadge');
-  if (!badge) return;
-  if (syncQueue.length > 0 || isSyncing) {
-    badge.style.display = 'block';
-    badge.textContent   = isSyncing ? '⏳ Sincronizando…' : `📤 ${syncQueue.length} item(s) aguardando sync`;
-  } else {
-    badge.style.display = 'none';
-  }
+/* Salva config no localStorage */
+function salvarAudioConfig() {
+  try { localStorage.setItem('ia_audio_config', JSON.stringify(audioConfig)); } catch(e) {}
 }
 
-/* ── Patch salvarNaNuvem para usar IDB + fila offline ── */
-(function() {
-  const _origSalvar = window.salvarNaNuvem;
-  window.salvarNaNuvem = async function() {
-    const user = auth.currentUser;
-    if (!user) return;
+/* Converte base64 → ArrayBuffer → AudioBuffer decodificado */
+async function decodificarAudioBase64(b64) {
+  const bin  = atob(b64.split(',')[1] || b64);
+  const arr  = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  _audioBuffer = await getAudioCtx().decodeAudioData(arr.buffer.slice(0));
+}
 
-    const payload = { receitas, despesas, receitaOrigens, despesaCats, investimentos: investimentos || [], budgets };
+/* Toca o som de alerta (customizado ou padrão sintetizado) */
+function tocarSomAlerta() {
+  if (!audioConfig.ativo) return;
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
 
-    // 1. Sempre salva no IDB primeiro (instantâneo, offline-safe)
-    await salvarNoIDB(user.uid, payload);
-
-    // 2. Se online: salva no Firebase normalmente
-    if (navigator.onLine) {
-      _origSalvar();
+    if (_audioBuffer) {
+      // ── Arquivo customizado ──
+      const src = ctx.createBufferSource();
+      src.buffer = _audioBuffer;
+      const gain = ctx.createGain();
+      gain.gain.value = audioConfig.volume;
+      src.connect(gain);
+      gain.connect(ctx.destination);
+      src.start(0);
     } else {
-      // Se offline: coloca na fila para sync posterior
-      adicionarNaFila(payload);
-      showToast('💾 Salvo localmente — sincronizará ao reconectar', 'warn');
+      // ── Som padrão sintetizado (sem arquivo externo) ──
+      // Dois "bips" suaves em sequência
+      [0, 0.18].forEach(delay => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
+        osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + delay + 0.12);
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(audioConfig.volume * 0.4, ctx.currentTime + delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.18);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.2);
+      });
     }
-  };
-})();
-
-/* ── Patch carregarDaNuvem: carrega IDB primeiro, Firebase depois ── */
-(function() {
-  const _origCarregar = window.carregarDaNuvem;
-  window.carregarDaNuvem = async function() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    // Tenta IDB primeiro para resposta imediata
-    const local = await carregarDoIDB(user.uid);
-    if (local && (local.receitas?.length || local.despesas?.length)) {
-      console.log('[IDB] Dados locais encontrados — exibindo imediatamente');
-      receitas      = local.receitas      || [];
-      despesas      = local.despesas      || [];
-      investimentos = local.investimentos || [];
-      budgets       = local.budgets       || {};
-      if (local.receitaOrigens) receitaOrigens = local.receitaOrigens;
-      if (local.despesaCats)    despesaCats    = local.despesaCats;
-      buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
-    }
-
-    // Depois sincroniza com Firebase em background
-    _origCarregar();
-  };
-})();
-
-/* ── Detector online/offline ── */
-function atualizarStatusConexao() {
-  const banner  = document.getElementById('offlineBanner');
-  const dot     = document.querySelector('.sync-dot');
-  if (navigator.onLine) {
-    banner?.classList.remove('show');
-    dot?.classList.remove('offline');
-    // Tenta processar fila de sync ao reconectar
-    setTimeout(processarFila, 1500);
-  } else {
-    banner?.classList.add('show');
-    dot?.classList.add('offline');
-  }
-}
-window.addEventListener('online',  atualizarStatusConexao);
-window.addEventListener('offline', atualizarStatusConexao);
-atualizarStatusConexao();
-
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 2 — BACKUP & RESTAURAÇÃO JSON
-   ════════════════════════════════════════════════════════════════ */
-function openBackupModal() {
-  document.getElementById('bk-receitas-count').textContent = receitas.length;
-  document.getElementById('bk-despesas-count').textContent = despesas.length;
-  document.getElementById('bk-invest-count').textContent   = investimentos.length;
-  document.getElementById('backup-modal-overlay').classList.add('open');
-}
-function closeBackupModal() { document.getElementById('backup-modal-overlay').classList.remove('open'); }
-function closeBackupModalOutside(e) { if (e.target === document.getElementById('backup-modal-overlay')) closeBackupModal(); }
-
-function exportarBackupJSON() {
-  const snapshot = {
-    _versao: 5,
-    _exportadoEm: new Date().toISOString(),
-    _app: 'Império Autônomo',
-    receitas, despesas, investimentos, budgets, receitaOrigens, despesaCats
-  };
-  const json = JSON.stringify(snapshot, null, 2);
-  const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  const data = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  a.href     = url;
-  a.download = `imperio_autonomo_backup_${data}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast('✓ Backup exportado com sucesso!');
+  } catch(e) { console.warn('[Audio] Erro ao tocar som:', e); }
 }
 
-function importarBackupJSON(input) {
+/* Lida com upload de arquivo de áudio */
+async function handleAudioUpload(input) {
   const file = input.files[0];
   if (!file) return;
+
+  // Validação de tamanho (2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    showToast('Arquivo muito grande. Máximo: 2MB', 'error'); return;
+  }
+
   const reader = new FileReader();
-  reader.onload = e => {
-    let dados;
+  reader.onload = async (e) => {
     try {
-      dados = JSON.parse(e.target.result);
-    } catch {
-      showToast('❌ Arquivo inválido — não é um JSON válido', 'error');
-      return;
+      audioConfig.arquivo = e.target.result;
+      audioConfig.nome    = file.name;
+      await decodificarAudioBase64(audioConfig.arquivo);
+      salvarAudioConfig();
+      document.getElementById('audio-filename').textContent = 'Usando: ' + file.name;
+      showToast('✓ Áudio carregado! Testando…');
+      setTimeout(tocarSomAlerta, 400);
+    } catch(err) {
+      showToast('Formato de áudio não suportado', 'error');
+      audioConfig.arquivo = null; audioConfig.nome = 'som padrão';
     }
-
-    // Validação estrutural
-    const temReceitas = Array.isArray(dados.receitas);
-    const temDespesas = Array.isArray(dados.despesas);
-    if (!temReceitas || !temDespesas) {
-      showToast('❌ JSON não reconhecido — estrutura inválida', 'error');
-      return;
-    }
-
-    const totalItens = (dados.receitas?.length || 0) + (dados.despesas?.length || 0) + (dados.investimentos?.length || 0);
-
-    showConfirm(
-      '📥',
-      'Restaurar Backup?',
-      `O arquivo contém ${totalItens} registros (${dados.receitas.length} receitas, ${dados.despesas.length} despesas, ${dados.investimentos?.length || 0} investimentos).\n\nOs dados atuais serão substituídos. Esta ação não pode ser desfeita.`,
-      () => {
-        receitas      = dados.receitas      || [];
-        despesas      = dados.despesas      || [];
-        investimentos = dados.investimentos || [];
-        budgets       = dados.budgets       || {};
-        if (dados.receitaOrigens) receitaOrigens = dados.receitaOrigens;
-        if (dados.despesaCats)    despesaCats    = dados.despesaCats;
-        buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
-        salvarNaNuvem();
-        closeBackupModal();
-        showToast(`✓ ${totalItens} registros restaurados!`);
-        document.getElementById('backup-import-info').textContent = `✓ Importado: ${file.name}`;
-      }
-    );
   };
-  reader.readAsText(file);
-  input.value = ''; // reset para permitir re-importar o mesmo arquivo
+  reader.readAsDataURL(file);
 }
 
-function limparTodosDados() {
-  showConfirm(
-    '🗑',
-    'Apagar TODOS os dados?',
-    'Esta ação é irreversível. Todos os seus dados (receitas, despesas, investimentos e metas) serão removidos permanentemente do Firebase.\n\nFaça um backup antes de continuar!',
-    async () => {
-      receitas = []; despesas = []; investimentos = []; budgets = {};
-      buildFilterOptions(); renderReceitas(); renderDespesas(); renderInvestimentos(); updateKPIs();
-      salvarNaNuvem();
-      closeBackupModal();
-      showToast('🗑 Todos os dados foram apagados', 'error');
-    },
-    'Apagar tudo'
-  );
+function restaurarAudioPadrao() {
+  _audioBuffer = null;
+  audioConfig.arquivo = null;
+  audioConfig.nome    = 'som padrão';
+  salvarAudioConfig();
+  document.getElementById('audio-filename').textContent = 'Usando: som padrão';
+  showToast('✓ Som restaurado para o padrão');
+  setTimeout(tocarSomAlerta, 300);
 }
 
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 3 — CONFIRM DIALOG (substitui window.confirm nativo)
-   ════════════════════════════════════════════════════════════════ */
-let _confirmCallback = null;
+/* ── Toca som ao exibir alertas (se ativado) ── */
+const _origToggleAlerts = window.toggleAlerts;
+window.toggleAlerts = function() {
+  _origToggleAlerts && _origToggleAlerts();
+  const panel = document.getElementById('alerts-panel');
+  if (panel && panel.style.display !== 'none') {
+    const badge = document.getElementById('alertCount');
+    if (badge && badge.style.display !== 'none') tocarSomAlerta();
+  }
+};
 
-function showConfirm(icon, title, msg, onOk, okLabel = 'Confirmar') {
-  document.getElementById('confirm-icon').textContent  = icon;
-  document.getElementById('confirm-title').textContent = title;
-  document.getElementById('confirm-msg').textContent   = msg;
-  document.getElementById('confirm-ok-btn').textContent = okLabel;
-  _confirmCallback = onOk;
-  document.getElementById('confirm-overlay').classList.add('open');
+/* ════════════════════════════════════════════════════════════
+   ABA CONFIGURAÇÕES — render
+   ════════════════════════════════════════════════════════════ */
+function renderConfiguracoes() {
+  // Toggle notificação
+  const notifEl = document.getElementById('notif-toggle');
+  if (notifEl) notifEl.checked = audioConfig.ativo;
+
+  // Volume
+  const volEl = document.getElementById('notif-volume');
+  if (volEl) {
+    volEl.value = Math.round(audioConfig.volume * 100);
+    const disp = document.getElementById('vol-display');
+    if (disp) disp.textContent = Math.round(audioConfig.volume * 100) + '%';
+  }
+
+  // Nome arquivo
+  const fnEl = document.getElementById('audio-filename');
+  if (fnEl) fnEl.textContent = 'Usando: ' + audioConfig.nome;
+
+  // Tema ativo
+  const isDk = document.documentElement.dataset.theme === 'dark';
+  document.getElementById('btn-dark')?.classList.toggle('active', isDk);
+  document.getElementById('btn-light')?.classList.toggle('active', !isDk);
+
+  // Glasses
+  const glEl = document.getElementById('glasses-toggle-config');
+  if (glEl) glEl.checked = document.body.classList.contains('glasses-mode');
+
+  // Conta
+  const user = auth.currentUser;
+  if (user) {
+    const emailEl = document.getElementById('config-user-email');
+    const uidEl   = document.getElementById('config-user-uid');
+    if (emailEl) emailEl.textContent = user.email || user.displayName || '—';
+    if (uidEl)   uidEl.textContent   = user.uid;
+  }
+
+  // Domain e SW
+  const domEl = document.getElementById('config-domain');
+  if (domEl) domEl.textContent = location.hostname + location.pathname.split('/').slice(0,2).join('/');
+
+  const swEl = document.getElementById('config-sw-status');
+  if (swEl) {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      swEl.textContent = '✓ Ativo e cacheando';
+      swEl.style.color = 'var(--accent)';
+    } else if ('serviceWorker' in navigator) {
+      swEl.textContent = '⚠ Registrado, aguardando';
+      swEl.style.color = 'var(--warn)';
+    } else {
+      swEl.textContent = '✗ Não suportado';
+      swEl.style.color = 'var(--danger)';
+    }
+  }
 }
-function closeConfirm() {
-  document.getElementById('confirm-overlay').classList.remove('open');
-  _confirmCallback = null;
+
+function salvarConfig() {
+  audioConfig.ativo  = document.getElementById('notif-toggle')?.checked ?? true;
+  audioConfig.volume = (parseInt(document.getElementById('notif-volume')?.value || 70)) / 100;
+  salvarAudioConfig();
 }
-document.getElementById('confirm-ok-btn').addEventListener('click', () => {
-  if (_confirmCallback) _confirmCallback();
-  closeConfirm();
-});
 
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 4 — BOTÃO DE INSTALAÇÃO PWA
-   ════════════════════════════════════════════════════════════════ */
-let _deferredInstall = null;
+function setTheme(tema) {
+  document.documentElement.dataset.theme = tema;
+  document.getElementById('themeLabel').textContent = tema === 'dark' ? 'Light' : 'Dark';
+  document.getElementById('btn-dark')?.classList.toggle('active', tema === 'dark');
+  document.getElementById('btn-light')?.classList.toggle('active', tema === 'light');
+  setTimeout(rebuildCharts, 60);
+}
 
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  _deferredInstall = e;
-  // Não mostra se usuário já dispensou
-  if (sessionStorage.getItem('pwa_dismissed')) return;
+function toggleGlassesConfig() {
+  const on = document.getElementById('glasses-toggle-config')?.checked;
+  document.body.classList.toggle('glasses-mode', on);
+  document.getElementById('glassesToggle')?.classList.toggle('active', on);
+  document.getElementById('glassesLabel').textContent = on ? 'Ativo' : 'Glasses';
+  localStorage.setItem('ia_glasses', on ? '1' : '0');
+}
+
+function forcarAtualizacao() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.update());
+      showToast('✓ Verificando atualizações…');
+    });
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ABA SUPORTE — Envio de chamados por e-mail
+   Usa mailto: como fallback sem servidor (100% client-side)
+   ════════════════════════════════════════════════════════════ */
+const EMAIL_SUPORTE = 'aquino.alexandre08@gmail.com';
+let tipoSelecionado = 'melhoria';
+
+function selecionarTipo(btn) {
+  document.querySelectorAll('.suporte-tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  tipoSelecionado = btn.dataset.tipo;
+}
+
+function enviarChamado() {
+  const titulo    = document.getElementById('suporte-titulo').value.trim();
+  const desc      = document.getElementById('suporte-desc').value.trim();
+  const email     = document.getElementById('suporte-email').value.trim();
+  const prioridade= document.getElementById('suporte-prioridade').value;
+  const user      = auth.currentUser;
+
+  if (!titulo) { showToast('Informe o título do chamado', 'error'); document.getElementById('suporte-titulo').focus(); return; }
+  if (!desc)   { showToast('Descreva o problema ou melhoria', 'error'); document.getElementById('suporte-desc').focus(); return; }
+  if (!email)  { showToast('Informe seu e-mail para resposta', 'error'); document.getElementById('suporte-email').focus(); return; }
+
+  const tipos = { melhoria:'💡 Melhoria', bug:'🐛 Bug / Erro', duvida:'❓ Dúvida', outro:'📝 Outro' };
+  const prioridades = { baixa:'🟢 Baixa', media:'🟡 Média', alta:'🔴 Alta' };
+
+  const assunto = `[Império Autônomo] ${tipos[tipoSelecionado]} — ${titulo}`;
+  const corpo = [
+    `CHAMADO DE SUPORTE — IMPÉRIO AUTÔNOMO`,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `Tipo:       ${tipos[tipoSelecionado]}`,
+    `Prioridade: ${prioridades[prioridade]}`,
+    ``,
+    `TÍTULO: ${titulo}`,
+    ``,
+    `DESCRIÇÃO:`,
+    desc,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `Solicitante: ${email}`,
+    `Usuário UID: ${user ? user.uid : 'não autenticado'}`,
+    `Conta:       ${user ? (user.email || user.displayName || '—') : '—'}`,
+    `Domínio:     ${location.href}`,
+    `User-Agent:  ${navigator.userAgent.substring(0,120)}`,
+    `Data/Hora:   ${new Date().toLocaleString('pt-BR')}`,
+    ``,
+    `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    `Enviado pela Central de Suporte do Império Autônomo.`,
+  ].join('
+');
+
+  const mailtoLink = `mailto:${EMAIL_SUPORTE}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}&reply-to=${encodeURIComponent(email)}`;
+
+  // Salva chamado no Firestore (log)
+  if (user) {
+    db.collection('users').doc(user.uid).collection('chamados').add({
+      tipo: tipoSelecionado, prioridade, titulo, desc, email,
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(() => {});
+  }
+
+  // Abre cliente de e-mail
+  window.location.href = mailtoLink;
+
+  // Exibe confirmação após 1s (tempo para o mailto abrir)
   setTimeout(() => {
-    document.getElementById('pwa-install-banner').classList.add('show');
-  }, 3000);
-});
-
-document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
-  if (!_deferredInstall) return;
-  _deferredInstall.prompt();
-  const { outcome } = await _deferredInstall.userChoice;
-  if (outcome === 'accepted') {
-    document.getElementById('pwa-install-banner').classList.remove('show');
-    showToast('✓ App instalado com sucesso!');
-  }
-  _deferredInstall = null;
-});
-
-function dismissPwaInstall() {
-  document.getElementById('pwa-install-banner').classList.remove('show');
-  sessionStorage.setItem('pwa_dismissed', '1');
+    document.querySelector('.suporte-form-card').querySelector('button[onclick="enviarChamado()"]') &&
+    mostrarSuporteSent();
+  }, 1000);
 }
 
-window.addEventListener('appinstalled', () => {
-  document.getElementById('pwa-install-banner').classList.remove('show');
-  showToast('📲 Império Autônomo instalado!');
-});
-
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 5 — NOTIFICAÇÕES PUSH (Firebase-free, Web Push API)
-   ════════════════════════════════════════════════════════════════ */
-async function togglePushNotifications() {
-  const btn = document.getElementById('notifBtn');
-  if (!('Notification' in window)) {
-    showToast('Notificações não suportadas neste navegador', 'warn');
-    return;
-  }
-
-  if (Notification.permission === 'granted') {
-    // Já ativo: manda notificação de teste
-    enviarNotificacaoLocal('🔔 Notificações ativas!', 'Você receberá alertas sobre vencimentos e metas.');
-    btn.classList.add('active');
-    return;
-  }
-
-  if (Notification.permission === 'denied') {
-    showToast('🔕 Permissão negada. Ative nas configurações do navegador.', 'warn');
-    return;
-  }
-
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
-    btn.classList.add('active');
-    enviarNotificacaoLocal('✅ Notificações ativadas!', 'Império Autônomo vai te avisar sobre vencimentos e metas.');
-    // Agenda checagem diária via SW
-    agendarNotificacoesVencimento();
-    showToast('✓ Notificações ativadas!');
-  } else {
-    showToast('Permissão não concedida', 'warn');
-  }
+function mostrarSuporteSent() {
+  document.getElementById('suporte-submit-btn').style.display = 'none';
+  document.getElementById('suporte-sent').style.display = 'block';
 }
 
-function enviarNotificacaoLocal(title, body, options = {}) {
-  if (Notification.permission !== 'granted') return;
-  const sw = navigator.serviceWorker?.controller;
-  if (sw) {
-    sw.postMessage({ type: 'SHOW_NOTIFICATION', title, body, ...options });
-  } else {
-    new Notification(title, {
-      body,
-      icon: './icon-192.png',
-      badge: './icon-192.png',
-      ...options
-    });
-  }
+function novoChamado() {
+  document.getElementById('suporte-titulo').value  = '';
+  document.getElementById('suporte-desc').value    = '';
+  document.getElementById('suporte-email').value   = '';
+  document.getElementById('suporte-submit-btn').style.display = '';
+  document.getElementById('suporte-sent').style.display      = 'none';
+  tipoSelecionado = 'melhoria';
+  document.querySelectorAll('.suporte-tipo-btn').forEach((b,i) => b.classList.toggle('active', i === 0));
 }
 
-function agendarNotificacoesVencimento() {
-  // Verifica alertas e notifica uma vez por dia
-  const ultimaChecagem = localStorage.getItem('ia_last_notif_check');
-  const hoje = new Date().toDateString();
-  if (ultimaChecagem === hoje) return;
-  localStorage.setItem('ia_last_notif_check', hoje);
-
-  const hoje2 = new Date();
-  const em7d  = new Date(hoje2.getTime() + 7 * 86400000);
-  const proxVencimentos = despesas.filter(d => {
-    if (!d.data) return false;
-    const dt = new Date(d.data + 'T12:00:00');
-    return dt >= hoje2 && dt <= em7d;
-  });
-
-  if (proxVencimentos.length > 0) {
-    const total = proxVencimentos.reduce((a, d) => a + d.valor, 0);
-    enviarNotificacaoLocal(
-      `⚠️ ${proxVencimentos.length} vencimento(s) próximo(s)`,
-      `Total: R$ ${fmtBRL(total)} nos próximos 7 dias`
-    );
-  }
-}
-
-// Ativa ícone se já tem permissão
-if (Notification.permission === 'granted') {
-  document.getElementById('notifBtn')?.classList.add('active');
-}
-
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 6 — UX PREMIUM: RIPPLE, MICRO-ANIMAÇÕES, TRANSIÇÕES
-   ════════════════════════════════════════════════════════════════ */
-
-/* Ripple Effect em todos os botões */
-function adicionarRipple(e) {
-  const btn  = e.currentTarget;
-  const rect = btn.getBoundingClientRect();
-  const size = Math.max(rect.width, rect.height);
-  const x    = e.clientX - rect.left - size / 2;
-  const y    = e.clientY - rect.top  - size / 2;
-  const rip  = document.createElement('span');
-  rip.className = 'ripple';
-  rip.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
-  btn.appendChild(rip);
-  rip.addEventListener('animationend', () => rip.remove());
-}
-
-function ativarRipple() {
-  document.querySelectorAll('button:not(.ripple-host)').forEach(btn => {
-    btn.classList.add('ripple-host');
-    btn.addEventListener('click', adicionarRipple);
-  });
-}
-ativarRipple();
-
-// Reaplica ripple quando novo conteúdo é renderizado
-(function patchRenderForRipple() {
-  const fns = ['renderReceitas','renderDespesas','renderInvestimentos','renderBudgets','renderFixos'];
-  fns.forEach(fn => {
-    const orig = window[fn];
-    if (orig) window[fn] = function() { orig.apply(this, arguments); setTimeout(ativarRipple, 50); };
-  });
-})();
-
-/* Transições SPA entre tabs */
-(function patchSwitchTab() {
-  const _orig = window.switchTab;
-  window.switchTab = function(name) {
-    _orig(name);
-    const content = document.getElementById('tab-' + name);
-    if (content) {
-      content.classList.remove('tab-entering');
-      void content.offsetWidth; // force reflow
-      content.classList.add('tab-entering');
-    }
-  };
-})();
-
-/* Animação stagger nos KPI cards ao carregar */
-function animarKPICards() {
-  document.querySelectorAll('.kpi-card').forEach((card, i) => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(16px)';
-    setTimeout(() => {
-      card.style.transition = 'opacity .4s ease, transform .4s ease';
-      card.style.opacity    = '1';
-      card.style.transform  = 'translateY(0)';
-    }, 60 + i * 70);
-  });
-}
-
-/* Skeleton loading para tabelas */
-function mostrarSkeletonTabela(tbodyId, colunas = 5) {
-  const tbody = document.getElementById(tbodyId);
-  if (!tbody) return;
-  tbody.innerHTML = Array.from({ length: 4 }, () => `
-    <tr>${Array.from({ length: colunas }, () => `
-      <td><div class="skeleton skeleton-row" style="height:14px;margin:4px 0;"></div></td>`).join('')}
-    </tr>`).join('');
-}
-
-/* Anima KPIs ao atualizar valores */
-(function patchUpdateKPIs() {
-  const _orig = window.updateKPIs;
-  window.updateKPIs = function() {
-    _orig.apply(this, arguments);
-    // Pulsa os valores ao atualizar
-    document.querySelectorAll('.kpi-value').forEach(el => {
-      el.style.transition = 'transform .15s ease';
-      el.style.transform  = 'scale(1.06)';
-      setTimeout(() => { el.style.transform = 'scale(1)'; }, 150);
-    });
-    // Verifica notificações de vencimento
-    if (Notification.permission === 'granted') agendarNotificacoesVencimento();
-  };
-})();
-
-/* Patch carregarDaNuvem para mostrar skeleton enquanto carrega */
-(function patchCarregarSkeleton() {
-  const _orig = window.carregarDaNuvem;
-  window.carregarDaNuvem = function() {
-    mostrarSkeletonTabela('receita-body', 6);
-    mostrarSkeletonTabela('despesa-body', 6);
-    _orig.apply(this, arguments);
-    // Anima KPI cards após carregar
-    setTimeout(animarKPICards, 300);
-  };
-})();
-
-/* Hover 3D suave nos KPI cards (apenas desktop) */
-if (window.matchMedia('(hover:hover)').matches) {
-  document.addEventListener('mousemove', e => {
-    document.querySelectorAll('.kpi-card, .flash-card, .panel').forEach(card => {
-      const rect  = card.getBoundingClientRect();
-      const cx    = rect.left + rect.width  / 2;
-      const cy    = rect.top  + rect.height / 2;
-      const dx    = (e.clientX - cx) / rect.width;
-      const dy    = (e.clientY - cy) / rect.height;
-      const dist  = Math.sqrt(dx*dx + dy*dy);
-      if (dist < 0.7) {
-        card.style.transform = `perspective(800px) rotateY(${dx*4}deg) rotateX(${-dy*4}deg) translateY(-2px)`;
-      } else {
-        card.style.transform = '';
-      }
-    });
-  });
-}
-
-/* Input focus animado */
-document.addEventListener('focusin', e => {
-  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
-    e.target.style.transition = 'box-shadow .2s ease';
-    e.target.style.boxShadow  = '0 0 0 3px var(--accent-glow)';
-  }
-});
-document.addEventListener('focusout', e => {
-  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) {
-    e.target.style.boxShadow = '';
+/* Auto-preenche email do usuário logado */
+auth.onAuthStateChanged(u => {
+  if (u && u.email) {
+    const el = document.getElementById('suporte-email');
+    if (el && !el.value) el.value = u.email;
   }
 });
 
-/* ── Swipe horizontal entre tabs (mobile) ── */
-(function() {
-  const TABS = ['lancamentos','fixos','investimentos','graficos','metas'];
-  let startX = 0, startY = 0;
-  const main = document.body;
+/* Carrega config de áudio no início */
+carregarAudioConfig();
 
-  main.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  }, { passive: true });
-
-  main.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = e.changedTouches[0].clientY - startY;
-    // Só swipe horizontal (ignora scroll vertical)
-    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
-    // Não faz swipe dentro de tabelas com scroll horizontal
-    if (e.target.closest('.table-wrap, .modal, .alerts-panel')) return;
-
-    const activeTab = document.querySelector('.tab-content.active');
-    if (!activeTab) return;
-    const idx = TABS.indexOf(activeTab.id.replace('tab-',''));
-    if (idx < 0) return;
-
-    const nextIdx = dx < 0
-      ? Math.min(idx + 1, TABS.length - 1)
-      : Math.max(idx - 1, 0);
-    if (nextIdx !== idx) switchTab(TABS[nextIdx]);
-  }, { passive: true });
-})();
-
-/* ════════════════════════════════════════════════════════════════
-   MÓDULO 7 — REGRAS FIRESTORE (lembrete no console)
-   ════════════════════════════════════════════════════════════════ */
-console.log(
-`%c🔐 FIRESTORE SECURITY RULES — LEMBRE DE APLICAR:
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}`,
-'color:#00e5a0;font-family:monospace;font-size:11px;'
-);
 </script>
 <script>
 if ('serviceWorker' in navigator) {
@@ -3089,12 +3090,11 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script>
-/* hideSplash é chamado pelo onAuthStateChanged — mas como fallback,
-   se o Firebase demorar mais que 4s, esconde o splash mesmo assim */
+/* Fallback: se Firebase demorar mais de 5s, força saída do splash */
 setTimeout(() => {
-  const splash = document.getElementById('splash');
-  if (splash) splash.style.display = 'none';
-}, 4000);
+  _splashReady = true;
+  executarFadeSplash();
+}, 5000);
 
 /* Detecta atualização de SW e notifica o usuário */
 if ('serviceWorker' in navigator) {
@@ -3104,105 +3104,5 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<!-- OFFLINE BANNER -->
-<div class="offline-banner" id="offlineBanner">
-  📡 Sem conexão — trabalhando offline. Dados serão sincronizados ao reconectar.
-</div>
-
-<!-- SYNC QUEUE BADGE -->
-<div class="sync-queue-badge" id="syncQueueBadge">⏳ Sincronizando…</div>
-
-<!-- PWA INSTALL BANNER -->
-<div id="pwa-install-banner">
-  <div class="pwa-install-card">
-    <div class="pwa-install-icon">📲</div>
-    <div class="pwa-install-text">
-      <div class="pwa-install-title">Instalar Império Autônomo</div>
-      <div class="pwa-install-sub">Abra como app nativo, sem navegador</div>
-      <div class="pwa-install-actions">
-        <button class="pwa-install-btn" id="pwaInstallBtn">Instalar App</button>
-        <button class="pwa-install-dismiss" onclick="dismissPwaInstall()">Agora não</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: BACKUP & RESTAURAÇÃO -->
-<div class="modal-overlay" id="backup-modal-overlay" onclick="closeBackupModalOutside(event)">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-header">
-      <div class="modal-title">💾 Backup & Restauração</div>
-      <button class="modal-close" onclick="closeBackupModal()">×</button>
-    </div>
-    <div class="backup-modal-body">
-      <!-- Stats -->
-      <div class="backup-stats">
-        <div class="backup-stat">
-          <div class="backup-stat-val" id="bk-receitas-count">0</div>
-          <div class="backup-stat-label">Receitas</div>
-        </div>
-        <div class="backup-stat">
-          <div class="backup-stat-val" id="bk-despesas-count">0</div>
-          <div class="backup-stat-label">Despesas</div>
-        </div>
-        <div class="backup-stat">
-          <div class="backup-stat-val" id="bk-invest-count">0</div>
-          <div class="backup-stat-label">Investimentos</div>
-        </div>
-      </div>
-
-      <!-- Exportar -->
-      <div class="backup-section">
-        <div class="backup-section-title">📤 Exportar dados</div>
-        <div class="backup-btn-row">
-          <button class="backup-btn backup-btn-export" onclick="exportarBackupJSON()">
-            📄 Backup JSON completo
-          </button>
-          <button class="backup-btn backup-btn-export" onclick="exportarExcel()">
-            📊 Exportar Excel (.xlsx)
-          </button>
-        </div>
-        <div class="backup-info">JSON contém todos os dados (receitas, despesas, investimentos, metas, categorias). Use para migração ou segurança.</div>
-      </div>
-
-      <!-- Importar -->
-      <div class="backup-section">
-        <div class="backup-section-title">📥 Importar / Restaurar</div>
-        <div class="backup-btn-row">
-          <button class="backup-btn backup-btn-import" onclick="document.getElementById('backup-file-input').click()">
-            📂 Importar JSON de Backup
-          </button>
-        </div>
-        <input type="file" id="backup-file-input" accept=".json" style="display:none" onchange="importarBackupJSON(this)"/>
-        <div class="backup-info" id="backup-import-info">Selecione um arquivo .json gerado por esta aplicação. Os dados atuais serão substituídos após confirmação.</div>
-      </div>
-
-      <!-- Perigo -->
-      <div class="backup-section">
-        <div class="backup-section-title" style="color:var(--danger)">⚠️ Zona de perigo</div>
-        <div class="backup-btn-row">
-          <button class="backup-btn backup-btn-danger" onclick="limparTodosDados()">
-            🗑 Apagar todos os dados
-          </button>
-        </div>
-        <div class="backup-info">Esta ação remove permanentemente todos os seus dados do Firebase. Faça um backup antes!</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- CONFIRM DIALOG -->
-<div class="confirm-overlay" id="confirm-overlay">
-  <div class="confirm-box">
-    <div class="confirm-icon" id="confirm-icon">⚠️</div>
-    <div class="confirm-title" id="confirm-title">Confirmar ação</div>
-    <div class="confirm-msg" id="confirm-msg">Tem certeza?</div>
-    <div class="confirm-actions">
-      <button class="confirm-cancel" onclick="closeConfirm()">Cancelar</button>
-      <button class="confirm-ok" id="confirm-ok-btn">Confirmar</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
