@@ -1243,8 +1243,74 @@ html{scroll-behavior:smooth;}
 
 /* Placeholder avatar — mostrar inicial */
 .user-avatar-placeholder:empty{display:none;}
+
+/* ═══════════════════════════════════════════
+   MODO PRIVACIDADE — oculta valores sensíveis
+   ═══════════════════════════════════════════ */
+.privacy-toggle{
+  display:flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:99px;
+  border:1px solid var(--border);background:none;
+  color:var(--text2);font-size:16px;
+  transition:border-color .2s,color .2s,background .2s;
+  flex-shrink:0;cursor:pointer;
+}
+.privacy-toggle:hover{border-color:var(--border2);color:var(--accent);background:var(--accent-glow);}
+.privacy-toggle.active{border-color:var(--warn);color:var(--warn);background:var(--warn-glow);}
+
+/* Classe aplicada nos elementos com valores monetários */
+.private-val{
+  transition:filter .3s ease;
+  border-radius:4px;
+  display:inline-block;
+}
+body.privacy-mode .private-val{
+  filter:blur(10px);
+  user-select:none;
+  cursor:pointer;
+}
+body.privacy-mode .private-val:hover{
+  filter:blur(0px);
+}
+
+/* Inputs de valor nas tabelas */
+body.privacy-mode .val-input,
+body.privacy-mode .val-input-danger{
+  filter:blur(8px);
+  transition:filter .3s;
+  cursor:pointer;
+}
+body.privacy-mode .val-input:focus,
+body.privacy-mode .val-input-danger:focus,
+body.privacy-mode .val-input:hover,
+body.privacy-mode .val-input-danger:hover{
+  filter:blur(0px);
+}
+
+/* Cards de investimentos, contas e cartões */
+body.privacy-mode .invest-stat-val,
+body.privacy-mode .cartao-stat-val,
+body.privacy-mode .conta-saldo,
+body.privacy-mode #contas-total{
+  filter:blur(8px);
+  transition:filter .3s;
+  cursor:pointer;
+}
+body.privacy-mode .invest-stat-val:hover,
+body.privacy-mode .cartao-stat-val:hover,
+body.privacy-mode .conta-saldo:hover,
+body.privacy-mode #contas-total:hover{
+  filter:blur(0px);
+}
+
+/* Flash cards */
+body.privacy-mode .flash-val{
+  filter:blur(8px);
+  transition:filter .3s;
+}
+body.privacy-mode .flash-val:hover{filter:blur(0px);}
 </style>
-<body>
+</head>
 <div id="splash">
   <div id="splash-ring"></div>
   <div id="splash-center">
@@ -1312,6 +1378,9 @@ html{scroll-behavior:smooth;}
       🔔
       <span class="alert-badge-count" id="alertCount" style="display:none">0</span>
     </button>
+    <button class="privacy-toggle" id="privacyToggle" title="Ocultar/Mostrar valores" onclick="togglePrivacy()">
+      👁
+    </button>
     <button class="glasses-btn" id="glassesToggle" title="Modo Acessibilidade">
       <span>👓</span><span class="glasses-label" id="glassesLabel">Glasses</span>
     </button>
@@ -1357,35 +1426,35 @@ html{scroll-behavior:smooth;}
     <div class="kpi-card">
       <div class="kpi-card-bg"></div>
       <div class="kpi-tag">Saldo Atual</div>
-      <div class="kpi-value" id="kpi-saldo">R$ 0,00</div>
+      <div class="kpi-value private-val" id="kpi-saldo">R$ 0,00</div>
       <div class="kpi-sub neutral">Receitas − Despesas</div>
       <div class="kpi-icon">◈</div>
     </div>
     <div class="kpi-card accent-card">
       <div class="kpi-card-bg"></div>
       <div class="kpi-tag">Total Receitas</div>
-      <div class="kpi-value" id="kpi-receitas">R$ 0,00</div>
+      <div class="kpi-value private-val" id="kpi-receitas">R$ 0,00</div>
       <div class="kpi-sub positive" id="kpi-rec-sub">Período selecionado</div>
       <div class="kpi-icon">◉</div>
     </div>
     <div class="kpi-card danger-card">
       <div class="kpi-card-bg"></div>
       <div class="kpi-tag">Total Despesas</div>
-      <div class="kpi-value danger-val" id="kpi-despesas">R$ 0,00</div>
+      <div class="kpi-value danger-val private-val" id="kpi-despesas">R$ 0,00</div>
       <div class="kpi-sub negative" id="kpi-desp-sub">Período selecionado</div>
       <div class="kpi-icon">◇</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-card-bg"></div>
       <div class="kpi-tag">Lucro Líquido</div>
-      <div class="kpi-value" id="kpi-lucro">R$ 0,00</div>
+      <div class="kpi-value private-val" id="kpi-lucro">R$ 0,00</div>
       <div class="kpi-sub neutral">No período filtrado</div>
       <div class="kpi-icon">◆</div>
     </div>
     <div class="kpi-card invest-card">
       <div class="kpi-card-bg"></div>
       <div class="kpi-tag">Patrimônio Investido</div>
-      <div class="kpi-value invest-val" id="kpi-investido">R$ 0,00</div>
+      <div class="kpi-value invest-val private-val" id="kpi-investido">R$ 0,00</div>
       <div class="kpi-sub neutral">Total em ativos</div>
       <div class="kpi-icon">◎</div>
     </div>
@@ -4288,6 +4357,33 @@ function gerarRelatorioPDF() {
   showToast('✓ PDF gerado com sucesso!');
 }
 
+</script>
+<script>
+/* ================================================================
+   MODO PRIVACIDADE — Ocultar/Mostrar valores financeiros
+   ================================================================ */
+let privacyOn = localStorage.getItem('ia_privacy') === '1';
+
+function togglePrivacy() {
+  privacyOn = !privacyOn;
+  aplicarPrivacy();
+  localStorage.setItem('ia_privacy', privacyOn ? '1' : '0');
+  showToast(privacyOn ? '🙈 Valores ocultados' : '👁 Valores visíveis');
+}
+
+function aplicarPrivacy() {
+  const btn = document.getElementById('privacyToggle');
+  if (privacyOn) {
+    document.body.classList.add('privacy-mode');
+    if (btn) { btn.classList.add('active'); btn.textContent = '🙈'; btn.title = 'Mostrar valores'; }
+  } else {
+    document.body.classList.remove('privacy-mode');
+    if (btn) { btn.classList.remove('active'); btn.textContent = '👁'; btn.title = 'Ocultar valores'; }
+  }
+}
+
+// Restaura estado salvo ao carregar
+aplicarPrivacy();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
