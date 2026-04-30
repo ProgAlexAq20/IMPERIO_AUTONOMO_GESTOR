@@ -4549,7 +4549,7 @@ if ('serviceWorker' in navigator) {
   <div class="byok-modal">
     <div class="byok-modal-header">
       <div class="byok-modal-icon">🔑</div>
-      <div class="byok-modal-title">Sua Chave Gemini API</div>
+      <div class="byok-modal-title">Sua Chave  API</div>
       <div class="byok-modal-sub">A chave é salva <strong>apenas no seu dispositivo</strong> (localStorage).<br>Nunca enviada ao servidor.</div>
     </div>
     <div class="byok-modal-body">
@@ -4566,7 +4566,7 @@ if ('serviceWorker' in navigator) {
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   CONSULTOR IA — BYOK + Multimodal (Gemini 1.5 Flash)
+   CONSULTOR IA — BYOK + Multimodal (Gemini 2.5 Flash)
    ══════════════════════════════════════════════════════════════ */
 
 const IA_KEY_STORAGE = 'imperio_gemini_key';
@@ -4776,10 +4776,13 @@ async function iaSend() {
     };
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
-      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }
     );
-
     const data = await res.json();
 
     if (!res.ok) {
