@@ -133,7 +133,7 @@ input,select,textarea{font-family:inherit}
 /* ═══════════════════════════════════════════
    CONFIG
    ═══════════════════════════════════════════ */
-.config-section{display:flex;flex-direction:column;gap:16px;max-width:700px;}
+.config-section{display:flex;flex-direction:column;gap:16px;max-width:700px;margin:0 auto;width:100%;}
 .config-block{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:20px 22px;}
 .config-block-title{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px;}
 .config-block-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:14px;}
@@ -2772,7 +2772,7 @@ function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
   // Anima saída do tab atual e entra no novo
-  const tabs = ['lancamentos','fixos','investimentos','cartoes','contas','simulador','graficos','metas','configuracoes','suporte'];
+  const tabs = ['lancamentos','fixos','investimentos','cartoes','contas','simulador','graficos','metas','configuracoes','suporte','consultor-ia'];
   const idx = tabs.indexOf(name);
   if (idx >= 0) document.querySelectorAll('.tab-btn')[idx]?.classList.add('active');
 
@@ -4059,7 +4059,7 @@ carregarAudioConfig();
 /* ================================================================
    SUPORTE
    ================================================================ */
-const EMAIL_SUPORTE = 'imperiosuporte76@gmail.com';
+const EMAIL_SUPORTE = 'aquino.alexandre08@gmail.com';
 let tipoSelecionado = 'melhoria';
 function selecionarTipo(btn) {
   document.querySelectorAll('.suporte-tipo-btn').forEach(b => b.classList.remove('active'));
@@ -4549,8 +4549,10 @@ if ('serviceWorker' in navigator) {
   <div class="byok-modal">
     <div class="byok-modal-header">
       <div class="byok-modal-icon">🔑</div>
-      <div class="byok-modal-title">Sua Chave  API</div>
-      <div class="byok-modal-sub">A chave é salva <strong>apenas no seu dispositivo</strong> (localStorage).<br>Nunca enviada ao servidor.</div>
+      <div class="byok-modal-title">Sua Chave Gemini API</div>
+      <div class="byok-modal-sub">A chave é salva <strong>apenas no seu dispositivo</strong> (localStorage).<br>A chave é salva apenas neste dispositivo.
+Ela não é enviada para o Firebase ou servidor do Império Autônomo.
+Ao usar a IA, sua chave e os dados analisados são enviados diretamente para a API Gemini do Google.</div>
     </div>
     <div class="byok-modal-body">
       <div class="byok-input-wrap">
@@ -4560,6 +4562,27 @@ if ('serviceWorker' in navigator) {
       <button class="byok-save-btn" onclick="byokSave()">Salvar e Continuar</button>
       <a class="byok-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">→ Como obter sua chave gratuita no Google AI Studio</a>
       <button class="byok-clear-btn" id="byok-clear-btn" onclick="byokClear()" style="display:none;">🗑 Remover chave salva</button>
+      <button class="byok-clear-btn" style="border-color:var(--border2);color:var(--accent);margin-top:8px;" onclick="byokOpenVideo()">▶ Ver tutorial em vídeo</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="byok-modal-overlay" id="video-overlay" style="z-index:700;">
+  <div class="byok-modal" style="max-width:560px;">
+    <div class="byok-modal-header">
+      <div class="byok-modal-icon">🎬</div>
+      <div class="byok-modal-title">Tutorial: Chave Gemini API</div>
+      <div class="byok-modal-sub">Como obter e configurar sua chave gratuitamente.</div>
+    </div>
+    <div class="byok-modal-body">
+      <div id="video-container">
+        <video id="tutorial-video" controls playsinline preload="metadata" style="width:100%;border-radius:10px;background:#000;display:none;" onerror="byokVideoError()">
+          <<source src="tutorial-chave-gemini.mp4" type="video/mp4">
+        </video>
+        <div id="video-not-found" style="display:none;padding:20px;text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:var(--text3);border:1px dashed var(--border);border-radius:10px;">Vídeo não encontrado.</div>
+      </div>
+      <button class="byok-save-btn" style="margin-top:12px;" onclick="byokCloseVideo()">← Voltar</button>
     </div>
   </div>
 </div>
@@ -4570,12 +4593,19 @@ if ('serviceWorker' in navigator) {
    ══════════════════════════════════════════════════════════════ */
 
 const IA_KEY_STORAGE = 'imperio_gemini_key';
+const IA_MODEL_PRIMARY  = 'gemini-2.5-flash';
+const IA_MODEL_FALLBACK = 'gemini-2.5-flash-lite';
 let iaAttachData = null;   // { base64, mimeType, name }
 let iaHistory    = [];     // { role, parts }[]
 let iaIsSending  = false;
 
 /* ── Helpers ── */
 function iaGetKey() { return localStorage.getItem(IA_KEY_STORAGE) || ''; }
+
+function iaEscapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
 function iaUpdateKeyUI() {
   const has = !!iaGetKey();
@@ -4611,7 +4641,8 @@ function byokToggleEye() {
   if (btn) btn.textContent = show ? '🙈' : '👁';
 }
 function byokSave() {
-  const val = (document.getElementById('byok-key-input')?.value || '').trim();
+  const raw = document.getElementById('byok-key-input')?.value || '';
+  const val = raw.replace(/[\s\t\n\r]/g, '');
   if (!val.startsWith('AIza')) {
     showToast('⚠️ Chave inválida — deve iniciar com AIza');
     return;
@@ -4630,6 +4661,37 @@ function byokClear() {
   iaUpdateKeyUI();
   showToast('🗑 Chave removida');
 }
+
+/* ── Video Tutorial ── */
+function byokOpenVideo() {
+  closeByokModal();
+  const ov = document.getElementById('video-overlay');
+  const vid = document.getElementById('tutorial-video');
+  const notFound = document.getElementById('video-not-found');
+  if (ov) ov.classList.add('open');
+  // Try to load video
+  if (vid) {
+    vid.style.display = 'block';
+    notFound.style.display = 'none';
+    vid.load();
+  }
+}
+function byokCloseVideo() {
+  const ov = document.getElementById('video-overlay');
+  const vid = document.getElementById('tutorial-video');
+  if (vid) vid.pause();
+  if (ov) ov.classList.remove('open');
+  openByokModal();
+}
+function byokVideoError() {
+  const vid = document.getElementById('tutorial-video');
+  const notFound = document.getElementById('video-not-found');
+  if (vid) vid.style.display = 'none';
+  if (notFound) notFound.style.display = 'block';
+}
+document.getElementById('video-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) byokCloseVideo();
+});
 
 /* ── File Attach ── */
 function iaHandleFile(input) {
@@ -4655,43 +4717,71 @@ function iaRemoveAttach() {
   if (preview) preview.style.display = 'none';
 }
 
+/* ── Dados período atual (mês corrente) ── */
+function iaDadosPeriodoAtual() {
+  const now = new Date();
+  const anoAtual = now.getFullYear();
+  const mesAtual = now.getMonth() + 1;
+  const mesStr = String(mesAtual).padStart(2,'0');
+  const prefixo = `${anoAtual}-${mesStr}`;
+
+  const recMes  = (typeof receitas     !== 'undefined' ? receitas     : []).filter(r => (r.data||'').startsWith(prefixo));
+  const despMes = (typeof despesas     !== 'undefined' ? despesas     : []).filter(d => (d.data||'').startsWith(prefixo));
+  const invMes  = (typeof investimentos!== 'undefined' ? investimentos: []);
+
+  const totalRecMes  = recMes.reduce((s,r)=>s+r.valor,0);
+  const totalDespMes = despMes.reduce((s,d)=>s+d.valor,0);
+  const totalInvTotal= invMes.reduce((s,i)=>s+(i.qtd*i.preco),0);
+  const lucroMes     = totalRecMes - totalDespMes;
+
+  const recSummary  = recMes.map(r=>`${r.data}|${r.origem||''}|${r.desc||''}|R$${r.valor}`).join('\n') || 'Nenhuma';
+  const despSummary = despMes.map(d=>`${d.data}|${d.cat||''}|${d.desc||''}|R$${d.valor}`).join('\n') || 'Nenhuma';
+  const invSummary  = invMes.map(i=>`${i.ticker||''}|${i.cat||''}|Qtd:${i.qtd}|PM:R$${i.preco}|Total:R$${(i.qtd*i.preco).toFixed(2)}`).join('\n') || 'Nenhum';
+
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+  return { mes: meses[mesAtual-1], ano: anoAtual, totalRecMes, totalDespMes, lucroMes, totalInvTotal,
+           recSummary, despSummary, invSummary };
+}
+
 /* ── System Prompt Builder ── */
 function iaBuildSystemPrompt() {
-  const totalRec  = receitas.reduce((s, r) => s + r.valor, 0);
-  const totalDesp = despesas.reduce((s, d) => s + d.valor, 0);
-  const totalInv  = investimentos.reduce((s, i) => s + i.qtd * i.preco, 0);
-  const lucro     = totalRec - totalDesp;
+  const p = iaDadosPeriodoAtual();
+  const totalRec  = (typeof receitas    !=='undefined'?receitas    :[]).reduce((s,r)=>s+r.valor,0);
+  const totalDesp = (typeof despesas    !=='undefined'?despesas    :[]).reduce((s,d)=>s+d.valor,0);
+  const totalInv  = (typeof investimentos!=='undefined'?investimentos:[]).reduce((s,i)=>s+(i.qtd*i.preco),0);
 
-  const recSummary  = receitas.slice(-30).map(r  => `${r.data} | ${r.origem} | ${r.desc || ''} | R$${r.valor}`).join('\n');
-  const despSummary = despesas.slice(-30).map(d  => `${d.data} | ${d.cat} | ${d.desc || ''} | R$${d.valor}`).join('\n');
-  const invSummary  = investimentos.map(i => `${i.ticker} | ${i.cat} | Qtd:${i.qtd} | PM:R$${i.preco} | Total:R$${(i.qtd*i.preco).toFixed(2)}`).join('\n');
-
-  return `Você é o Consultor IA do app "Império Autônomo", um assistente financeiro pessoal especializado.
+  return `Você é o Consultor IA do app "Império Autônomo", assistente financeiro pessoal especializado.
 Responda SEMPRE em português brasileiro. Use formatação clara com emojis contextuais.
 
-## DADOS FINANCEIROS ATUAIS DO USUÁRIO
+## DADOS DO MÊS ATUAL — ${p.mes}/${p.ano}
+- Receitas do mês: R$${p.totalRecMes.toFixed(2)}
+- Despesas do mês: R$${p.totalDespMes.toFixed(2)}
+- Lucro líquido do mês: R$${p.lucroMes.toFixed(2)}
+- Patrimônio investido total: R$${p.totalInvTotal.toFixed(2)}
 
-**RESUMO:**
-- Receitas totais: R$${totalRec.toFixed(2)}
-- Despesas totais: R$${totalDesp.toFixed(2)}
-- Lucro líquido: R$${lucro.toFixed(2)}
-- Patrimônio investido: R$${totalInv.toFixed(2)}
+**RECEITAS DE ${p.mes.toUpperCase()}:**
+${p.recSummary}
 
-**RECEITAS (últimos 30):**
-${recSummary || 'Nenhuma receita registrada.'}
-
-**DESPESAS (últimas 30):**
-${despSummary || 'Nenhuma despesa registrada.'}
+**DESPESAS DE ${p.mes.toUpperCase()}:**
+${p.despSummary}
 
 **CARTEIRA DE INVESTIMENTOS:**
-${invSummary || 'Nenhum investimento registrado.'}
+${p.invSummary}
+
+## TOTAIS ACUMULADOS (todos os períodos)
+- Receitas totais: R$${totalRec.toFixed(2)}
+- Despesas totais: R$${totalDesp.toFixed(2)}
+- Lucro acumulado: R$${(totalRec-totalDesp).toFixed(2)}
 
 ## SUAS FUNÇÕES:
-1. **LEITOR DE DOCUMENTOS**: Se o usuário enviar imagem ou PDF (boleto, fatura, extrato), extraia: valor, data de vencimento, descrição/beneficiário. Apresente em formato estruturado e sugira registrar no app.
-2. **ANALISTA DE INVESTIMENTOS**: Responda sobre rentabilidade estimada, diversificação da carteira, tickers B3, FIIs, ETFs e criptomoedas presentes na carteira do usuário.
-3. **GERADOR DE RELATÓRIOS**: Ao ser solicitado, cruze receitas vs despesas, calcule margem de lucro, identifique maiores gastos por categoria, faça projeções e dê recomendações práticas.
+A) **LEITOR DE DOCUMENTOS**: Se usuário enviar imagem ou PDF (boleto, fatura, extrato), extraia: valor exato, data de vencimento, descrição/beneficiário. Apresente em formato estruturado e sugira registrar no app.
+B) **ANALISTA DE INVESTIMENTOS**: Analise carteira, rentabilidade estimada, diversificação, tickers B3, FIIs, ETFs.
+C) **RELATÓRIO MENSAL**: Cruze receitas vs despesas do mês atual (${p.mes}/${p.ano}), calcule margem de lucro, identifique maiores gastos por categoria, faça projeções.
+D) **REDUÇÃO DE GASTOS**: Identifique despesas excessivas e sugira cortes práticos e específicos.
+E) **PROJEÇÕES**: Com base nos dados reais do mês, projete o próximo mês.
 
-Seja direto, analítico e sempre baseie suas respostas nos dados reais do usuário acima.`;
+Seja direto, analítico e baseie respostas nos dados reais acima.`;
 }
 
 /* ── Chat UI ── */
@@ -4717,8 +4807,10 @@ function iaAddMessage(role, text, isTyping = false) {
   return div;
 }
 
-function iaFormatText(text) {
-  return text
+function iaFormatText(raw) {
+  // Escape HTML first to prevent XSS, then apply safe markdown
+  const escaped = iaEscapeHtml(raw);
+  return escaped
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/```([\s\S]*?)```/g, '<pre>$1</pre>')
     .replace(/\n/g, '<br>');
@@ -4737,6 +4829,18 @@ function iaQuick(text) {
   iaSend();
 }
 
+/* ── API Call with fallback ── */
+async function iaCallGemini(key, model, body) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  return { res, data };
+}
+
 /* ── Main Send ── */
 async function iaSend() {
   if (iaIsSending) return;
@@ -4750,12 +4854,13 @@ async function iaSend() {
 
   // Build user parts
   const userParts = [];
+  const attachRef = iaAttachData ? `[Arquivo: ${iaAttachData.name}]` : null;
   if (iaAttachData) {
     userParts.push({ inline_data: { mime_type: iaAttachData.mimeType, data: iaAttachData.base64 } });
   }
   if (userText) userParts.push({ text: userText });
 
-  const displayText = userText || `📎 ${iaAttachData?.name}`;
+  const displayText = [attachRef, userText].filter(Boolean).join(' ');
   iaAddMessage('user', displayText);
 
   if (inputEl) { inputEl.value = ''; iaAutoResize(inputEl); }
@@ -4765,35 +4870,46 @@ async function iaSend() {
 
   const typingEl = iaAddMessage('bot', '', true);
 
-  // Build history for API
-  iaHistory.push({ role: 'user', parts: userParts });
+  // History: store text ref only (no base64 in history)
+  const historyParts = [];
+  if (attachRef) historyParts.push({ text: attachRef });
+  if (userText)  historyParts.push({ text: userText });
+  iaHistory.push({ role: 'user', parts: historyParts });
 
   try {
     const body = {
       system_instruction: { parts: [{ text: iaBuildSystemPrompt() }] },
-      contents: iaHistory,
-      generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
+      contents: (() => {
+        // Rebuild last turn with actual file data if present
+        const hist = iaHistory.slice(0,-1);
+        const lastParts = userParts.length ? userParts : historyParts;
+        return [...hist, { role:'user', parts: lastParts }];
+      })(),
+      generationConfig: { temperature: 0.7, maxOutputTokens: 2000 }
     };
 
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      }
-    );
-    const data = await res.json();
+    let res, data;
+    // Primary model
+    ({ res, data } = await iaCallGemini(key, IA_MODEL_PRIMARY, body));
+
+    // Fallback on 503 / UNAVAILABLE / resource exhausted
+    if (!res.ok && (res.status === 503 || (data?.error?.status === 'UNAVAILABLE') || (data?.error?.message||'').toLowerCase().includes('high demand'))) {
+      ({ res, data } = await iaCallGemini(key, IA_MODEL_FALLBACK, body));
+    }
 
     if (!res.ok) {
       const errMsg = data?.error?.message || `HTTP ${res.status}`;
+      const status = res.status;
       if (typingEl) typingEl.remove();
-      if (errMsg.includes('API_KEY') || errMsg.includes('key')) {
-        iaAddMessage('bot', '⚠️ Chave API inválida ou sem permissão. Verifique sua chave no Google AI Studio.');
-        localStorage.removeItem(IA_KEY_STORAGE);
-        iaUpdateKeyUI();
+      if (status === 401 || errMsg.includes('API_KEY_INVALID')) {
+        iaAddMessage('bot', '⚠️ Chave sem permissão. Verifique API Gemini, domínio autorizado e restrições da chave.');
+        localStorage.removeItem(IA_KEY_STORAGE); iaUpdateKeyUI();
+      } else if (status === 429) {
+        iaAddMessage('bot', '⏳ Limite de requisições atingido. Aguarde um momento e tente novamente.');
+      } else if (status === 503) {
+        iaAddMessage('bot', '🔴 Serviço indisponível. Tente novamente em instantes.');
       } else {
-        iaAddMessage('bot', `❌ Erro da API: ${errMsg}`);
+        iaAddMessage('bot', `❌ Erro: ${errMsg}`);
       }
       iaHistory.pop();
       return;
@@ -4804,7 +4920,7 @@ async function iaSend() {
     iaAddMessage('bot', replyText);
     iaHistory.push({ role: 'model', parts: [{ text: replyText }] });
 
-    // Keep history max 20 turns
+    // Keep history max 40 turns
     if (iaHistory.length > 40) iaHistory = iaHistory.slice(-40);
 
   } catch (err) {
