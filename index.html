@@ -161,6 +161,80 @@ input,select,textarea{font-family:inherit}
 .config-danger-btn{padding:6px 14px;border-radius:7px;border:1px solid rgba(255,77,109,.3);background:none;color:var(--danger);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:background .15s;}
 .config-danger-btn:hover{background:var(--danger-glow);}
 
+/* ═══════════════════════════════════════════
+   CONSULTOR IA — Chat
+   ═══════════════════════════════════════════ */
+.ia-section{max-width:760px;margin:0 auto;display:flex;flex-direction:column;height:calc(100vh - 260px);min-height:420px;}
+.ia-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;}
+.ia-header-left{display:flex;align-items:center;gap:12px;}
+.ia-avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--invest));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ia-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--text);}
+.ia-subtitle{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.ia-key-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border2);background:none;color:var(--accent);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px;}
+.ia-key-btn:hover{background:var(--accent-glow);}
+.ia-key-dot{width:7px;height:7px;border-radius:50%;background:var(--danger);}
+.ia-key-dot.active{background:var(--accent);}
+
+.ia-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:4px 2px;margin-bottom:12px;}
+.ia-msg{display:flex;gap:10px;animation:fadeInUp .22s cubic-bezier(.4,0,.2,1);}
+.ia-msg.user{flex-direction:row-reverse;}
+.ia-bubble{max-width:82%;padding:12px 15px;border-radius:16px;font-size:13px;line-height:1.6;color:var(--text);}
+.ia-msg.bot .ia-bubble{background:var(--card);border:1px solid var(--card-border);border-radius:4px 16px 16px 16px;}
+.ia-msg.user .ia-bubble{background:linear-gradient(135deg,var(--accent-dim),var(--accent));color:#060a0d;border-radius:16px 4px 16px 16px;font-weight:500;}
+.ia-msg-avatar{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px;}
+.ia-msg.bot .ia-msg-avatar{background:var(--card2);border:1px solid var(--border);}
+.ia-msg.user .ia-msg-avatar{background:var(--accent-glow);border:1px solid var(--border2);}
+.ia-bubble pre{font-family:'DM Mono',monospace;font-size:11px;background:var(--bg2);border-radius:8px;padding:10px;margin-top:8px;overflow-x:auto;white-space:pre-wrap;border:1px solid var(--border);}
+.ia-bubble strong{color:var(--accent);}
+
+.ia-typing{display:flex;align-items:center;gap:5px;padding:10px 14px;background:var(--card);border:1px solid var(--card-border);border-radius:4px 16px 16px 16px;width:fit-content;}
+.ia-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:iaDot 1.2s ease-in-out infinite;}
+.ia-dot:nth-child(2){animation-delay:.2s;}
+.ia-dot:nth-child(3){animation-delay:.4s;}
+@keyframes iaDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-6px);opacity:1;}}
+
+.ia-attach-preview{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card2);border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;flex-shrink:0;}
+.ia-attach-preview-name{font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ia-attach-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;transition:color .15s;}
+.ia-attach-remove:hover{color:var(--danger);}
+
+.ia-input-row{display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
+.ia-attach-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.ia-attach-btn:hover{border-color:var(--border2);color:var(--accent);background:var(--accent-glow);}
+.ia-input-wrap{flex:1;position:relative;}
+.ia-input{width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;resize:none;font-family:'Instrument Sans',sans-serif;line-height:1.5;max-height:120px;transition:border-color .15s,background .15s;}
+.ia-input:focus{border-color:var(--border2);background:var(--input-focus);}
+.ia-input::placeholder{color:var(--text3);}
+.ia-send-btn{width:40px;height:40px;border-radius:10px;border:none;background:var(--accent);color:#060a0d;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .2s,transform .1s;flex-shrink:0;}
+.ia-send-btn:hover{opacity:.88;}
+.ia-send-btn:active{transform:scale(.94);}
+.ia-send-btn:disabled{opacity:.4;cursor:not-allowed;}
+.ia-quick-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;flex-shrink:0;}
+.ia-quick-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text2);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.ia-quick-btn:hover{border-color:var(--border2);color:var(--accent);background:var(--accent-glow);}
+
+/* BYOK Modal */
+.byok-modal-overlay{position:fixed;inset:0;z-index:600;background:rgba(6,10,13,.82);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
+.byok-modal-overlay.open{opacity:1;pointer-events:all;}
+.byok-modal{background:var(--card);border:1px solid var(--card-border);border-radius:20px;width:100%;max-width:440px;box-shadow:var(--shadow),0 0 60px var(--accent-glow);overflow:hidden;transform:translateY(20px) scale(.96);transition:transform .3s cubic-bezier(.34,1.2,.64,1),opacity .22s;opacity:0;}
+.byok-modal-overlay.open .byok-modal{transform:translateY(0) scale(1);opacity:1;}
+.byok-modal-header{padding:20px 22px 0;text-align:center;}
+.byok-modal-icon{font-size:32px;margin-bottom:10px;}
+.byok-modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--text);margin-bottom:4px;}
+.byok-modal-sub{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.5;}
+.byok-modal-body{padding:20px 22px;}
+.byok-input-wrap{position:relative;margin-bottom:12px;}
+.byok-input{width:100%;padding:11px 38px 11px 13px;background:var(--input-bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;font-family:'DM Mono',monospace;letter-spacing:.04em;transition:border-color .15s,background .15s;}
+.byok-input:focus{border-color:var(--border2);background:var(--input-focus);}
+.byok-eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px;}
+.byok-save-btn{width:100%;padding:12px;background:var(--accent);color:#060a0d;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;cursor:pointer;transition:opacity .2s;margin-bottom:10px;}
+.byok-save-btn:hover{opacity:.88;}
+.byok-link{display:block;text-align:center;font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);text-decoration:none;transition:color .15s;}
+.byok-link:hover{color:var(--accent);}
+.byok-clear-btn{display:block;width:100%;margin-top:8px;padding:8px;background:none;border:1px solid rgba(255,77,109,.3);border-radius:8px;color:var(--danger);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:background .15s;}
+.byok-clear-btn:hover{background:var(--danger-glow);}
+@media(max-width:600px){.ia-section{height:calc(100vh - 230px);}.ia-bubble{max-width:92%;}.ia-quick-btns{gap:5px;}}
+
 /* Grade de pontos animada */
 #splash::before {
   content: '';
@@ -1484,6 +1558,7 @@ body.privacy-mode .flash-val:hover{filter:blur(0px);}
   <button class="tab-btn" onclick="switchTab('metas')">🎯 Metas</button>
   <button class="tab-btn" onclick="switchTab('configuracoes')">⚙️ Config</button>
   <button class="tab-btn" onclick="switchTab('suporte')">🎧 Suporte</button>
+  <button class="tab-btn" onclick="switchTab('consultor-ia')" style="color:var(--accent);">🤖 IA</button>
   <button class="export-btn" style="margin-left:auto;margin-bottom:1px;" onclick="exportarExcel()" title="Exportar tudo para Excel">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     Excel
@@ -1916,6 +1991,58 @@ body.privacy-mode .flash-val:hover{filter:blur(0px);}
       <div class="config-row"><div class="config-label">Domínio</div><span id="config-domain" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);"></span></div>
       <div class="config-row"><div class="config-label">Service Worker</div><span id="config-sw-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);">verificando…</span></div>
       <div style="margin-top:12px;"><button class="config-test-btn" onclick="forcarAtualizacao()">🔄 Verificar atualização</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: CONSULTOR IA -->
+<div class="tab-content" id="tab-consultor-ia">
+  <div class="ia-section">
+    <div class="ia-header">
+      <div class="ia-header-left">
+        <div class="ia-avatar">🤖</div>
+        <div>
+          <div class="ia-title">Consultor IA</div>
+          <div class="ia-subtitle">Powered by Gemini · BYOK</div>
+        </div>
+      </div>
+      <button class="ia-key-btn" onclick="openByokModal()">
+        <span class="ia-key-dot" id="ia-key-dot"></span>
+        <span id="ia-key-label">Chave API</span>
+      </button>
+    </div>
+
+    <div class="ia-quick-btns">
+      <button class="ia-quick-btn" onclick="iaQuick('Faça um resumo financeiro detalhado do mês atual cruzando receitas, despesas e investimentos.')">📊 Relatório mensal</button>
+      <button class="ia-quick-btn" onclick="iaQuick('Analise minha carteira de investimentos e informe sobre rentabilidade estimada e diversificação.')">💹 Analisar carteira</button>
+      <button class="ia-quick-btn" onclick="iaQuick('Quais são minhas maiores despesas? Onde posso economizar?')">✂️ Reduzir gastos</button>
+      <button class="ia-quick-btn" onclick="iaQuick('Com base nos dados atuais, qual meu lucro líquido e projeção para o próximo mês?')">📈 Projeção</button>
+    </div>
+
+    <div class="ia-messages" id="ia-messages">
+      <div class="ia-msg bot">
+        <div class="ia-msg-avatar">🤖</div>
+        <div class="ia-bubble">Olá! Sou seu Consultor IA financeiro. Posso <strong>ler boletos e faturas</strong> (envie imagem ou PDF), <strong>analisar sua carteira</strong> de investimentos e gerar <strong>relatórios mensais</strong> detalhados. Como posso ajudar?</div>
+      </div>
+    </div>
+
+    <div id="ia-attach-preview" style="display:none;" class="ia-attach-preview">
+      <span>📎</span>
+      <span class="ia-attach-preview-name" id="ia-attach-name">arquivo.pdf</span>
+      <button class="ia-attach-remove" onclick="iaRemoveAttach()" title="Remover">×</button>
+    </div>
+
+    <div class="ia-input-row">
+      <button class="ia-attach-btn" onclick="document.getElementById('ia-file-input').click()" title="Anexar imagem ou PDF">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <input type="file" id="ia-file-input" accept="image/*,application/pdf" style="display:none;" onchange="iaHandleFile(this)"/>
+      <div class="ia-input-wrap">
+        <textarea class="ia-input" id="ia-input" rows="1" placeholder="Pergunte sobre suas finanças…" onkeydown="iaKeydown(event)" oninput="iaAutoResize(this)"></textarea>
+      </div>
+      <button class="ia-send-btn" id="ia-send-btn" onclick="iaSend()" title="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -4415,6 +4542,280 @@ if ('serviceWorker' in navigator) {
     setTimeout(() => location.reload(), 1500);
   });
 }
+</script>
+
+<!-- BYOK MODAL -->
+<div class="byok-modal-overlay" id="byok-overlay">
+  <div class="byok-modal">
+    <div class="byok-modal-header">
+      <div class="byok-modal-icon">🔑</div>
+      <div class="byok-modal-title">Sua Chave Gemini API</div>
+      <div class="byok-modal-sub">A chave é salva <strong>apenas no seu dispositivo</strong> (localStorage).<br>Nunca enviada ao servidor.</div>
+    </div>
+    <div class="byok-modal-body">
+      <div class="byok-input-wrap">
+        <input class="byok-input" id="byok-key-input" type="password" placeholder="AIzaSy…" autocomplete="off" spellcheck="false"/>
+        <button class="byok-eye-btn" onclick="byokToggleEye()" id="byok-eye">👁</button>
+      </div>
+      <button class="byok-save-btn" onclick="byokSave()">Salvar e Continuar</button>
+      <a class="byok-link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">→ Como obter sua chave gratuita no Google AI Studio</a>
+      <button class="byok-clear-btn" id="byok-clear-btn" onclick="byokClear()" style="display:none;">🗑 Remover chave salva</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   CONSULTOR IA — BYOK + Multimodal (Gemini 1.5 Flash)
+   ══════════════════════════════════════════════════════════════ */
+
+const IA_KEY_STORAGE = 'imperio_gemini_key';
+let iaAttachData = null;   // { base64, mimeType, name }
+let iaHistory    = [];     // { role, parts }[]
+let iaIsSending  = false;
+
+/* ── Helpers ── */
+function iaGetKey() { return localStorage.getItem(IA_KEY_STORAGE) || ''; }
+
+function iaUpdateKeyUI() {
+  const has = !!iaGetKey();
+  const dot = document.getElementById('ia-key-dot');
+  const lbl = document.getElementById('ia-key-label');
+  if (dot) { dot.className = 'ia-key-dot' + (has ? ' active' : ''); }
+  if (lbl) { lbl.textContent = has ? 'Chave ativa' : 'Sem chave'; }
+}
+
+/* ── BYOK Modal ── */
+function openByokModal() {
+  const ov = document.getElementById('byok-overlay');
+  const inp = document.getElementById('byok-key-input');
+  const clrBtn = document.getElementById('byok-clear-btn');
+  const existing = iaGetKey();
+  if (inp) inp.value = existing;
+  if (clrBtn) clrBtn.style.display = existing ? 'block' : 'none';
+  if (ov) ov.classList.add('open');
+}
+function closeByokModal() {
+  const ov = document.getElementById('byok-overlay');
+  if (ov) ov.classList.remove('open');
+}
+document.getElementById('byok-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeByokModal();
+});
+function byokToggleEye() {
+  const inp = document.getElementById('byok-key-input');
+  const btn = document.getElementById('byok-eye');
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  if (btn) btn.textContent = show ? '🙈' : '👁';
+}
+function byokSave() {
+  const val = (document.getElementById('byok-key-input')?.value || '').trim();
+  if (!val.startsWith('AIza')) {
+    showToast('⚠️ Chave inválida — deve iniciar com AIza');
+    return;
+  }
+  localStorage.setItem(IA_KEY_STORAGE, val);
+  iaUpdateKeyUI();
+  closeByokModal();
+  showToast('✓ Chave Gemini salva localmente');
+}
+function byokClear() {
+  localStorage.removeItem(IA_KEY_STORAGE);
+  const inp = document.getElementById('byok-key-input');
+  const clr = document.getElementById('byok-clear-btn');
+  if (inp) inp.value = '';
+  if (clr) clr.style.display = 'none';
+  iaUpdateKeyUI();
+  showToast('🗑 Chave removida');
+}
+
+/* ── File Attach ── */
+function iaHandleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const maxMB = 10;
+  if (file.size > maxMB * 1024 * 1024) { showToast(`⚠️ Arquivo muito grande (max ${maxMB}MB)`); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const base64 = e.target.result.split(',')[1];
+    iaAttachData = { base64, mimeType: file.type, name: file.name };
+    const preview = document.getElementById('ia-attach-preview');
+    const nameEl  = document.getElementById('ia-attach-name');
+    if (preview) preview.style.display = 'flex';
+    if (nameEl)  nameEl.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+function iaRemoveAttach() {
+  iaAttachData = null;
+  const preview = document.getElementById('ia-attach-preview');
+  if (preview) preview.style.display = 'none';
+}
+
+/* ── System Prompt Builder ── */
+function iaBuildSystemPrompt() {
+  const totalRec  = receitas.reduce((s, r) => s + r.valor, 0);
+  const totalDesp = despesas.reduce((s, d) => s + d.valor, 0);
+  const totalInv  = investimentos.reduce((s, i) => s + i.qtd * i.preco, 0);
+  const lucro     = totalRec - totalDesp;
+
+  const recSummary  = receitas.slice(-30).map(r  => `${r.data} | ${r.origem} | ${r.desc || ''} | R$${r.valor}`).join('\n');
+  const despSummary = despesas.slice(-30).map(d  => `${d.data} | ${d.cat} | ${d.desc || ''} | R$${d.valor}`).join('\n');
+  const invSummary  = investimentos.map(i => `${i.ticker} | ${i.cat} | Qtd:${i.qtd} | PM:R$${i.preco} | Total:R$${(i.qtd*i.preco).toFixed(2)}`).join('\n');
+
+  return `Você é o Consultor IA do app "Império Autônomo", um assistente financeiro pessoal especializado.
+Responda SEMPRE em português brasileiro. Use formatação clara com emojis contextuais.
+
+## DADOS FINANCEIROS ATUAIS DO USUÁRIO
+
+**RESUMO:**
+- Receitas totais: R$${totalRec.toFixed(2)}
+- Despesas totais: R$${totalDesp.toFixed(2)}
+- Lucro líquido: R$${lucro.toFixed(2)}
+- Patrimônio investido: R$${totalInv.toFixed(2)}
+
+**RECEITAS (últimos 30):**
+${recSummary || 'Nenhuma receita registrada.'}
+
+**DESPESAS (últimas 30):**
+${despSummary || 'Nenhuma despesa registrada.'}
+
+**CARTEIRA DE INVESTIMENTOS:**
+${invSummary || 'Nenhum investimento registrado.'}
+
+## SUAS FUNÇÕES:
+1. **LEITOR DE DOCUMENTOS**: Se o usuário enviar imagem ou PDF (boleto, fatura, extrato), extraia: valor, data de vencimento, descrição/beneficiário. Apresente em formato estruturado e sugira registrar no app.
+2. **ANALISTA DE INVESTIMENTOS**: Responda sobre rentabilidade estimada, diversificação da carteira, tickers B3, FIIs, ETFs e criptomoedas presentes na carteira do usuário.
+3. **GERADOR DE RELATÓRIOS**: Ao ser solicitado, cruze receitas vs despesas, calcule margem de lucro, identifique maiores gastos por categoria, faça projeções e dê recomendações práticas.
+
+Seja direto, analítico e sempre baseie suas respostas nos dados reais do usuário acima.`;
+}
+
+/* ── Chat UI ── */
+function iaAddMessage(role, text, isTyping = false) {
+  const container = document.getElementById('ia-messages');
+  if (!container) return null;
+  const div = document.createElement('div');
+  div.className = `ia-msg ${role}`;
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = 'ia-msg-avatar';
+  avatarDiv.textContent = role === 'bot' ? '🤖' : '👤';
+  const bubble = document.createElement('div');
+  bubble.className = 'ia-bubble';
+  if (isTyping) {
+    bubble.innerHTML = '<div class="ia-typing"><span class="ia-dot"></span><span class="ia-dot"></span><span class="ia-dot"></span></div>';
+  } else {
+    bubble.innerHTML = iaFormatText(text);
+  }
+  div.appendChild(avatarDiv);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function iaFormatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/```([\s\S]*?)```/g, '<pre>$1</pre>')
+    .replace(/\n/g, '<br>');
+}
+
+function iaAutoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+function iaKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); iaSend(); }
+}
+function iaQuick(text) {
+  const inp = document.getElementById('ia-input');
+  if (inp) { inp.value = text; iaAutoResize(inp); }
+  iaSend();
+}
+
+/* ── Main Send ── */
+async function iaSend() {
+  if (iaIsSending) return;
+  const key = iaGetKey();
+  if (!key) { openByokModal(); return; }
+
+  const inputEl = document.getElementById('ia-input');
+  const sendBtn = document.getElementById('ia-send-btn');
+  const userText = (inputEl?.value || '').trim();
+  if (!userText && !iaAttachData) return;
+
+  // Build user parts
+  const userParts = [];
+  if (iaAttachData) {
+    userParts.push({ inline_data: { mime_type: iaAttachData.mimeType, data: iaAttachData.base64 } });
+  }
+  if (userText) userParts.push({ text: userText });
+
+  const displayText = userText || `📎 ${iaAttachData?.name}`;
+  iaAddMessage('user', displayText);
+
+  if (inputEl) { inputEl.value = ''; iaAutoResize(inputEl); }
+  iaRemoveAttach();
+  if (sendBtn) sendBtn.disabled = true;
+  iaIsSending = true;
+
+  const typingEl = iaAddMessage('bot', '', true);
+
+  // Build history for API
+  iaHistory.push({ role: 'user', parts: userParts });
+
+  try {
+    const body = {
+      system_instruction: { parts: [{ text: iaBuildSystemPrompt() }] },
+      contents: iaHistory,
+      generationConfig: { temperature: 0.7, maxOutputTokens: 1500 }
+    };
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const errMsg = data?.error?.message || `HTTP ${res.status}`;
+      if (typingEl) typingEl.remove();
+      if (errMsg.includes('API_KEY') || errMsg.includes('key')) {
+        iaAddMessage('bot', '⚠️ Chave API inválida ou sem permissão. Verifique sua chave no Google AI Studio.');
+        localStorage.removeItem(IA_KEY_STORAGE);
+        iaUpdateKeyUI();
+      } else {
+        iaAddMessage('bot', `❌ Erro da API: ${errMsg}`);
+      }
+      iaHistory.pop();
+      return;
+    }
+
+    const replyText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '(Resposta vazia)';
+    if (typingEl) typingEl.remove();
+    iaAddMessage('bot', replyText);
+    iaHistory.push({ role: 'model', parts: [{ text: replyText }] });
+
+    // Keep history max 20 turns
+    if (iaHistory.length > 40) iaHistory = iaHistory.slice(-40);
+
+  } catch (err) {
+    if (typingEl) typingEl.remove();
+    iaAddMessage('bot', `❌ Erro de conexão: ${err.message}`);
+    iaHistory.pop();
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    iaIsSending = false;
+  }
+}
+
+// Init key UI on load
+iaUpdateKeyUI();
 </script>
 </body>
 </html>
