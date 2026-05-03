@@ -2004,7 +2004,7 @@ body.privacy-mode .flash-val:hover{filter:blur(0px);}
         <div class="ia-avatar">🤖</div>
         <div>
           <div class="ia-title">Consultor IA</div>
-          <div class="ia-subtitle">Powered by Gemini · BYOK</div>
+          <div class="ia-subtitle">Powered by  · BYOK</div>
         </div>
       </div>
       <button class="ia-key-btn" onclick="openByokModal()">
@@ -4568,7 +4568,7 @@ if ('serviceWorker' in navigator) {
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   CONSULTOR IA — BYOK + Multimodal (Gemini 1.5 Flash)
+   CONSULTOR IA — BYOK + Multimodal (Gemini 2.5 Flash)
    ══════════════════════════════════════════════════════════════ */
 
 const IA_KEY_STORAGE = 'imperio_gemini_key';
@@ -4778,7 +4778,7 @@ async function iaSend() {
     };
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/-2.5-flash:generateContent?key=${key}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
     );
 
