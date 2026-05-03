@@ -2004,7 +2004,7 @@ body.privacy-mode .flash-val:hover{filter:blur(0px);}
         <div class="ia-avatar">🤖</div>
         <div>
           <div class="ia-title">Consultor IA</div>
-          <div class="ia-subtitle">Powered by  · BYOK</div>
+          <div class="ia-subtitle">Powered by Gemini · BYOK</div>
         </div>
       </div>
       <button class="ia-key-btn" onclick="openByokModal()">
@@ -2877,30 +2877,54 @@ function updateKPIs() {
   const lucro = totalRec - totalDesp;
   const totalInvest = investimentos.reduce((a, i) => a + (i.qtd * i.preco), 0);
 
-  document.getElementById('kpi-saldo').textContent    = 'R$ ' + fmtBRL(totalRec - totalDesp);
-  document.getElementById('kpi-receitas').textContent = 'R$ ' + fmtBRL(totalRec);
-  document.getElementById('kpi-despesas').textContent = 'R$ ' + fmtBRL(totalDesp);
-  document.getElementById('kpi-lucro').textContent    = 'R$ ' + fmtBRL(lucro);
-  document.getElementById('kpi-investido').textContent = 'R$ ' + fmtBRL(totalInvest);
+  const kpiSaldo = getEl('kpi-saldo');
+  const kpiRec   = getEl('kpi-receitas');
+  const kpiDesp  = getEl('kpi-despesas');
+  const kpiLucro = getEl('kpi-lucro');
+  const kpiInv   = getEl('kpi-investido');
+  
+  if (kpiSaldo) kpiSaldo.textContent    = 'R$ ' + fmtBRL(totalRec - totalDesp);
+  if (kpiRec)   kpiRec.textContent = 'R$ ' + fmtBRL(totalRec);
+  if (kpiDesp)  kpiDesp.textContent = 'R$ ' + fmtBRL(totalDesp);
+  if (kpiLucro) kpiLucro.textContent    = 'R$ ' + fmtBRL(lucro);
+  if (kpiInv)   kpiInv.textContent = 'R$ ' + fmtBRL(totalInvest);
 
   const period = (filtroMes || filtroAno) ? 'Período filtrado' : 'Todos os registros';
-  document.getElementById('kpi-rec-sub').textContent  = period;
-  document.getElementById('kpi-desp-sub').textContent = period;
+  const kpiRecSub = getEl('kpi-rec-sub');
+  const kpiDespSub = getEl('kpi-desp-sub');
+  if (kpiRecSub)  kpiRecSub.textContent  = period;
+  if (kpiDespSub) kpiDespSub.textContent = period;
 
   const origemTotals = {};
   recFilt.forEach(r => { origemTotals[r.origem] = (origemTotals[r.origem] || 0) + r.valor; });
   const topOrigem = Object.entries(origemTotals).sort((a, b) => b[1] - a[1])[0];
-  if (topOrigem) { document.getElementById('flash-income-name').textContent = topOrigem[0]; document.getElementById('flash-income-val').textContent = 'R$ ' + fmtBRL(topOrigem[1]) + ' no período'; }
-  else { document.getElementById('flash-income-name').textContent = '—'; document.getElementById('flash-income-val').textContent = 'Nenhuma entrada registrada'; }
+  const flashIncomeName = getEl('flash-income-name');
+  const flashIncomeVal = getEl('flash-income-val');
+  if (topOrigem) {
+    if (flashIncomeName) flashIncomeName.textContent = topOrigem[0];
+    if (flashIncomeVal)  flashIncomeVal.textContent = 'R$ ' + fmtBRL(topOrigem[1]) + ' no período';
+  } else {
+    if (flashIncomeName) flashIncomeName.textContent = '—';
+    if (flashIncomeVal)  flashIncomeVal.textContent = 'Nenhuma entrada registrada';
+  }
 
   const catTotals = {};
   despFilt.forEach(d => { catTotals[d.cat] = (catTotals[d.cat] || 0) + d.valor; });
   const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
-  if (topCat) { document.getElementById('flash-expense-name').textContent = topCat[0]; document.getElementById('flash-expense-val').textContent = 'R$ ' + fmtBRL(topCat[1]) + ' no período'; }
-  else { document.getElementById('flash-expense-name').textContent = '—'; document.getElementById('flash-expense-val').textContent = 'Nenhuma despesa registrada'; }
+  const flashExpenseName = getEl('flash-expense-name');
+  const flashExpenseVal = getEl('flash-expense-val');
+  if (topCat) {
+    if (flashExpenseName) flashExpenseName.textContent = topCat[0];
+    if (flashExpenseVal)  flashExpenseVal.textContent = 'R$ ' + fmtBRL(topCat[1]) + ' no período';
+  } else {
+    if (flashExpenseName) flashExpenseName.textContent = '—';
+    if (flashExpenseVal)  flashExpenseVal.textContent = 'Nenhuma despesa registrada';
+  }
 
   buildFilterOptions();
   salvarNaNuvem();
+  // Atualiza as metas de gastos e alertas
+  renderBudgets();
   setTimeout(checkAlerts, 100);
 }
 
@@ -4568,7 +4592,7 @@ if ('serviceWorker' in navigator) {
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   CONSULTOR IA — BYOK + Multimodal (Gemini 2.5 Flash)
+   CONSULTOR IA — BYOK + Multimodal (Gemini 1.5 Flash)
    ══════════════════════════════════════════════════════════════ */
 
 const IA_KEY_STORAGE = 'imperio_gemini_key';
@@ -4778,7 +4802,7 @@ async function iaSend() {
     };
 
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/-2.5-flash:generateContent?key=${key}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
     );
 
