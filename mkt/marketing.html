@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPÉRIO AUTÔNOMO — IA e Automação na Prática</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #060608;
+    --near-black: #0d0d12;
+    --card-bg: #111118;
+    --border: rgba(255,255,255,0.07);
+    --cyan: #00f5d4;
+    --cyan-dim: rgba(0,245,212,0.12);
+    --gold: #f5c842;
+    --gold-dim: rgba(245,200,66,0.1);
+    --white: #f0f0f5;
+    --muted: #7a7a90;
+    --red: #ff4466;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -200px; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(0,245,212,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-glow-2 {
+    position: absolute;
+    bottom: -100px; left: 20%;
+    width: 500px; height: 400px;
+    background: radial-gradient(ellipse at center, rgba(245,200,66,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 14vw, 180px);
+    line-height: 0.85;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    animation: fadeDown 0.9s ease 0.1s both;
+    position: relative;
+  }
+
+  .hero h1 span {
+    display: block;
+    color: var(--cyan);
+    font-size: clamp(36px, 7vw, 90px);
+    letter-spacing: 0.12em;
+  }
+
+  .hero-sub {
+    max-width: 640px;
+    margin: 28px auto 0;
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--muted);
+    line-height: 1.7;
+    animation: fadeDown 1s ease 0.2s both;
+  }
+
+  .hero-sub em {
+    font-style: italic;
+    color: var(--white);
+    font-weight: 400;
+  }
+
+  .cta-block {
+    margin-top: 52px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: fadeDown 1s ease 0.35s both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--cyan);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 18px 48px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 60px rgba(0,245,212,0.35); }
+  .btn-primary:hover::after { transform: scaleX(1); }
+
+  .guarantee-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── STATS STRIP ─── */
+  .stats-strip {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    text-align: center;
+    background: rgba(255,255,255,0.015);
+  }
+
+  .stat-item {
+    padding: 20px 16px;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    color: var(--cyan);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  section { position: relative; padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-tag::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+  }
+
+  h2 .accent { color: var(--cyan); }
+  h2 .gold { color: var(--gold); }
+
+  /* ─── TWO-COLUMN LAYOUT ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; gap: 40px; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(even) { border-right: none; }
+    .stat-item { border-bottom: 1px solid var(--border); }
+  }
+
+  /* ─── PROBLEM / SOLUTION ─── */
+  .scenario-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scenario-box.bad::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red);
+  }
+
+  .scenario-box.good::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--cyan);
+  }
+
+  .scenario-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .scenario-label.bad { color: var(--red); }
+  .scenario-label.good { color: var(--cyan); }
+
+  .scenario-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #a0a0b5;
+  }
+
+  /* ─── DATA STUDIES ─── */
+  .studies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .study-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .study-card:hover {
+    border-color: rgba(0,245,212,0.3);
+    transform: translateY(-4px);
+  }
+
+  .study-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .study-stat {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .study-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── TOOLS SECTION ─── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .tool-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    transition: all 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: rgba(0,245,212,0.25);
+    background: rgba(0,245,212,0.03);
+  }
+
+  .tool-icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+  }
+
+  .tool-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .tool-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* ─── TABLE OF CONTENTS ─── */
+  .toc-wrapper {
+    background: var(--near-black);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+
+  .toc-part {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-part:last-child { border-bottom: none; }
+
+  .toc-part-header {
+    background: rgba(0,245,212,0.05);
+    padding: 14px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-chapter {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .toc-chapter:last-child { border-bottom: none; }
+
+  .toc-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--muted);
+    min-width: 36px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .toc-chapter-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .toc-topics {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ─── OPERATOR MINDSET ─── */
+  .mindset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) { .mindset-grid { grid-template-columns: 1fr; } }
+
+  .mindset-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+  }
+
+  .mindset-card.highlight {
+    border-color: rgba(0,245,212,0.3);
+    background: rgba(0,245,212,0.04);
+  }
+
+  .mindset-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .mindset-title.dim { color: var(--muted); }
+  .mindset-title.bright { color: var(--cyan); }
+
+  .mindset-list {
+    list-style: none;
+  }
+
+  .mindset-list li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mindset-list li:last-child { border-bottom: none; }
+  .mindset-list li::before { content: attr(data-icon); font-size: 14px; }
+
+  /* ─── QUOTE BLOCK ─── */
+  .quote-block {
+    border-left: 3px solid var(--cyan);
+    padding: 20px 28px;
+    margin: 40px 0;
+    background: rgba(0,245,212,0.03);
+  }
+
+  .quote-text {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .quote-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ─── MONETIZATION ─── */
+  .models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .model-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .model-card:hover { border-color: rgba(245,200,66,0.3); transform: translateY(-3px); }
+
+  .model-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: rgba(245,200,66,0.08);
+    line-height: 0.8;
+    position: absolute;
+    top: 16px; right: 20px;
+  }
+
+  .model-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .model-sub {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .model-price {
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    background: var(--gold-dim);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  /* ─── PRICING ─── */
+  .pricing-wrapper {
+    max-width: 560px;
+    margin: 60px auto 0;
+  }
+
+  .price-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0,245,212,0.35);
+    border-radius: 4px;
+    padding: 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .price-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .price-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 100px;
+    color: var(--white);
+    line-height: 0.9;
+  }
+
+  .price-cents {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 44px;
+    color: var(--muted);
+    vertical-align: top;
+    display: inline-block;
+    margin-top: 18px;
+  }
+
+  .price-currency {
+    font-size: 40px;
+    vertical-align: top;
+    margin-top: 20px;
+    display: inline-block;
+    color: var(--muted);
+  }
+
+  .price-period {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    margin-bottom: 32px;
+  }
+
+  .price-includes {
+    text-align: left;
+    margin-bottom: 36px;
+  }
+
+  .price-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  .price-item:last-child { border-bottom: none; }
+
+  .price-item::before {
+    content: '✓';
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 20px;
+  }
+
+  /* ─── FAQ ─── */
+  .faq-list { margin-top: 48px; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+
+  .faq-q {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .faq-q::before {
+    content: 'Q';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    background: var(--cyan-dim);
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-top: 2px;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .faq-a {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    padding-left: 40px;
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .footer-cta {
+    background: var(--near-black);
+    border-top: 1px solid var(--border);
+    padding: 100px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(0,245,212,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .footer-cta h2 {
+    font-size: clamp(36px, 7vw, 80px);
+    margin-bottom: 20px;
+  }
+
+  .footer-cta p {
+    max-width: 500px;
+    margin: 0 auto 44px;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── DIVIDER LINE ─── */
+  .full-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="badge">e-book digital · lançamento 2025–2026</div>
+  <h1>
+    IMPÉRIO<br>
+    <span>AUTÔNOMO</span>
+  </h1>
+  <p class="hero-sub">
+    Aprenda a usar Inteligência Artificial para <em>aumentar sua produtividade</em>, automatizar tarefas e criar oportunidades com serviços digitais de automação.
+  </p>
+  <div class="cta-block">
+    <a href="#pricing" class="btn-primary">
+      🤖 Ver o que está incluso
+    </a>
+    <span class="guarantee-note">// acesso imediato · garantia de 7 dias</span>
+  </div>
+</div>
+
+<!-- ─── STATS STRIP ─── -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-num">55%</div>
+    <div class="stat-label">Mais tarefas por hora (MIT)</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">40%</div>
+    <div class="stat-label">Mais rápido em tarefas avaliadas</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Capítulos completos</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">4</div>
+    <div class="stat-label">Ferramentas dominadas</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Modelos de monetização</div>
+  </div>
+</div>
+<hr class="full-divider">
+
+<!-- ─── PROBLEMA / SOLUÇÃO ─── -->
+<section id="problema">
+  <div class="two-col">
+    <div>
+      <div class="section-tag">// o problema</div>
+      <h2>Dois<br>profissionais.<br><span class="accent">Mesmo ponto</span><br>de partida.</h2>
+    </div>
+    <div>
+      <div class="scenario-box bad">
+        <div class="scenario-label bad">❌ Consultor A — O jeito convencional</div>
+        <p class="scenario-text">Pesquisa manualmente, elabora relatórios hora a hora, responde e-mails um por um e entrega projetos <strong>em semanas</strong>. Cobra mais barato para competir. Ainda perde clientes.</p>
+      </div>
+      <div class="scenario-box good">
+        <div class="scenario-label good">✓ Consultor B — O Operador de IA</div>
+        <p class="scenario-text">Usa um arsenal de agentes: automatiza pesquisa, gera rascunhos em minutos, classifica e responde comunicações com fluxos automatizados e entrega projetos <strong>em dias</strong>. Cobra mais. Atende o dobro.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── CIÊNCIA ─── -->
+<section id="ciencia">
+  <div class="section-tag">// a ciência prova</div>
+  <h2>Não são promessas.<br>São <span class="accent">dados reais.</span></h2>
+  <p style="color:var(--muted); max-width:560px; margin-top:16px;">Quatro das maiores instituições de pesquisa do mundo confirmaram o que os Operadores de IA já sabem na prática.</p>
+  <div class="studies-grid">
+    <div class="study-card">
+      <div class="study-source">MIT · 2023</div>
+      <div class="study-stat">55%</div>
+      <div class="study-desc">Trabalhadores com IA completaram mais tarefas por hora — com qualidade 18% superior, segundo o estudo "Generative AI at Work".</div>
+    </div>
+    <div class="study-card">
+      <div class="study-source">GitHub · 2022</div>
+      <div class="study-stat">55,8%</div>
+      <div class="study-desc">Desenvolvedores com IA completaram tarefas mais rápido e relataram maior foco em trabalho estratégico e satisfatório.</div>
+    </div>
+    <div class="study-card">
+      <div class="study-source">McKinsey · 2023</div>
+      <div class="study-stat">70%</div>
+      <div class="study-desc">Das atividades profissionais do dia a dia podem ser automatizadas com IA generativa, gerando trilhões em valor global.</div>
+    </div>
+    <div class="study-card">
+      <div class="study-source">Harvard Business School · 2023</div>
+      <div class="study-stat">40%</div>
+      <div class="study-desc">Consultores com GPT-4 foram 40% mais rápidos, com qualidade 25% superior — estudo com 758 profissionais reais.</div>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:40px;">
+    <p class="quote-text">"A maior vantagem competitiva do século XXI não é o que você sabe. É a velocidade com que você aprende, adapta e escala usando as ferramentas certas."</p>
+    <div class="quote-source">— IMPÉRIO AUTÔNOMO, Capítulo 1</div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── FERRAMENTAS ─── -->
+<section id="arsenal">
+  <div class="section-tag">// capítulo 2</div>
+  <h2>Seu arsenal<br>completo de <span class="accent">4 armas.</span></h2>
+  <p style="color:var(--muted); max-width:560px; margin-top:16px;">Cada ferramenta tem uma especialidade. Dominar essa distinção é o que separa o Usuário do Operador.</p>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon">🔬</div>
+      <div class="tool-name">NotebookLM</div>
+      <div class="tool-role">Pesquisador Pessoal Infinito</div>
+      <div class="tool-desc">Responde perguntas exclusivamente sobre os seus documentos. 300 páginas de contratos, relatórios e transcrições viram um segundo cérebro consultável em segundos.</div>
+    </div>
+    <div class="tool-card" style="border-color:rgba(0,245,212,0.2);">
+      <div class="tool-icon">🧠</div>
+      <div class="tool-name">Claude</div>
+      <div class="tool-role">Estrategista de Alto Nível</div>
+      <div class="tool-desc">Contexto longo de até 200k tokens. Raciocínio jurídico, estratégico e análise profunda. Escrita mais refinada e menos robótica do que a concorrência.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🔧</div>
+      <div class="tool-name">ChatGPT</div>
+      <div class="tool-role">Canivete Suíço das Integrações</div>
+      <div class="tool-desc">A API mais conectada ao ecossistema de automação. Zapier, Make, Sheets, Slack, CRMs — conectar é significativamente mais simples aqui.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🌐</div>
+      <div class="tool-name">Gemini</div>
+      <div class="tool-role">Agente do Ecossistema Google</div>
+      <div class="tool-desc">Integração nativa com Gmail, Docs, Sheets e Meet. Dados em tempo real via Google Search. A escolha para quem vive dentro do Workspace.</div>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── SUMÁRIO ─── -->
+<section id="conteudo">
+  <div class="section-tag">// o que está dentro</div>
+  <h2>Sumário<br><span class="accent">completo.</span></h2>
+  <div class="toc-wrapper">
+    <div class="toc-part">
+      <div class="toc-part-header">PARTE I — FUNDAMENTOS DO IMPÉRIO</div>
+      <div class="toc-chapter">
+        <div class="toc-num">01</div>
+        <div>
+          <div class="toc-chapter-title">A Ciência Por Trás da Máquina</div>
+          <div class="toc-topics">O problema real do tempo · Estudos do MIT, Harvard, McKinsey e GitHub · Efeito multiplicador · Custo de não agir · Mentalidade Operador vs. Usuário</div>
+        </div>
+      </div>
+      <div class="toc-chapter">
+        <div class="toc-num">02</div>
+        <div>
+          <div class="toc-chapter-title">Seu Arsenal: Conhecendo as 4 Ferramentas</div>
+          <div class="toc-topics">NotebookLM · Claude · ChatGPT · Gemini · Tabela comparativa detalhada · Como montar sua stack pessoal</div>
+        </div>
+      </div>
+    </div>
+    <div class="toc-part">
+      <div class="toc-part-header">PARTE II — MODO NO-CODE: AUTOMATIZE SEM PROGRAMAR</div>
+      <div class="toc-chapter">
+        <div class="toc-num">03</div>
+        <div>
+          <div class="toc-chapter-title">Automação para Humanos</div>
+          <div class="toc-topics">O que são APIs · Zapier e Make · Classificar e-mails com IA · IA que lê planilhas e preenche relatórios · Pipeline completo de atendimento ao cliente · Templates prontos</div>
+        </div>
+      </div>
+    </div>
+    <div class="toc-part">
+      <div class="toc-part-header">PARTE III — MODO PRO-CODE: AGENTES AUTÔNOMOS COM PYTHON</div>
+      <div class="toc-chapter">
+        <div class="toc-num">04</div>
+        <div>
+          <div class="toc-chapter-title">Construindo Agentes de IA com Python</div>
+          <div class="toc-topics">O que é um agente · Ambiente de desenvolvimento · LangChain · Chamadas à API da OpenAI, Anthropic e Google · Agente que lê e-mails · Memória e contexto longo · 🎁 Bônus: arquivo ZIP com código-base pronto</div>
+        </div>
+      </div>
+    </div>
+    <div class="toc-part">
+      <div class="toc-part-header">PARTE IV — MONETIZAÇÃO: TRANSFORME HABILIDADE EM IMPÉRIO</div>
+      <div class="toc-chapter">
+        <div class="toc-num">05</div>
+        <div>
+          <div class="toc-chapter-title">Seu Negócio de IA</div>
+          <div class="toc-topics">O mercado que está com fome · Freelancing · Consultoria para médias empresas · SaaS micro · Precificação e valor · Onde encontrar clientes sem gastar em anúncios · Plano de 90 dias para o primeiro cliente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── OPERADOR VS USUÁRIO ─── -->
+<section id="mentalidade">
+  <div class="section-tag">// mentalidade</div>
+  <h2>Usuário ou<br><span class="accent">Operador?</span></h2>
+  <p style="color:var(--muted); max-width:560px; margin-top:16px;">Há uma distinção crítica que você precisa internalizar antes de qualquer ferramenta ou tutorial.</p>
+  <div class="mindset-grid">
+    <div class="mindset-card">
+      <div class="mindset-title dim">Usuário de IA</div>
+      <ul class="mindset-list">
+        <li data-icon="👆">Usa ChatGPT para perguntar coisas</li>
+        <li data-icon="⏳">Depende do tempo que tem disponível</li>
+        <li data-icon="🔁">Repete tarefas manualmente todo dia</li>
+        <li data-icon="📉">Acha bacana mas não monetiza</li>
+        <li data-icon="😴">Para de produzir quando para de trabalhar</li>
+      </ul>
+    </div>
+    <div class="mindset-card highlight">
+      <div class="mindset-title bright">Operador de IA</div>
+      <ul class="mindset-list">
+        <li data-icon="⚙️">Cria sistemas, fluxos e agentes</li>
+        <li data-icon="⚡">Automatiza tarefas repetitivas com clareza</li>
+        <li data-icon="📈">Constrói ativos digitais que geram valor</li>
+        <li data-icon="💰">Monetiza o conhecimento sistematicamente</li>
+        <li data-icon="🏗️">Resolve problemas de outros e cobra por isso</li>
+      </ul>
+    </div>
+  </div>
+  <div class="quote-block" style="margin-top:32px;">
+    <p class="quote-text">Este material foi criado para te ajudar a pensar como um Operador. A diferença entre Usuário e Operador de IA é o que separa quem apenas economiza tempo de quem constrói processos mais valiosos.</p>
+    <div class="quote-source">— IMPÉRIO AUTÔNOMO, Capítulo 1.5</div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── MONETIZAÇÃO ─── -->
+<section id="monetizacao">
+  <div class="section-tag">// capítulo 5</div>
+  <h2>3 caminhos para<br>monetizar com <span class="gold">automação.</span></h2>
+  <p style="color:var(--muted); max-width:560px; margin-top:16px;">O mercado está com fome e não sabe o que pedir. Você aprenderá a servir exatamente o que ele precisa.</p>
+  <div class="models-grid">
+    <div class="model-card">
+      <div class="model-num">01</div>
+      <div class="model-title">Freelancing de Automação</div>
+      <div class="model-sub">Aprenda a estruturar projetos de automação para pequenas empresas, começando por dores simples como e-mails, relatórios, atendimento e organização de processos.</div>
+      <div class="model-price">// pequenas empresas</div>
+    </div>
+    <div class="model-card">
+      <div class="model-num">02</div>
+      <div class="model-title">Consultoria de IA</div>
+      <div class="model-sub">Entenda como apresentar diagnósticos, mapear oportunidades e propor automações de IA com linguagem profissional para empresas que precisam de eficiência operacional.</div>
+      <div class="model-price">// médias empresas</div>
+    </div>
+    <div class="model-card">
+      <div class="model-num">03</div>
+      <div class="model-title">SaaS Micro</div>
+      <div class="model-sub">Veja como uma automação validada pode evoluir para um produto digital simples, com entrega mais organizada, processo repetível e possibilidade de recorrência.</div>
+      <div class="model-price">// receita recorrente</div>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── PRICING ─── -->
+<section id="pricing" style="padding-bottom:120px;">
+  <div class="section-tag">// investimento</div>
+  <h2>Um investimento<br><span class="accent">acessível</span><br>para começar.</h2>
+  <div class="pricing-wrapper">
+    <div class="price-card">
+      <div class="price-tag">// acesso completo ao e-book</div>
+      <div>
+        <span class="price-currency">R$</span>
+        <span class="price-value">84</span><span class="price-cents">,99</span>
+      </div>
+      <div class="price-period">pagamento único · acesso imediato</div>
+      <div class="price-includes">
+        <div class="price-item">E-book IMPÉRIO AUTÔNOMO — 5 capítulos completos</div>
+        <div class="price-item">Guia das 4 ferramentas com tabela comparativa</div>
+        <div class="price-item">3 tutoriais no-code passo a passo (Zapier + Make)</div>
+        <div class="price-item">Código Python para agentes autônomos</div>
+        <div class="price-item">🎁 Bônus: arquivo ZIP com código-base pronto</div>
+        <div class="price-item">Plano de 90 dias para o primeiro cliente</div>
+        <div class="price-item">Prefácio + Introdução + Recursos e Referências</div>
+      </div>
+      <a href="https://pay.hotmart.com/K105753194P?off=gslt3u3l" class="btn-primary" target="_blank" rel="noopener noreferrer" style="width:100%; justify-content:center; font-size:16px; padding:20px;">
+        🤖 Garantir meu acesso agora
+      </a>
+      <p style="margin-top:20px; font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:0.06em;">
+        // garantia de 7 dias · pagamento seguro
+      </p>
+      <p style="margin-top:16px; font-size:12px; color:var(--muted); line-height:1.7;">
+        Material educacional. Resultados dependem da aplicação individual, dedicação, mercado e execução. Este produto não garante renda, clientes ou faturamento específico.
+      </p>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── FAQ ─── -->
+<section id="faq">
+  <div class="section-tag">// dúvidas frequentes</div>
+  <h2>Perguntas<br><span class="accent">frequentes.</span></h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q">Preciso saber programar para aproveitar o livro?</div>
+      <p class="faq-a">Não. A Parte II inteira é dedicada ao modo no-code com Zapier e Make. Você aprenderá a criar automações poderosas sem escrever uma linha de código. A Parte III cobre Python para quem quiser ir além.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Para quem é este e-book?</div>
+      <p class="faq-a">Para dois perfis: profissionais que nunca escreveram código e querem automatizar sua vida profissional com IA, e desenvolvedores Python em busca de projetos mais sofisticados e formas de monetizar esse conhecimento.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Preciso pagar pelas ferramentas citadas?</div>
+      <p class="faq-a">NotebookLM e Gemini possuem opções gratuitas. A Stack Básica do livro pode ser montada com custo zero ou muito baixo. A Stack Profissional pode envolver ferramentas pagas, então o ideal é começar simples e evoluir conforme sua necessidade.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">O conteúdo sobre monetização é realista?</div>
+      <p class="faq-a">Sim, desde que você entenda o conteúdo como um ponto de partida educacional. O Capítulo 5 apresenta caminhos, exemplos de oferta e formas de pensar em automações que podem gerar valor para pequenos negócios.</p>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Por que 2025–2026 é a janela certa?</div>
+      <p class="faq-a">Muitas pequenas e médias empresas ainda estão aprendendo como aplicar IA na rotina. Por isso, quem entende produtividade, automação e comunicação clara pode encontrar boas oportunidades para oferecer soluções práticas.</p>
+    </div>
+  </div>
+</section>
+<hr class="full-divider">
+
+<!-- ─── FOOTER CTA ─── -->
+<div class="footer-cta">
+  <h2>O Império é seu.<br><span style="color:var(--cyan)">Agora construa.</span></h2>
+  <p>A revolução da IA já começou sem você. Este livro existe para que ela não continue assim.</p>
+  <a href="COLE_AQUI_O_LINK_DO_CHECKOUT_HOTMART" class="btn-primary" target="_blank" rel="noopener noreferrer" style="font-size:16px; padding:20px 56px;">
+    🤖 Começar agora por R$ 84,99
+  </a>
+</div>
+
+<footer>
+  © 2026 IMPÉRIO AUTÔNOMO · Todos os direitos reservados · Acesso digital imediato
+</footer>
+
+</body>
+</html>
