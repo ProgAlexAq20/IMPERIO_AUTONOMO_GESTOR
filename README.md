@@ -1,4 +1,4 @@
-# 👑 Império Autônomo Gestor
+# 👑 Império Autônomo
 
 > Um sistema inteligente de gestão pessoal e produtividade que centraliza organização, planejamento e automação em uma única plataforma.
 
